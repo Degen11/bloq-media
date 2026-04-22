@@ -7,3 +7,103 @@
 
   --font-sans: 'Inter', system-ui, sans-serif;
 }
+
+/* Honeypot field — visually hidden but not display:none (bots detect that) */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Native dialog modal */
+.modal-dialog {
+  width: min(90vw, 680px);
+  max-height: 85dvh;
+  border: none;
+  border-radius: 1rem;
+  padding: 0;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+  overflow: hidden;
+}
+
+.modal-dialog::backdrop {
+  background: rgb(0 0 0 / 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.modal-inner {
+  display: flex;
+  flex-direction: column;
+  max-height: 85dvh;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 1;
+}
+
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  color: #6b7280;
+  transition: background-color 150ms, color 150ms;
+  flex-shrink: 0;
+}
+
+.modal-close:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: #374151;
+}
+
+.modal-body h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.modal-body p {
+  margin-bottom: 0.75rem;
+}
+
+.modal-body ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.modal-body ul li {
+  margin-bottom: 0.25rem;
+}
+
+.modal-body a {
+  color: #1A3C8F;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.modal-body a:hover {
+  color: #29ABE2;
+}
