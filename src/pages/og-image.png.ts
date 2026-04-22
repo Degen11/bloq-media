@@ -2,7 +2,9 @@ import type { APIRoute } from 'astro';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 
-// Fetched from jsDelivr at build time — requires network access during build
+// Cached per warm serverless instance — avoids a jsDelivr round-trip on every request
+let fontCache: { fontBlack: ArrayBuffer; fontBold: ArrayBuffer } | null = null;
+
 async function loadFont(weight: number): Promise<ArrayBuffer> {
   const url = `https://cdn.jsdelivr.net/npm/@fontsource/inter@4.5.15/files/inter-latin-${weight}-normal.woff`;
   const res = await fetch(url);
@@ -10,8 +12,16 @@ async function loadFont(weight: number): Promise<ArrayBuffer> {
   return res.arrayBuffer();
 }
 
+async function getFonts() {
+  if (!fontCache) {
+    const [fontBlack, fontBold] = await Promise.all([loadFont(900), loadFont(700)]);
+    fontCache = { fontBlack, fontBold };
+  }
+  return fontCache;
+}
+
 export const GET: APIRoute = async () => {
-  const [fontBlack, fontBold] = await Promise.all([loadFont(900), loadFont(700)]);
+  const { fontBlack, fontBold } = await getFonts();
 
   const svg = await satori(
     {
@@ -125,15 +135,15 @@ export const GET: APIRoute = async () => {
       width: 1200,
       height: 630,
       fonts: [
-        { name: 'Inter', data: fontBlack, weight: 900, style: 'normal' },
-        { name: 'Inter', data: fontBold, weight: 700, style: 'normal' },
+        { name: 'Inter', data: fontBlack, weight: 900 as const, style: 'normal' as const },
+        { name: 'Inter', data: fontBold, weight: 700 as const, style: 'normal' as const },
       ],
     }
   );
 
   const png = new Resvg(svg).render().asPng();
 
-  return new Response(png, {
+  return new Response(new Uint8Array(png), {
     headers: {
       'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',

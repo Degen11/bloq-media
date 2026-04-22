@@ -27,6 +27,8 @@ const clients: Client[] = [
           <img
             src={client.logo}
             alt={client.name}
+            loading="lazy"
+            decoding="async"
             class={`${client.logoClass ?? 'max-h-12'} w-auto max-w-full object-contain`}
           />
         </div>

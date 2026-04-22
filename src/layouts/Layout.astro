@@ -20,7 +20,7 @@ const absoluteOgImage = new URL(ogImage, Astro.site).href;
 
 const orgSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  '@type': ['Organization', 'NewsMediaOrganization'],
   name: 'BLOQ Media',
   url: 'https://bloq.media',
   logo: 'https://bloq.media/logo.png',
@@ -34,6 +34,7 @@ const orgSchema = {
     'https://medium.com/@bloqmedia',
   ],
   knowsAbout: ['Blockchain', 'Technology', 'Digital Marketing', 'Content Strategy', 'Fintech', 'Web3'],
+  publishingPrinciples: 'https://bloq.media',
 };
 
 const websiteSchema = {
@@ -102,13 +103,18 @@ const websiteSchema = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    />
+    <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
 
     <!-- Structured data -->
-    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
-    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
   </head>
   <body class="font-sans antialiased text-gray-900 bg-white">
     <slot />

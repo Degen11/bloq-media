@@ -67,10 +67,147 @@ const socials = [
 
     </div>
 
-    <div class="mt-12 pt-8 border-t border-white/10 text-center md:text-left">
+    <div class="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
       <p class="text-gray-500 text-sm">
         &copy; {year} BLOQ Media. All rights reserved.
       </p>
+      <div class="flex items-center gap-6">
+        <button
+          id="open-privacy"
+          class="text-gray-500 hover:text-white text-sm transition-colors duration-200 underline-offset-2 hover:underline"
+        >
+          Privacy Policy
+        </button>
+        <button
+          id="open-terms"
+          class="text-gray-500 hover:text-white text-sm transition-colors duration-200 underline-offset-2 hover:underline"
+        >
+          Terms of Service
+        </button>
+      </div>
     </div>
   </div>
 </footer>
+
+<!-- Privacy Policy Modal -->
+<dialog id="privacy-modal" aria-labelledby="privacy-title" class="modal-dialog">
+  <div class="modal-inner">
+    <div class="modal-header">
+      <h2 id="privacy-title" class="text-xl font-bold text-gray-900">Privacy Policy</h2>
+      <button class="modal-close" aria-label="Close privacy policy">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="text-sm text-gray-500 mb-6">Last updated: April 2026</p>
+
+      <h3>Information We Collect</h3>
+      <p>When you contact us through our website, we collect the information you provide: your name, email address, company name, and message. We also collect anonymous analytics data through Vercel Analytics to understand how visitors use our site.</p>
+
+      <h3>How We Use Your Information</h3>
+      <ul>
+        <li>To respond to your enquiries and provide our services</li>
+        <li>To improve our website and user experience</li>
+        <li>To send relevant information about our services, where you have consented</li>
+      </ul>
+      <p>We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described below.</p>
+
+      <h3>Third-Party Services</h3>
+      <ul>
+        <li><strong>Vercel Analytics</strong>: We use Vercel Analytics to collect anonymous, aggregated usage data. No personally identifiable information is shared with Vercel for analytics purposes.</li>
+        <li><strong>Web3Forms / Resend</strong>: Contact form submissions are processed through these services solely to deliver your message to our team. Your data is not used by these services for any other purpose.</li>
+        <li><strong>Google Fonts</strong>: We load the Inter typeface from Google Fonts. Google may collect limited usage data as part of this service.</li>
+      </ul>
+
+      <h3>Data Retention</h3>
+      <p>We retain contact form submissions for as long as necessary to respond to your enquiry and for legitimate business record-keeping purposes, typically no longer than 2 years.</p>
+
+      <h3>Your Rights</h3>
+      <p>Depending on your jurisdiction, you may have the right to access, correct, delete, or restrict processing of your personal data. To exercise these rights, contact us at <a href="mailto:degen@bloq.media">degen@bloq.media</a>.</p>
+
+      <h3>Cookies</h3>
+      <p>Our website uses minimal, functional cookies required for site operation. Analytics data collected by Vercel Analytics is anonymous and does not use tracking cookies.</p>
+
+      <h3>Governing Law</h3>
+      <p>This Privacy Policy is governed by the laws of Singapore. Any disputes arising from this policy shall be subject to the exclusive jurisdiction of the courts of Singapore.</p>
+
+      <h3>Contact</h3>
+      <p>For any privacy-related questions, please contact us at <a href="mailto:degen@bloq.media">degen@bloq.media</a>.</p>
+    </div>
+  </div>
+</dialog>
+
+<!-- Terms of Service Modal -->
+<dialog id="terms-modal" aria-labelledby="terms-title" class="modal-dialog">
+  <div class="modal-inner">
+    <div class="modal-header">
+      <h2 id="terms-title" class="text-xl font-bold text-gray-900">Terms of Service</h2>
+      <button class="modal-close" aria-label="Close terms of service">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="text-sm text-gray-500 mb-6">Last updated: April 2026</p>
+
+      <h3>Acceptance of Terms</h3>
+      <p>By accessing and using bloq.media, you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website.</p>
+
+      <h3>Services</h3>
+      <p>BLOQ Media provides news reporting, content creation, and digital marketing services specialising in tech and blockchain in Southeast Asia. The information on this website is provided for general informational purposes only.</p>
+
+      <h3>Intellectual Property</h3>
+      <p>All content on this website — including text, graphics, logos, and images — is the property of BLOQ Media and is protected by applicable copyright and intellectual property laws. You may not reproduce, distribute, or create derivative works from our content without prior written permission.</p>
+
+      <h3>User Conduct</h3>
+      <p>You agree not to use our website to:</p>
+      <ul>
+        <li>Transmit any unlawful, harmful, or objectionable content</li>
+        <li>Attempt to gain unauthorised access to any part of our systems</li>
+        <li>Engage in any conduct that could damage, disable, or impair our services</li>
+      </ul>
+
+      <h3>Disclaimer of Warranties</h3>
+      <p>Our website and its content are provided on an "as is" basis without any warranties, express or implied. BLOQ Media does not warrant that the website will be uninterrupted, error-free, or free of viruses or other harmful components.</p>
+
+      <h3>Limitation of Liability</h3>
+      <p>To the fullest extent permitted by law, BLOQ Media shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of, or inability to use, this website or its content.</p>
+
+      <h3>Third-Party Links</h3>
+      <p>Our website may contain links to third-party websites. These links are provided for your convenience only. BLOQ Media has no control over the content of those sites and accepts no responsibility for them.</p>
+
+      <h3>Changes to Terms</h3>
+      <p>We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting. Your continued use of the website constitutes acceptance of the revised terms.</p>
+
+      <h3>Governing Law</h3>
+      <p>These Terms of Service are governed by the laws of Singapore. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts of Singapore.</p>
+
+      <h3>Contact</h3>
+      <p>For any questions about these terms, please contact us at <a href="mailto:degen@bloq.media">degen@bloq.media</a>.</p>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  function openModal(id: string) {
+    (document.getElementById(id) as HTMLDialogElement | null)?.showModal();
+  }
+
+  function bindClose(modalId: string) {
+    const dialog = document.getElementById(modalId) as HTMLDialogElement | null;
+    if (!dialog) return;
+    dialog.querySelector('.modal-close')?.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  }
+
+  document.getElementById('open-privacy')?.addEventListener('click', () => openModal('privacy-modal'));
+  document.getElementById('open-terms')?.addEventListener('click', () => openModal('terms-modal'));
+
+  bindClose('privacy-modal');
+  bindClose('terms-modal');
+</script>

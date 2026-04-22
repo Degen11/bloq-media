@@ -1,6 +1,4 @@
 ---
-const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
-
 const socials = [
   {
     label: 'X / Twitter',
@@ -19,7 +17,8 @@ const socials = [
   },
 ];
 
-const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-bloq-blue focus:border-transparent transition-shadow";
+const inputClass =
+  'w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-bloq-blue focus:border-transparent transition-shadow aria-[invalid=true]:border-red-400 aria-[invalid=true]:ring-red-300';
 ---
 
 <section id="contact" class="py-28 bg-gradient-to-br from-bloq-dark via-bloq-navy to-bloq-navy relative overflow-hidden">
@@ -61,19 +60,18 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
       <!-- Right: form card -->
       <div class="bg-white rounded-2xl p-8 shadow-2xl shadow-black/25">
 
-        <!-- Form -->
         <form id="contact-form" novalidate>
-          <input type="hidden" name="access_key" value={accessKey} />
-          <input type="hidden" name="subject" value="New enquiry — BLOQ Media website" />
-          <input type="hidden" name="from_name" value="BLOQ Media Website" />
-          <input type="hidden" name="cc" value="degen@bloq.media" />
-          <input type="checkbox" name="botcheck" class="hidden" aria-hidden="true" />
+          <!-- Honeypot: hidden from humans, bots fill it in -->
+          <div class="honeypot" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
 
           <div class="flex flex-col gap-5">
             <div class="grid sm:grid-cols-2 gap-5">
               <div>
                 <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">
-                  Name <span class="text-bloq-blue">*</span>
+                  Name <span class="text-bloq-blue" aria-hidden="true">*</span>
                 </label>
                 <input
                   type="text"
@@ -82,12 +80,15 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
                   required
                   autocomplete="name"
                   placeholder="Jane Smith"
+                  aria-required="true"
+                  aria-describedby="name-error"
                   class={inputClass}
                 />
+                <div id="name-error" class="hidden mt-1 text-red-600 text-xs" role="alert"></div>
               </div>
               <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">
-                  Email <span class="text-bloq-blue">*</span>
+                  Email <span class="text-bloq-blue" aria-hidden="true">*</span>
                 </label>
                 <input
                   type="email"
@@ -96,8 +97,11 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
                   required
                   autocomplete="email"
                   placeholder="jane@company.com"
+                  aria-required="true"
+                  aria-describedby="email-error"
                   class={inputClass}
                 />
+                <div id="email-error" class="hidden mt-1 text-red-600 text-xs" role="alert"></div>
               </div>
             </div>
 
@@ -117,7 +121,7 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
 
             <div>
               <label for="message" class="block text-sm font-medium text-gray-700 mb-1.5">
-                Message <span class="text-bloq-blue">*</span>
+                Message <span class="text-bloq-blue" aria-hidden="true">*</span>
               </label>
               <textarea
                 id="message"
@@ -125,8 +129,11 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
                 required
                 rows="5"
                 placeholder="Tell us about your project or what you're looking for…"
+                aria-required="true"
+                aria-describedby="message-error"
                 class={`${inputClass} resize-none`}
               ></textarea>
+              <div id="message-error" class="hidden mt-1 text-red-600 text-xs" role="alert"></div>
             </div>
 
             <button
@@ -135,26 +142,25 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
               class="w-full bg-bloq-navy text-white py-3.5 rounded-xl font-semibold text-sm hover:bg-bloq-dark transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <span id="btn-label">Send Message</span>
-              <svg id="btn-arrow" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg id="btn-arrow" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
-              <svg id="btn-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <svg id="btn-spinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
               </svg>
             </button>
           </div>
 
-          <!-- Inline error -->
-          <div id="form-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+          <div id="form-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm" role="alert">
             Something went wrong. Please try again or reach us directly on social media.
           </div>
         </form>
 
         <!-- Success state (replaces form) -->
-        <div id="form-success" class="hidden py-6 text-center">
+        <div id="form-success" class="hidden py-6 text-center" role="status">
           <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-5">
-            <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -168,6 +174,8 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
 </section>
 
 <script>
+  import { track } from '@vercel/analytics';
+
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
   const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
   const btnLabel = document.getElementById('btn-label');
@@ -184,21 +192,62 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
     btnSpinner?.classList.toggle('hidden', !loading);
   }
 
+  function setFieldError(name: string, message: string) {
+    const input = form?.elements.namedItem(name) as HTMLElement | null;
+    const errorEl = document.getElementById(`${name}-error`);
+    input?.setAttribute('aria-invalid', 'true');
+    if (errorEl) {
+      errorEl.textContent = message;
+      errorEl.classList.remove('hidden');
+    }
+  }
+
+  function clearFieldError(name: string) {
+    const input = form?.elements.namedItem(name) as HTMLElement | null;
+    const errorEl = document.getElementById(`${name}-error`);
+    input?.removeAttribute('aria-invalid');
+    if (errorEl) {
+      errorEl.textContent = '';
+      errorEl.classList.add('hidden');
+    }
+  }
+
+  // Clear field error on user input
+  (['name', 'email', 'message'] as const).forEach((field) => {
+    const el = form?.elements.namedItem(field) as HTMLElement | null;
+    el?.addEventListener('input', () => clearFieldError(field));
+  });
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
 
+    // Clear all errors
+    (['name', 'email', 'message'] as const).forEach(clearFieldError);
     formError?.classList.add('hidden');
+
+    // Validate
+    const name = (form.elements.namedItem('name') as HTMLInputElement).value.trim();
+    const email = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
+    const message = (form.elements.namedItem('message') as HTMLTextAreaElement).value.trim();
+    const company = (form.elements.namedItem('company') as HTMLInputElement).value.trim();
+    const website = (form.elements.namedItem('website') as HTMLInputElement).value;
+
+    let hasErrors = false;
+    if (!name) { setFieldError('name', 'Name is required.'); hasErrors = true; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setFieldError('email', 'A valid email address is required.');
+      hasErrors = true;
+    }
+    if (!message) { setFieldError('message', 'Message is required.'); hasErrors = true; }
+    if (hasErrors) return;
+
     setLoading(true);
 
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        body: JSON.stringify({ name, email, company, message, website }),
       });
 
       const data = await res.json();
@@ -206,6 +255,7 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
       if (data.success) {
         form.classList.add('hidden');
         formSuccess?.classList.remove('hidden');
+        track('contact_form_submitted');
       } else {
         throw new Error(data.message ?? 'Submission failed');
       }
