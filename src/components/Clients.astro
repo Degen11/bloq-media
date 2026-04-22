@@ -2,11 +2,12 @@
 interface Client {
   name: string;
   logo: string;
+  logoClass?: string;
 }
 
 const clients: Client[] = [
   { name: 'Blockchain Space', logo: '/blockchainspace-logo.jpg' },
-  { name: 'CBR Media', logo: '/CBR Media.jpg' },
+  { name: 'CBR Media', logo: '/CBR Media.jpg', logoClass: 'max-h-16' },
   { name: 'MeeOpp', logo: '/MeeOpp.png' },
   { name: 'zCloak Network', logo: '/zCloak_Network_Logo.png' },
 ];
@@ -26,7 +27,7 @@ const clients: Client[] = [
           <img
             src={client.logo}
             alt={client.name}
-            class="max-h-12 w-auto max-w-full object-contain"
+            class={`${client.logoClass ?? 'max-h-12'} w-auto max-w-full object-contain`}
           />
         </div>
       ))}
