@@ -1,4 +1,6 @@
 ---
+import Analytics from '@vercel/analytics/astro';
+
 interface Props {
   title?: string;
   description?: string;
@@ -109,5 +111,6 @@ const websiteSchema = {
   </head>
   <body class="font-sans antialiased text-gray-900 bg-white">
     <slot />
+    <Analytics />
   </body>
 </html>
