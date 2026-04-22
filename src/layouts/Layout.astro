@@ -2,12 +2,52 @@
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
   title = 'BLOQ Media | Shaping Tech Narratives in Southeast Asia',
-  description = 'BLOQ Media is a news organization and digital marketing agency specializing in tech and blockchain in Southeast Asia.',
+  description =
+    'BLOQ Media is a news organization and digital marketing agency specializing in tech and blockchain in Southeast Asia. We craft authoritative reporting, strategic content, and digital marketing for the region\'s most innovative companies.',
+  ogImage = '/og-image.png',
 } = Astro.props;
+
+const canonicalURL = Astro.url.href;
+const absoluteOgImage = new URL(ogImage, Astro.site).href;
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'BLOQ Media',
+  url: 'https://bloq.media',
+  logo: 'https://bloq.media/logo.png',
+  description:
+    'BLOQ Media is a news organization and digital marketing agency specializing in tech and blockchain in Southeast Asia.',
+  email: 'degen@bloq.media',
+  areaServed: 'Southeast Asia',
+  sameAs: [
+    'https://x.com/_BLOQMedia',
+    'https://www.linkedin.com/company/bloq-media/',
+    'https://medium.com/@bloqmedia',
+  ],
+  knowsAbout: ['Blockchain', 'Technology', 'Digital Marketing', 'Content Strategy', 'Fintech', 'Web3'],
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'BLOQ Media',
+  url: 'https://bloq.media',
+  description: 'News organization and digital marketing agency for tech and blockchain in Southeast Asia',
+  publisher: {
+    '@type': 'Organization',
+    name: 'BLOQ Media',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://bloq.media/logo.png',
+    },
+  },
+};
 ---
 
 <!doctype html>
@@ -15,15 +55,57 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1A3C8F" />
+
+    <!-- Primary meta -->
     <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+    <meta name="author" content="BLOQ Media" />
+    <meta name="keywords" content="blockchain, Southeast Asia, tech media, digital marketing, fintech, Web3, content strategy, Singapore, Thailand, Philippines" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="BLOQ Media" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={absoluteOgImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="BLOQ Media — Shaping Tech Narratives in Southeast Asia" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@_BLOQMedia" />
+    <meta name="twitter:creator" content="@_BLOQMedia" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteOgImage} />
+    <meta name="twitter:image:alt" content="BLOQ Media — Shaping Tech Narratives in Southeast Asia" />
+
+    <!-- Favicons -->
     <link rel="icon" type="image/png" href="/logo-icon.png" />
+    <link rel="apple-touch-icon" href="/logo-icon.png" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Structured data -->
+    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
   </head>
   <body class="font-sans antialiased text-gray-900 bg-white">
     <slot />
