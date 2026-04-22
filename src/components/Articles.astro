@@ -1,0 +1,79 @@
+---
+interface Article {
+  title: string;
+  description: string;
+  url: string;
+  tag: string;
+}
+
+const articles: Article[] = [
+  {
+    title: 'Money 20/20 Asia Lands in Bangkok: A Look at Fintech\'s Thriving Asian Landscape',
+    description:
+      'Fintech meets Southeast Asia\'s fastest-growing market. A firsthand look at the key themes, innovations, and players emerging from Money 20/20\'s inaugural Bangkok edition.',
+    url: 'https://medium.com/@bloqmedia/money-20-20-asia-lands-in-bangkok-a-look-at-fintechs-thriving-asian-landscape-ee9b9f94c71b',
+    tag: 'Fintech',
+  },
+  {
+    title: 'Southeast Asia Blockchain Week: A Catalyst for Web3 Innovation in the Region',
+    description:
+      "Southeast Asia's blockchain scene is heating up. We explore how SEABW is connecting builders, investors, and policymakers to accelerate Web3 adoption across the region.",
+    url: 'https://medium.com/@bloqmedia/southeast-asia-blockchain-week-a-catalyst-for-web3-innovation-in-the-region-15c78e118682',
+    tag: 'Blockchain',
+  },
+];
+---
+
+<section id="articles" class="py-28 bg-white">
+  <div class="max-w-7xl mx-auto px-6">
+
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+      <div>
+        <p class="text-bloq-blue text-sm font-semibold uppercase tracking-widest mb-4">Latest Work</p>
+        <h2 class="text-4xl md:text-5xl font-bold text-gray-900">From the Newsroom</h2>
+      </div>
+      <a
+        href="https://medium.com/@bloqmedia"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 text-bloq-navy font-semibold text-sm hover:text-bloq-blue transition-colors shrink-0"
+      >
+        All articles on Medium
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      {articles.map((article) => (
+        <a
+          href={article.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group flex flex-col p-8 rounded-2xl border border-gray-100 hover:border-bloq-blue/30 hover:shadow-xl hover:shadow-bloq-navy/8 transition-all duration-300"
+        >
+          <span class="inline-flex items-center self-start bg-bloq-blue/10 text-bloq-navy text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full mb-5">
+            {article.tag}
+          </span>
+          <h3 class="text-xl font-bold text-gray-900 leading-snug mb-4 group-hover:text-bloq-navy transition-colors">
+            {article.title}
+          </h3>
+          <p class="text-gray-500 text-sm leading-relaxed flex-1">
+            {article.description}
+          </p>
+          <div class="mt-6 inline-flex items-center gap-2 text-bloq-navy font-semibold text-sm group-hover:text-bloq-blue transition-colors">
+            <svg class="w-4 h-4 opacity-60" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2.846 6.887c.03-.295-.083-.586-.303-.784l-2.24-2.7v-.403H7.26l5.378 11.795 4.728-11.795H24v.403l-1.917 1.837c-.165.126-.247.333-.213.538v13.498c-.034.204.048.411.213.537l1.87 1.837v.403h-9.41v-.403l1.937-1.88c.19-.19.19-.246.19-.537V8.608l-5.39 13.688h-.727L4.278 8.608v9.174c-.052.385.076.774.347 1.052l2.521 3.058v.404H0v-.404l2.521-3.058c.27-.279.39-.67.325-1.052V6.887z"/>
+            </svg>
+            Read on Medium
+            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+
+  </div>
+</section>
