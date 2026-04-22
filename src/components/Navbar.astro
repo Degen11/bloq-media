@@ -1,0 +1,66 @@
+---
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-bloq-navy shadow-lg">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="/" aria-label="BLOQ Media Home">
+      <img src="/logo.png" alt="BLOQ Media" class="h-9 w-auto" />
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8">
+      <a href="#about" class="text-white/75 hover:text-white text-sm font-medium transition-colors duration-200">About</a>
+      <a href="#why" class="text-white/75 hover:text-white text-sm font-medium transition-colors duration-200">Why BLOQ</a>
+      <a href="#services" class="text-white/75 hover:text-white text-sm font-medium transition-colors duration-200">Services</a>
+      <a href="#clients" class="text-white/75 hover:text-white text-sm font-medium transition-colors duration-200">Clients</a>
+      <a
+        href="mailto:degen@bloq.media"
+        class="bg-bloq-blue text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-opacity-90 transition-all duration-200"
+      >
+        Contact Us
+      </a>
+    </nav>
+
+    <button id="menu-toggle" class="md:hidden text-white p-1" aria-label="Toggle menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path id="icon-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        <path id="icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <div id="mobile-menu" class="hidden md:hidden border-t border-white/10">
+    <div class="px-6 py-5 flex flex-col gap-5">
+      <a href="#about" class="text-white/80 hover:text-white text-sm font-medium">About</a>
+      <a href="#why" class="text-white/80 hover:text-white text-sm font-medium">Why BLOQ</a>
+      <a href="#services" class="text-white/80 hover:text-white text-sm font-medium">Services</a>
+      <a href="#clients" class="text-white/80 hover:text-white text-sm font-medium">Clients</a>
+      <a
+        href="mailto:degen@bloq.media"
+        class="bg-bloq-blue text-white px-5 py-3 rounded-lg text-sm font-semibold text-center"
+      >
+        Contact Us
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const iconOpen = document.getElementById('icon-open');
+  const iconClose = document.getElementById('icon-close');
+
+  toggle?.addEventListener('click', () => {
+    const isHidden = menu?.classList.toggle('hidden');
+    iconOpen?.classList.toggle('hidden', !isHidden);
+    iconClose?.classList.toggle('hidden', isHidden);
+  });
+
+  menu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      iconOpen?.classList.remove('hidden');
+      iconClose?.classList.add('hidden');
+    });
+  });
+</script>
