@@ -1,4 +1,6 @@
 ---
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+
 const socials = [
   {
     label: 'X / Twitter',
@@ -61,6 +63,11 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
 
         <!-- Form -->
         <form id="contact-form" novalidate>
+          <input type="hidden" name="access_key" value={accessKey} />
+          <input type="hidden" name="subject" value="New enquiry — BLOQ Media website" />
+          <input type="hidden" name="from_name" value="BLOQ Media Website" />
+          <input type="hidden" name="cc" value="degen@bloq.media" />
+          <input type="checkbox" name="botcheck" class="hidden" aria-hidden="true" />
 
           <div class="flex flex-col gap-5">
             <div class="grid sm:grid-cols-2 gap-5">
@@ -187,19 +194,11 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
     formError?.classList.add('hidden');
     setLoading(true);
 
-    const fd = new FormData(form);
-    const body = {
-      name: fd.get('name'),
-      email: fd.get('email'),
-      company: fd.get('company'),
-      message: fd.get('message'),
-    };
-
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
       });
 
       const data = await res.json();
@@ -208,7 +207,7 @@ const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-xl text-gray
         form.classList.add('hidden');
         formSuccess?.classList.remove('hidden');
       } else {
-        throw new Error('Submission failed');
+        throw new Error(data.message ?? 'Submission failed');
       }
     } catch {
       formError?.classList.remove('hidden');
