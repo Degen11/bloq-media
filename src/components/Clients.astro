@@ -1,6 +1,15 @@
 ---
-// Replace these placeholders with actual client logo imports once available
-const clientSlots = Array.from({ length: 6 }, (_, i) => i + 1);
+interface Client {
+  name: string;
+  logo: string;
+}
+
+const clients: Client[] = [
+  { name: 'Blockchain Space', logo: '/blockchainspace-logo.jpg' },
+  { name: 'CBR Media', logo: '/CBR Media.jpg' },
+  { name: 'MeeOpp', logo: '/MeeOpp.png' },
+  { name: 'zCloak Network', logo: '/zCloak_Network_Logo.png' },
+];
 ---
 
 <section id="clients" class="py-24 bg-gray-50">
@@ -11,10 +20,15 @@ const clientSlots = Array.from({ length: 6 }, (_, i) => i + 1);
       <h2 class="text-4xl md:text-5xl font-bold text-gray-900">Clients We've Worked With</h2>
     </div>
 
-    <!-- Replace each placeholder div with <img src="/clients/logo-name.png" alt="Client Name" class="h-10 w-auto object-contain opacity-60 hover:opacity-100 transition-opacity" /> -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center">
-      {clientSlots.map(() => (
-        <div class="h-16 bg-gray-200/60 rounded-xl animate-pulse"></div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
+      {clients.map((client) => (
+        <div class="bg-white rounded-2xl border border-gray-100 p-6 flex items-center justify-center h-28 hover:shadow-md hover:border-gray-200 transition-all duration-300">
+          <img
+            src={client.logo}
+            alt={client.name}
+            class="max-h-12 w-auto max-w-full object-contain"
+          />
+        </div>
       ))}
     </div>
 
