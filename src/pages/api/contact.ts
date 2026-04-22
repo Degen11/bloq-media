@@ -1,5 +1,4 @@
 import type { APIRoute } from 'astro';
-import { Resend } from 'resend';
 
 // Per-IP rate limiting — survives within a warm serverless instance
 const rateLimitMap = new Map<string, number>();
@@ -55,62 +54,31 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  const ok = { status: 200, headers: { 'Content-Type': 'application/json' } };
-  const err = { status: 500, headers: { 'Content-Type': 'application/json' } };
-
-  // Primary: Web3Forms
   const w3Key = import.meta.env.PUBLIC_WEB3FORMS_KEY;
-  if (w3Key) {
-    try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: w3Key,
-          subject: 'New enquiry — BLOQ Media website',
-          from_name: 'BLOQ Media Website',
-          cc: 'degen@bloq.media',
-          name,
-          email,
-          company: company ?? '',
-          message,
-        }),
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: w3Key,
+        subject: 'New enquiry — BLOQ Media website',
+        from_name: 'BLOQ Media Website',
+        cc: 'degen@bloq.media',
+        name,
+        email,
+        company: company ?? '',
+        message,
+      }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
       });
-      const data = await res.json();
-      if (data.success) {
-        return new Response(JSON.stringify({ success: true }), ok);
-      }
-    } catch {
-      // fall through to Resend
     }
-  }
-
-  // Fallback: Resend
-  const resendKey = import.meta.env.RESEND_API_KEY;
-  if (resendKey) {
-    try {
-      const resend = new Resend(resendKey);
-      const { error } = await resend.emails.send({
-        from: 'BLOQ Media Website <noreply@bloq.media>',
-        to: ['degen@bloq.media'],
-        replyTo: email,
-        subject: `New enquiry from ${name}`,
-        text: [
-          `Name: ${name}`,
-          `Email: ${email}`,
-          company ? `Company: ${company}` : '',
-          '',
-          `Message:\n${message}`,
-        ]
-          .filter(Boolean)
-          .join('\n'),
-      });
-      if (!error) {
-        return new Response(JSON.stringify({ success: true }), ok);
-      }
-    } catch {
-      // fall through
-    }
+  } catch {
+    // fall through
   }
 
   return new Response(
@@ -118,6 +86,6 @@ export const POST: APIRoute = async ({ request }) => {
       success: false,
       message: 'Unable to send your message right now. Please reach us on social media.',
     }),
-    err
+    { status: 500, headers: { 'Content-Type': 'application/json' } }
   );
 };
