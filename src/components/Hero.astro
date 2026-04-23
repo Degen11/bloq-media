@@ -58,7 +58,7 @@
   import * as d3 from 'd3';
   import { feature } from 'topojson-client';
   // @ts-ignore — world-atlas ships plain JSON, no type declarations needed
-  import worldData from 'world-atlas/countries-110m.json';
+  import worldData from 'world-atlas/countries-50m.json';
 
   // ISO 3166-1 numeric codes for Southeast Asian countries
   const SEA_IDS = new Set([96, 104, 116, 360, 418, 458, 608, 626, 702, 704, 764]);
@@ -122,13 +122,13 @@
     cityG.append('circle')
       .attr('cx', x).attr('cy', y).attr('r', 6)
       .attr('fill', 'none')
-      .attr('stroke', 'rgba(41,171,226,0.35)')
+      .attr('stroke', 'rgba(255,255,255,0.35)')
       .attr('stroke-width', 1);
 
     // Solid dot
     cityG.append('circle')
       .attr('cx', x).attr('cy', y).attr('r', 2.5)
-      .attr('fill', '#29ABE2')
+      .attr('fill', 'white')
       .attr('filter', 'url(#map-glow)');
   });
 
