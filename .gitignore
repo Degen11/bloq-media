@@ -1,7 +1,26 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
 .astro/
 .vercel/
+
+# Environment
 .env
 .env.*
 !.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Test / coverage
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
