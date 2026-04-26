@@ -33,7 +33,7 @@ const reasons: Reason[] = [
 <section id="why" class="py-28 bg-gray-50">
   <div class="max-w-7xl mx-auto px-6">
 
-    <div class="text-center max-w-3xl mx-auto mb-16">
+    <div data-animate class="text-center max-w-3xl mx-auto mb-16">
       <p class="text-bloq-blue text-sm font-semibold uppercase tracking-widest mb-4">Why Choose Us</p>
       <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Why BLOQ Media?</h2>
       <p class="text-lg text-gray-500 leading-relaxed">
@@ -43,8 +43,12 @@ const reasons: Reason[] = [
     </div>
 
     <div class="grid md:grid-cols-3 gap-8">
-      {reasons.map((reason) => (
-        <div class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl hover:shadow-bloq-navy/8 border border-gray-100 hover:border-bloq-blue/20 transition-all duration-300 group">
+      {reasons.map((reason, i) => (
+        <div
+          data-animate
+          style={i > 0 ? `transition-delay: ${i * 100}ms` : undefined}
+          class="bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl hover:shadow-bloq-navy/8 border border-gray-100 hover:border-bloq-blue/20 transition-all duration-300 group"
+        >
           <div class="w-14 h-14 bg-bloq-navy rounded-xl flex items-center justify-center text-white mb-6 group-hover:bg-bloq-blue transition-colors duration-300">
             <Fragment set:html={reason.icon} />
           </div>
