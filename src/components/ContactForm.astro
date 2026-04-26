@@ -31,7 +31,7 @@ const inputClass =
     <div class="grid lg:grid-cols-2 gap-16 items-start">
 
       <!-- Left: copy + contact details -->
-      <div class="lg:pt-6">
+      <div data-animate class="lg:pt-6">
         <p class="text-bloq-blue text-sm font-semibold uppercase tracking-widest mb-4">Get in Touch</p>
         <h2 class="text-4xl md:text-5xl font-bold text-white leading-tight mb-6">
           Ready to make an impact?
@@ -58,7 +58,7 @@ const inputClass =
       </div>
 
       <!-- Right: form card -->
-      <div class="bg-white rounded-2xl p-8 shadow-2xl shadow-black/25">
+      <div data-animate style="transition-delay: 100ms" class="bg-white rounded-2xl p-8 shadow-2xl shadow-black/25">
 
         <form id="contact-form" novalidate>
           <!-- Honeypot: hidden from humans, bots fill it in -->
@@ -139,7 +139,7 @@ const inputClass =
             <button
               type="submit"
               id="submit-btn"
-              class="w-full bg-bloq-navy text-white py-3.5 rounded-xl font-semibold text-sm hover:bg-bloq-dark transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              class="w-full bg-bloq-navy text-white py-3.5 rounded-xl font-semibold text-sm hover:bg-bloq-dark active:scale-[0.97] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <span id="btn-label">Send Message</span>
               <svg id="btn-arrow" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -199,6 +199,13 @@ const inputClass =
     if (errorEl) {
       errorEl.textContent = message;
       errorEl.classList.remove('hidden');
+    }
+    // Trigger shake — remove first to allow re-trigger on repeated submit
+    if (input) {
+      input.classList.remove('field-shake');
+      void (input as HTMLElement).offsetWidth; // force reflow so animation restarts
+      input.classList.add('field-shake');
+      input.addEventListener('animationend', () => input.classList.remove('field-shake'), { once: true });
     }
   }
 

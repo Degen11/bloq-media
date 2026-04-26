@@ -43,6 +43,25 @@ Tailwind CSS v4 is loaded via `@tailwindcss/vite` (no `tailwind.config.*` file).
 
 `global.css` also contains the `.honeypot`, `.modal-dialog`, `.modal-inner`, `.modal-header`, `.modal-close`, and `.modal-body` utility classes used by the contact form and any service-detail modals.
 
+It also houses the UI enhancement utilities added for polish:
+
+| Class / selector | Purpose |
+|---|---|
+| `html.js-ready [data-animate]` | Initial hidden state for scroll-triggered elements (`opacity: 0; transform: translateY(16px)`) |
+| `html.js-ready [data-animate].is-visible` | Visible state applied by `IntersectionObserver` in `Layout.astro` |
+| `#site-header` | Smooth `box-shadow` transition for scroll-aware navbar |
+| `#site-header.header-scrolled` | Shadow applied after 10 px of scroll; toggled by `Navbar.astro` script |
+| `.field-shake` | `@keyframes field-shake` animation applied to invalid form fields on submit |
+
+### Scroll-triggered entrance animations
+
+`Layout.astro` contains an `IntersectionObserver` (`<script>` before `</body>`) that adds `is-visible` to every `[data-animate]` element as it enters the viewport. A `js-ready` class on `<html>` (set by an `is:inline` script in `<head>`) gates the hidden state so content is always visible when JS is disabled. Stagger delays are set via inline `style="transition-delay: Nms"` on individual items inside loops; the observer clears each delay after 1 s so hover transitions on cards are not affected.
+
+### Navbar behaviour
+
+- **Scroll-aware shadow:** The `#site-header` starts borderless-shadow; the `header-scrolled` class adds a soft `box-shadow` after 10 px of scroll. Toggled by a passive `scroll` listener in `Navbar.astro`.
+- **Mobile menu animation:** The mobile menu uses a `max-height` + `opacity` CSS transition (set inline on the element) instead of `display:none` toggling, giving a smooth slide open/close on tap.
+
 ### Server routes
 
 | Route | Purpose |

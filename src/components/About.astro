@@ -34,7 +34,7 @@ const pillars: Pillar[] = [
   <div class="max-w-7xl mx-auto px-6">
     <div class="grid lg:grid-cols-2 gap-16 items-center">
 
-      <div>
+      <div data-animate>
         <p class="text-bloq-blue text-sm font-semibold uppercase tracking-widest mb-4">About BLOQ Media</p>
         <h2 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
           The news org and content studio for Southeast Asia's tech scene.
@@ -45,8 +45,12 @@ const pillars: Pillar[] = [
       </div>
 
       <div class="flex flex-col gap-5">
-        {pillars.map((pillar) => (
-          <div class="group flex gap-5 p-6 rounded-2xl border border-gray-100 hover:border-bloq-blue/30 hover:shadow-lg hover:shadow-bloq-navy/5 transition-all duration-300">
+        {pillars.map((pillar, i) => (
+          <div
+            data-animate
+            style={i > 0 ? `transition-delay: ${i * 100}ms` : undefined}
+            class="group flex gap-5 p-6 rounded-2xl border border-gray-100 hover:border-bloq-blue/30 hover:shadow-lg hover:shadow-bloq-navy/5 transition-all duration-300"
+          >
             <div class="flex-shrink-0 w-11 h-11 bg-bloq-navy/8 group-hover:bg-bloq-navy rounded-xl flex items-center justify-center text-bloq-navy group-hover:text-white transition-all duration-300">
               <Fragment set:html={pillar.icon} />
             </div>

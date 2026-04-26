@@ -27,7 +27,7 @@ const articles: Article[] = [
 <section id="articles" class="py-28 bg-white">
   <div class="max-w-7xl mx-auto px-6">
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
+    <div data-animate class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
       <div>
         <p class="text-bloq-blue text-sm font-semibold uppercase tracking-widest mb-4">Latest Work</p>
         <h2 class="text-4xl md:text-5xl font-bold text-gray-900">From the Newsroom</h2>
@@ -46,11 +46,13 @@ const articles: Article[] = [
     </div>
 
     <div class="grid md:grid-cols-2 gap-8">
-      {articles.map((article) => (
+      {articles.map((article, i) => (
         <a
           href={article.url}
           target="_blank"
           rel="noopener noreferrer"
+          data-animate
+          style={i > 0 ? `transition-delay: ${i * 100}ms` : undefined}
           class="group flex flex-col p-8 rounded-2xl border border-gray-100 hover:border-bloq-blue/30 hover:shadow-xl hover:shadow-bloq-navy/8 transition-all duration-300"
         >
           <span class="inline-flex items-center self-start bg-bloq-blue/10 text-bloq-navy text-xs font-semibold uppercase tracking-wide px-3 py-1 rounded-full mb-5">

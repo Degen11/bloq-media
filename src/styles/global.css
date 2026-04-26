@@ -108,3 +108,52 @@
 .modal-body a:hover {
   color: #29ABE2;
 }
+
+/* ─── Scroll-triggered entrance animations ──────────────────────────────── */
+/*
+  Elements gain [data-animate] in markup. JS adds `is-visible` via
+  IntersectionObserver, triggering the fade-up transition.
+  The `js-ready` class on <html> gates the hidden state so content is
+  fully visible when JS is disabled or hasn't run yet.
+*/
+html.js-ready [data-animate] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+html.js-ready [data-animate].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js-ready [data-animate],
+  html.js-ready [data-animate].is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ─── Navbar scroll-aware shadow ────────────────────────────────────────── */
+#site-header {
+  transition: box-shadow 0.3s ease;
+}
+
+#site-header.header-scrolled {
+  box-shadow: 0 2px 20px -2px rgb(0 0 0 / 0.1);
+}
+
+/* ─── Form field shake on validation failure ────────────────────────────── */
+@keyframes field-shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+.field-shake {
+  animation: field-shake 0.4s ease;
+}
