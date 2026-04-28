@@ -157,3 +157,13 @@ html.js-ready [data-animate].is-visible {
 .field-shake {
   animation: field-shake 0.4s ease;
 }
+
+/* ─── Scroll-spy active nav link ─────────────────────────────────────────── */
+/*
+  Applied by Navbar.astro's scroll listener. Unlayered so it overrides the
+  Tailwind utility classes (which live in @layer utilities) without !important.
+*/
+.nav-active {
+  color: var(--color-bloq-navy);
+  font-weight: 600;
+}
