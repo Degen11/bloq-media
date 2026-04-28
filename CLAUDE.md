@@ -52,6 +52,7 @@ It also houses the UI enhancement utilities added for polish:
 | `#site-header` | Smooth `box-shadow` transition for scroll-aware navbar |
 | `#site-header.header-scrolled` | Shadow applied after 10 px of scroll; toggled by `Navbar.astro` script |
 | `.field-shake` | `@keyframes field-shake` animation applied to invalid form fields on submit |
+| `.nav-active` | Applied by scroll-spy in `Navbar.astro` to highlight the link for the currently visible section; unlayered so it beats Tailwind utility colours without `!important` |
 
 ### Scroll-triggered entrance animations
 
@@ -61,6 +62,7 @@ It also houses the UI enhancement utilities added for polish:
 
 - **Scroll-aware shadow:** The `#site-header` starts borderless-shadow; the `header-scrolled` class adds a soft `box-shadow` after 10 px of scroll. Toggled by a passive `scroll` listener in `Navbar.astro`.
 - **Mobile menu animation:** The mobile menu uses a `max-height` + `opacity` CSS transition (set inline on the element) instead of `display:none` toggling, giving a smooth slide open/close on tap.
+- **Scroll-spy:** The same passive `scroll` listener also runs `updateScrollSpy()`, which walks `['about', 'why', 'services', 'clients', 'contact']` from top to bottom and applies `.nav-active` to whichever `[data-section]` link matches the last section whose top edge has crossed the navbar bottom (plus a 32 px buffer). The "Contact Us" CTA button intentionally has no `data-section` attribute so it is excluded. `updateScrollSpy()` also fires once on page load to handle deep-links.
 
 ### Server routes
 
@@ -72,6 +74,12 @@ It also houses the UI enhancement utilities added for polish:
 ### Contact form flow
 
 `ContactForm.astro` handles client-side validation and submission entirely in its own `<script>` block. It posts JSON to `/api/contact`, shows a spinner during submission, and swaps the form out for a success state on `{ success: true }`. It also fires a Vercel Analytics `track('contact_form_submitted')` event on success. The honeypot field (`name="website"`) is CSS-hidden (`.honeypot` class) rather than `display:none` so bots still fill it; the API silently returns 200 when it's non-empty.
+
+The left column also shows `hello@bloq.media` as a `mailto:` link alongside a **click-to-copy** button (`#copy-email-btn`). Clicking it calls `navigator.clipboard.writeText('hello@bloq.media')`, swaps the clipboard icon for a green checkmark for 2 s, then reverts. If the Clipboard API is unavailable the handler falls back to `window.location.href = 'mailto:hello@bloq.media'`.
+
+### Hero map
+
+`Hero.astro` renders an interactive D3 Mercator map of Southeast Asia. City markers (Singapore, Bangkok, Jakarta, Manila, Ho Chi Minh, Kuala Lumpur, Yangon) now have an invisible 14 px hit-target circle on top. `mouseenter` positions and reveals a glass-style `#map-tooltip` div using the marker's D3-projected coordinates scaled by `svgEl.clientWidth / width` to stay accurate after any CSS resizing. `mouseleave` hides it. The tooltip is `pointer-events-none` and `aria-hidden="true"`. The map container div has `relative` positioning to contain the absolutely-positioned tooltip.
 
 ### Tests
 
