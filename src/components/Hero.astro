@@ -39,13 +39,20 @@
         </div>
       </div>
 
-      <div class="hidden lg:flex items-center justify-center">
+      <div class="hidden lg:flex items-center justify-center relative">
         <svg
           id="sea-map"
           class="w-full opacity-0 transition-opacity duration-1000"
           style="height: 520px;"
           aria-hidden="true"
         ></svg>
+        <!-- City tooltip — shown on marker hover, positioned via JS -->
+        <div
+          id="map-tooltip"
+          class="px-3 py-1.5 bg-black/50 backdrop-blur-sm border border-white/20 rounded-lg text-white text-xs font-semibold whitespace-nowrap pointer-events-none z-10"
+          style="display:none; position:absolute; transform:translateX(-50%) translateY(calc(-100% - 10px));"
+          aria-hidden="true"
+        ></div>
       </div>
 
     </div>
@@ -115,6 +122,8 @@
   ];
 
   const cityG = svg.append('g');
+  const tooltip = document.getElementById('map-tooltip') as HTMLElement | null;
+
   cities.forEach(({ name, coords }) => {
     const [x, y] = projection(coords) ?? [0, 0];
 
@@ -130,6 +139,25 @@
       .attr('cx', x).attr('cy', y).attr('r', 2.5)
       .attr('fill', 'white')
       .attr('filter', 'url(#map-glow)');
+
+    // Invisible hit target — larger radius makes the marker easy to hover
+    if (tooltip) {
+      cityG.append('circle')
+        .attr('cx', x).attr('cy', y).attr('r', 14)
+        .attr('fill', 'transparent')
+        .style('cursor', 'default')
+        .on('mouseenter', () => {
+          // Scale projected coords to current rendered SVG size (handles any CSS scaling)
+          const scale = svgEl.clientWidth / width;
+          tooltip.style.left = `${x * scale}px`;
+          tooltip.style.top = `${y * scale}px`;
+          tooltip.style.display = '';
+          tooltip.textContent = name;
+        })
+        .on('mouseleave', () => {
+          tooltip.style.display = 'none';
+        });
+    }
   });
 
   // Fade in once rendered
