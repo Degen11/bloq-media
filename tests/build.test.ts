@@ -14,7 +14,8 @@ const vcConfig = resolve(root, '.vercel/output/functions/_render.func/.vc-config
 const hasBuild = existsSync(vcConfig);
 
 describe.skipIf(!hasBuild)('Vercel build output', () => {
-  const config = JSON.parse(readFileSync(vcConfig, 'utf8'));
+  // Lazy read so the describe callback doesn't throw when hasBuild is false.
+  const config = hasBuild ? JSON.parse(readFileSync(vcConfig, 'utf8')) : {};
 
   it('runtime is NOT nodejs18.x (the original bug)', () => {
     expect(config.runtime).not.toBe('nodejs18.x');
