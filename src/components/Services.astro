@@ -55,10 +55,10 @@ const services: Service[] = [
           <p class="text-gray-500 leading-relaxed text-sm flex-1">{service.description}</p>
           <a
             href="#contact"
-            class="mt-6 inline-flex items-center text-bloq-navy font-semibold text-sm hover:text-bloq-blue transition-colors"
+            class="group/cta mt-6 inline-flex items-center text-bloq-navy font-semibold text-sm hover:text-bloq-blue transition-colors"
           >
-            Get in touch
-            <svg class="ml-1.5 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span class="group-hover/cta:underline underline-offset-4 decoration-2">Get in touch</span>
+            <svg class="ml-1.5 w-4 h-4 transition-transform duration-200 group-hover/cta:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </a>
