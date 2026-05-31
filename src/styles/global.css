@@ -158,6 +158,47 @@ html.js-ready [data-animate].is-visible {
   animation: field-shake 0.4s ease;
 }
 
+/* ─── Click-to-copy email icon crossfade ────────────────────────────────── */
+/*
+  Both icons are stacked; the green check fades/scales in (and the clipboard
+  out) when #copy-email-btn gains `.is-copied`, swapped by ContactForm.astro.
+*/
+.copy-icon-stack {
+  position: relative;
+  display: inline-flex;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.copy-icon-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+#check-icon {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+#copy-email-btn.is-copied #copy-icon {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+#copy-email-btn.is-copied #check-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copy-icon-layer {
+    transition: none;
+  }
+}
+
 /* ─── Scroll-spy active nav link ─────────────────────────────────────────── */
 /*
   Applied by Navbar.astro's scroll listener. Unlayered so it overrides the
@@ -166,4 +207,8 @@ html.js-ready [data-animate].is-visible {
 .nav-active {
   color: var(--color-bloq-navy);
   font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--color-bloq-blue);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
 }
