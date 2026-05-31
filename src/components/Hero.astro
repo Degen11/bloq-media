@@ -62,6 +62,7 @@
 </section>
 
 <script>
+  // @ts-ignore — d3 v7 exports lack a `types` condition; resolved at runtime fine
   import * as d3 from 'd3';
   import { feature } from 'topojson-client';
   // @ts-ignore — world-atlas ships plain JSON, no type declarations needed
@@ -76,7 +77,7 @@
   const width = svgEl.clientWidth;
   const height = svgEl.clientHeight;
 
-  const allCountries = feature(worldData, worldData.objects.countries) as any;
+  const allCountries = feature(worldData as any, (worldData as any).objects.countries) as any;
   const seaCollection: GeoJSON.FeatureCollection = {
     type: 'FeatureCollection',
     features: allCountries.features.filter((f: any) => SEA_IDS.has(+f.id)),
