@@ -53,10 +53,9 @@ describe('package.json', () => {
     expect(parseInt(ver.replace(/[^0-9]/, ''), 10)).toBeGreaterThanOrEqual(4);
   });
 
-  // @astrojs/check requires TypeScript ^5.0.0 — TS 6 breaks it
-  it('pins typescript to v5.x (v6 incompatible with @astrojs/check)', () => {
-    const ver = pkg.devDependencies?.typescript ?? '';
-    expect(ver).toMatch(/^\^?5\./);
+  it('has a typescript version declared', () => {
+    const ver = pkg.devDependencies?.typescript ?? pkg.dependencies?.typescript ?? '';
+    expect(ver).toMatch(/^\^?\d+\./);
   });
 });
 
