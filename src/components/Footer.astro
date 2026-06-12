@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+
 const year = new Date().getFullYear();
 
 const links = [
@@ -33,7 +36,7 @@ const socials = [
     <div class="flex flex-col md:flex-row items-center md:items-start justify-between gap-10">
 
       <div class="flex flex-col items-center md:items-start gap-4">
-        <img src="/logo.png" alt="BLOQ Media" class="h-8 w-auto brightness-0 invert opacity-90" />
+        <Image src={logo} alt="BLOQ Media" height={64} class="h-8 w-auto brightness-0 invert opacity-90" />
         <p class="text-gray-400 text-sm max-w-xs text-center md:text-left leading-relaxed">
           Shaping tech narratives in Southeast Asia through authoritative reporting and strategic content.
         </p>

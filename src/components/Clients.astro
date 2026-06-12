@@ -1,15 +1,22 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import blockchainSpaceLogo from '../assets/blockchainspace-logo.jpg';
+import cbrMediaLogo from '../assets/cbr-media.jpg';
+import meeOppLogo from '../assets/meeopp.png';
+import zCloakLogo from '../assets/zcloak-network-logo.png';
+
 interface Client {
   name: string;
-  logo: string;
+  logo: ImageMetadata;
   logoClass?: string;
 }
 
 const clients: Client[] = [
-  { name: 'Blockchain Space', logo: '/blockchainspace-logo.jpg' },
-  { name: 'CBR Media', logo: '/CBR Media.jpg', logoClass: 'max-h-16' },
-  { name: 'MeeOpp', logo: '/MeeOpp.png' },
-  { name: 'zCloak Network', logo: '/zCloak_Network_Logo.png' },
+  { name: 'Blockchain Space', logo: blockchainSpaceLogo },
+  { name: 'CBR Media', logo: cbrMediaLogo, logoClass: 'max-h-16' },
+  { name: 'MeeOpp', logo: meeOppLogo },
+  { name: 'zCloak Network', logo: zCloakLogo },
 ];
 ---
 
@@ -28,9 +35,10 @@ const clients: Client[] = [
           style={i > 0 ? `transition-delay: ${i * 75}ms` : undefined}
           class="bg-white rounded-2xl border border-gray-100 p-6 flex items-center justify-center h-28 hover:shadow-md hover:border-gray-200 transition-all duration-300"
         >
-          <img
+          <Image
             src={client.logo}
             alt={client.name}
+            height={128}
             loading="lazy"
             decoding="async"
             class={`${client.logoClass ?? 'max-h-12'} w-auto max-w-full object-contain`}

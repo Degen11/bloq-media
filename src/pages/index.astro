@@ -1,4 +1,8 @@
 ---
+// Fully static page — prerender so it's served from the CDN (and so
+// @astrojs/sitemap, which only emits prerendered routes, includes it).
+export const prerender = true;
+
 import Layout from '@layouts/Layout.astro';
 import Navbar from '@components/Navbar.astro';
 import Hero from '@components/Hero.astro';
@@ -13,7 +17,7 @@ import Footer from '@components/Footer.astro';
 
 <Layout>
   <Navbar />
-  <main>
+  <main id="main">
     <Hero />
     <About />
     <WhyBloq />

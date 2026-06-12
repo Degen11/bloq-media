@@ -1,5 +1,6 @@
 ---
 import Analytics from '@vercel/analytics/astro';
+import logoImg from '../assets/logo.png';
 import '../styles/global.css';
 
 interface Props {
@@ -17,13 +18,14 @@ const {
 
 const canonicalURL = Astro.url.href;
 const absoluteOgImage = new URL(ogImage, Astro.site).href;
+const absoluteLogo = new URL(logoImg.src, Astro.site).href;
 
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': ['Organization', 'NewsMediaOrganization'],
   name: 'BLOQ Media',
   url: 'https://bloq.media',
-  logo: 'https://bloq.media/logo.png',
+  logo: absoluteLogo,
   description:
     'BLOQ Media is a news organization and digital marketing agency specializing in tech and blockchain in Southeast Asia.',
   email: 'degen@bloq.media',
@@ -48,14 +50,14 @@ const websiteSchema = {
     name: 'BLOQ Media',
     logo: {
       '@type': 'ImageObject',
-      url: 'https://bloq.media/logo.png',
+      url: absoluteLogo,
     },
   },
 };
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="motion-safe:scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -96,8 +98,9 @@ const websiteSchema = {
     <meta name="twitter:image:alt" content="BLOQ Media — Shaping Tech Narratives in Southeast Asia" />
 
     <!-- Favicons -->
-    <link rel="icon" type="image/png" href="/logo-icon.png" />
-    <link rel="apple-touch-icon" href="/logo-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -120,6 +123,12 @@ const websiteSchema = {
     <script is:inline>document.documentElement.classList.add('js-ready');</script>
   </head>
   <body class="font-sans antialiased text-gray-900 bg-white">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-bloq-navy focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold"
+    >
+      Skip to content
+    </a>
     <slot />
     <Analytics />
 

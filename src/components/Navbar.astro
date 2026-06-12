@@ -1,16 +1,19 @@
 ---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
 ---
 
 <header id="site-header" class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="/" aria-label="BLOQ Media Home">
-      <img src="/logo.png" alt="BLOQ Media" class="h-9 w-auto" />
+      <Image src={logo} alt="BLOQ Media" height={72} loading="eager" class="h-9 w-auto" />
     </a>
 
     <nav class="hidden md:flex items-center gap-8">
       <a href="#about" data-section="about" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">About</a>
       <a href="#why" data-section="why" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Why BLOQ</a>
       <a href="#services" data-section="services" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Services</a>
+      <a href="#articles" data-section="articles" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Articles</a>
       <a href="#clients" data-section="clients" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Clients</a>
       <a
         href="#contact"
@@ -20,7 +23,13 @@
       </a>
     </nav>
 
-    <button id="menu-toggle" class="md:hidden text-gray-700 p-1" aria-label="Toggle menu">
+    <button
+      id="menu-toggle"
+      class="md:hidden text-gray-700 p-1"
+      aria-label="Toggle menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path id="icon-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         <path id="icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -37,6 +46,7 @@
       <a href="#about" data-section="about" class="text-gray-600 hover:text-gray-900 text-sm font-medium">About</a>
       <a href="#why" data-section="why" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Why BLOQ</a>
       <a href="#services" data-section="services" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Services</a>
+      <a href="#articles" data-section="articles" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Articles</a>
       <a href="#clients" data-section="clients" class="text-gray-600 hover:text-gray-900 text-sm font-medium">Clients</a>
       <a
         href="#contact"
@@ -62,6 +72,7 @@
     menuOpen = true;
     menu.style.maxHeight = menu.scrollHeight + 'px';
     menu.style.opacity = '1';
+    toggle?.setAttribute('aria-expanded', 'true');
     iconOpen?.classList.add('hidden');
     iconClose?.classList.remove('hidden');
   }
@@ -71,6 +82,7 @@
     menuOpen = false;
     menu.style.maxHeight = '0';
     menu.style.opacity = '0';
+    toggle?.setAttribute('aria-expanded', 'false');
     iconOpen?.classList.remove('hidden');
     iconClose?.classList.add('hidden');
   }
@@ -87,7 +99,7 @@
   const header = document.getElementById('site-header');
 
   // ── Scroll-spy: highlight the nav link for the current section ────────────
-  const spySectionIds = ['about', 'why', 'services', 'clients', 'contact'];
+  const spySectionIds = ['about', 'why', 'services', 'articles', 'clients', 'contact'];
   const spyLinks = document.querySelectorAll<HTMLAnchorElement>('[data-section]');
 
   function getActiveSection(): string {
