@@ -17,8 +17,9 @@ const socials = [
   },
 ];
 
+// text-base on mobile: iOS Safari auto-zooms focused fields with font-size < 16px
 const inputClass =
-  'w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-bloq-blue focus:border-transparent transition-shadow aria-[invalid=true]:border-red-400 aria-[invalid=true]:ring-red-300';
+  'w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-bloq-blue focus:border-transparent transition-shadow aria-[invalid=true]:border-red-400 aria-[invalid=true]:ring-red-300';
 ---
 
 <section id="contact" class="py-28 bg-gradient-to-br from-bloq-dark via-bloq-navy to-bloq-navy relative overflow-hidden">
@@ -80,6 +81,7 @@ const inputClass =
               </svg>
             </span>
           </button>
+          <span id="copy-status" class="sr-only" aria-live="polite"></span>
         </div>
       </div>
 
@@ -133,7 +135,7 @@ const inputClass =
 
             <div>
               <label for="company" class="block text-sm font-medium text-gray-700 mb-1.5">
-                Company <span class="text-gray-400 font-normal">(optional)</span>
+                Company <span class="text-gray-500 font-normal">(optional)</span>
               </label>
               <input
                 type="text"
@@ -300,6 +302,7 @@ const inputClass =
 
   // ── Click-to-copy email ──────────────────────────────────────────────────
   const copyBtn = document.getElementById('copy-email-btn');
+  const copyStatus = document.getElementById('copy-status');
 
   if (copyBtn) {
     let copyResetTimer: ReturnType<typeof setTimeout> | undefined;
@@ -308,8 +311,12 @@ const inputClass =
       try {
         await navigator.clipboard.writeText('hello@bloq.media');
         copyBtn.classList.add('is-copied');
+        if (copyStatus) copyStatus.textContent = 'Email address copied to clipboard';
         clearTimeout(copyResetTimer);
-        copyResetTimer = setTimeout(() => copyBtn.classList.remove('is-copied'), 2000);
+        copyResetTimer = setTimeout(() => {
+          copyBtn.classList.remove('is-copied');
+          if (copyStatus) copyStatus.textContent = '';
+        }, 2000);
       } catch {
         // Clipboard unavailable — open email client as fallback
         window.location.href = 'mailto:hello@bloq.media';

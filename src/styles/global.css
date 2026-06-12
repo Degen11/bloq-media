@@ -158,6 +158,17 @@ html.js-ready [data-animate].is-visible {
   animation: field-shake 0.4s ease;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .field-shake {
+    animation: none;
+  }
+
+  /* Mobile menu transition is set inline in Navbar.astro */
+  #mobile-menu {
+    transition: none !important;
+  }
+}
+
 /* ─── Click-to-copy email icon crossfade ────────────────────────────────── */
 /*
   Both icons are stacked; the green check fades/scales in (and the clipboard

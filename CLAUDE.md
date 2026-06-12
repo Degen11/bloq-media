@@ -25,7 +25,11 @@ Copy `.env.example` to `.env` and set `PUBLIC_WEB3FORMS_KEY` (free key from web3
 
 ## Architecture
 
-This is a single-page **Astro v6** site running in **SSR mode** (`output: 'server'`) deployed to Vercel. There is one real page (`src/pages/index.astro`) composed from section components.
+This is a single-page **Astro v6** site running in **SSR mode** (`output: 'server'`) deployed to Vercel. There is one real page (`src/pages/index.astro`) composed from section components. The index page sets `export const prerender = true` so it is built statically and served from the CDN — this is also required for `@astrojs/sitemap` to include it (the integration only emits prerendered routes in server mode). The API and OG-image routes stay server-rendered.
+
+### Images & favicons
+
+Display images (BLOQ logo, client logos) live in `src/assets/` and are rendered through the `astro:assets` `<Image>` component so they're resized/optimized at build time — don't add new `<img src="/...">` tags pointing at `public/`. `Layout.astro` derives the JSON-LD organization logo URL from the imported asset. The favicon set in `public/` (`favicon-32.png`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `site.webmanifest`) was generated from `src/assets/logo-icon.png` with sharp (32 px transparent; the larger sizes padded on a `bloq-navy` background).
 
 ### Path aliases
 
@@ -63,7 +67,7 @@ It also houses the UI enhancement utilities added for polish:
 
 - **Scroll-aware shadow:** The `#site-header` starts borderless-shadow; the `header-scrolled` class adds a soft `box-shadow` after 10 px of scroll. Toggled by a passive `scroll` listener in `Navbar.astro`.
 - **Mobile menu animation:** The mobile menu uses a `max-height` + `opacity` CSS transition (set inline on the element) instead of `display:none` toggling, giving a smooth slide open/close on tap. Both properties share the same `0.3s` duration so the slide and fade finish together.
-- **Scroll-spy:** The same passive `scroll` listener also runs `updateScrollSpy()`, which walks `['about', 'why', 'services', 'clients', 'contact']` from top to bottom and applies `.nav-active` to whichever `[data-section]` link matches the last section whose top edge has crossed the navbar bottom (plus a 32 px buffer). The "Contact Us" CTA button intentionally has no `data-section` attribute so it is excluded. `updateScrollSpy()` also fires once on page load to handle deep-links.
+- **Scroll-spy:** The same passive `scroll` listener also runs `updateScrollSpy()`, which walks `['about', 'why', 'services', 'articles', 'clients', 'contact']` from top to bottom and applies `.nav-active` to whichever `[data-section]` link matches the last section whose top edge has crossed the navbar bottom (plus a 32 px buffer). The "Contact Us" CTA button intentionally has no `data-section` attribute so it is excluded. `updateScrollSpy()` also fires once on page load to handle deep-links.
 
 ### Server routes
 
