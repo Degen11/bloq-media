@@ -33,7 +33,7 @@ const services: Service[] = [
 ];
 ---
 
-<section id="services" class="py-28 bg-white">
+<section id="services" class="py-20 sm:py-24 lg:py-28 bg-white">
   <div class="max-w-7xl mx-auto px-6">
 
     <div data-animate class="text-center max-w-2xl mx-auto mb-16">
@@ -46,7 +46,7 @@ const services: Service[] = [
         <div
           data-animate
           style={i > 0 ? `transition-delay: ${i * 100}ms` : undefined}
-          class="group flex flex-col p-8 rounded-2xl border border-gray-100 hover:border-bloq-navy/20 hover:shadow-xl hover:shadow-bloq-navy/8 transition-all duration-300"
+          class="group flex flex-col p-6 sm:p-8 rounded-2xl border border-gray-100 hover:border-bloq-navy/20 hover:shadow-xl hover:shadow-bloq-navy/8 transition-all duration-300"
         >
           <div class="w-12 h-12 bg-bloq-blue/10 rounded-xl flex items-center justify-center text-bloq-navy group-hover:bg-bloq-navy group-hover:text-white transition-all duration-300 mb-6">
             <Fragment set:html={service.icon} />

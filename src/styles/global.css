@@ -8,6 +8,12 @@
   --font-sans: 'Inter', system-ui, sans-serif;
 }
 
+/* Offset in-page anchor scrolling so section headings clear the fixed navbar
+   (≈ header height) instead of hiding underneath it. */
+html {
+  scroll-padding-top: 5rem;
+}
+
 /* Honeypot field — visually hidden but not display:none (bots detect that) */
 .honeypot {
   position: absolute;
