@@ -23,6 +23,15 @@ npx vitest run tests/api/contact.test.ts
 
 Copy `.env.example` to `.env` and set `PUBLIC_WEB3FORMS_KEY` (free key from web3forms.com). Without it the contact form API will still serve but will always return 500.
 
+## Git commit identity
+
+Commits in this repo are authored as **degen11** `<hill.degen@gmail.com>`. This repo uses a gmail address rather than any other email that may be configured as a default elsewhere — set it locally (per clone/session, not globally) before committing:
+
+```bash
+git config user.name "degen11"
+git config user.email "hill.degen@gmail.com"
+```
+
 ## Architecture
 
 This is a single-page **Astro v6** site running in **SSR mode** (`output: 'server'`) deployed to Vercel. There is one real page (`src/pages/index.astro`) composed from section components. The index page sets `export const prerender = true` so it is built statically and served from the CDN — this is also required for `@astrojs/sitemap` to include it (the integration only emits prerendered routes in server mode). The API and OG-image routes stay server-rendered.
