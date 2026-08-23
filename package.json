@@ -15,20 +15,20 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
-    "@astrojs/vercel": "^11.0.5",
+    "@astrojs/vercel": "^11.0.7",
     "@resvg/resvg-js": "^2.6.2",
     "@types/topojson-client": "^3.1.5",
     "@vercel/analytics": "^2.0.1",
-    "astro": "^7.2.1",
+    "astro": "^7.2.4",
     "d3": "^7.9.0",
-    "satori": "^0.29.0",
+    "satori": "^0.32.0",
     "topojson-client": "^3.1.0",
     "world-atlas": "^2.0.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@tailwindcss/vite": "^4.3.0",
-    "@vitest/coverage-v8": "^4.1.9",
+    "@vitest/coverage-v8": "^4.1.11",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9"
