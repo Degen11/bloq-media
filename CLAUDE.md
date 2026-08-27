@@ -67,6 +67,7 @@ It also houses the UI enhancement utilities added for polish:
 | `.field-shake` | `@keyframes field-shake` animation applied to invalid form fields on submit |
 | `.nav-active` | Applied by scroll-spy in `Navbar.astro` to highlight the link for the currently visible section. Sets the navy colour, `font-weight: 600`, and a 2 px `bloq-blue` underline (`text-underline-offset: 6px`) so the active section reads clearly beyond colour alone. Unlayered so it beats Tailwind utility colours without `!important` |
 | `.copy-icon-stack` / `.copy-icon-layer` | Stack the clipboard and check SVGs inside `#copy-email-btn` so they crossfade. The check icon (`#check-icon`) starts `opacity: 0; scale(0.5)`; adding `.is-copied` to the button fades/scales it in and the clipboard out over 200 ms. Disabled under `prefers-reduced-motion: reduce` |
+| `scrollbar-color` / `::-webkit-scrollbar*` | Themed scrollbars (bloq-navy thumb on a light-gray track) instead of the default OS gray, applied globally to `html` so it covers the page and any scrollable containers like `.modal-body`. A `prefers-color-scheme: dark` block swaps in a bloq-blue thumb on a bloq-dark track to match dark browser/OS chrome |
 
 ### Scroll-triggered entrance animations
 
