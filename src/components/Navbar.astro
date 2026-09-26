@@ -1,6 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
+
+// Section anchors live on the homepage, so prefix them with "/" on other pages
+// (privacy, terms, 404) or they'd point at sections that don't exist there.
+const home = Astro.url.pathname === '/' ? '' : '/';
 ---
 
 <header id="site-header" class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
@@ -10,13 +14,13 @@ import logo from '../assets/logo.png';
     </a>
 
     <nav class="hidden md:flex items-center gap-8">
-      <a href="#about" data-section="about" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">About</a>
-      <a href="#why" data-section="why" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Why BLOQ</a>
-      <a href="#services" data-section="services" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Services</a>
-      <a href="#articles" data-section="articles" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Articles</a>
-      <a href="#clients" data-section="clients" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Clients</a>
+      <a href={`${home}#about`} data-section="about" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">About</a>
+      <a href={`${home}#why`} data-section="why" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Why BLOQ</a>
+      <a href={`${home}#services`} data-section="services" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Services</a>
+      <a href={`${home}#articles`} data-section="articles" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Articles</a>
+      <a href={`${home}#clients`} data-section="clients" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Clients</a>
       <a
-        href="#contact"
+        href={`${home}#contact`}
         class="bg-bloq-navy text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-bloq-dark transition-colors duration-200"
       >
         Contact Us
@@ -43,13 +47,13 @@ import logo from '../assets/logo.png';
     style="max-height: 0; opacity: 0; transition: max-height 0.3s ease, opacity 0.3s ease;"
   >
     <div class="px-6 py-4 flex flex-col gap-1">
-      <a href="#about" data-section="about" class="block py-2.5 text-gray-600 hover:text-gray-900 text-sm font-medium">About</a>
-      <a href="#why" data-section="why" class="block py-2.5 text-gray-600 hover:text-gray-900 text-sm font-medium">Why BLOQ</a>
-      <a href="#services" data-section="services" class="block py-2.5 text-gray-600 hover:text-gray-900 text-sm font-medium">Services</a>
-      <a href="#articles" data-section="articles" class="block py-2.5 text-gray-600 hover:text-gray-900 text-sm font-medium">Articles</a>
-      <a href="#clients" data-section="clients" class="block py-2.5 text-gray-600 hover:text-gray-900 text-sm font-medium">Clients</a>
+      <a href={`${home}#about`} data-section="about" class="block py-2.5 text-gray-600 hover:text-gray-900 text-sm font-medium">About</a>
+      <a href={`${home}#why`} data-section="why" class="block py-2.5 text-gray-600 hover:text-gray-900 text-sm font-medium">Why BLOQ</a>
+      <a href={`${home}#services`} data-section="services" class="block py-2.5 text-gray-600 hover:text-gray-900 text-sm font-medium">Services</a>
+      <a href={`${home}#articles`} data-section="articles" class="block py-2.5 text-gray-600 hover:text-gray-900 text-sm font-medium">Articles</a>
+      <a href={`${home}#clients`} data-section="clients" class="block py-2.5 text-gray-600 hover:text-gray-900 text-sm font-medium">Clients</a>
       <a
-        href="#contact"
+        href={`${home}#contact`}
         class="mt-2 bg-bloq-navy text-white px-5 py-3 rounded-lg text-sm font-semibold text-center"
       >
         Contact Us

@@ -2,7 +2,12 @@ import type { APIRoute } from 'astro';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 
-// Cached per warm serverless instance — avoids a jsDelivr round-trip on every request
+// Render once at build time and serve the PNG as a static file. As a runtime
+// route it crashed on Vercel: satori's harfbuzz WASM file isn't traced into the
+// serverless bundle, so every request returned a 500 and shares had no image.
+export const prerender = true;
+
+// Module-scope cache so the fonts are only fetched once per build
 let fontCache: { fontBlack: ArrayBuffer; fontBold: ArrayBuffer } | null = null;
 
 async function loadFont(weight: number): Promise<ArrayBuffer> {
@@ -122,7 +127,7 @@ export const GET: APIRoute = async () => {
                       fontSize: 20,
                       fontWeight: 900,
                     },
-                    children: 'Get in Touch →',
+                    children: 'Get in Touch',
                   },
                 },
               ],

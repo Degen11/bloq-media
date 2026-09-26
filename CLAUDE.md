@@ -34,7 +34,17 @@ git config user.email "hill.degen@gmail.com"
 
 ## Architecture
 
-This is a single-page **Astro v6** site running in **SSR mode** (`output: 'server'`) deployed to Vercel. There is one real page (`src/pages/index.astro`) composed from section components. The index page sets `export const prerender = true` so it is built statically and served from the CDN — this is also required for `@astrojs/sitemap` to include it (the integration only emits prerendered routes in server mode). The API and OG-image routes stay server-rendered.
+This is a single-page **Astro v6** site running in **SSR mode** (`output: 'server'`) deployed to Vercel. The main page (`src/pages/index.astro`) is composed from section components; `src/pages/privacy.astro`, `src/pages/terms.astro`, and `src/pages/404.astro` are standalone pages sharing `Layout`, `Navbar`, and `Footer`. Every page and the two image endpoints (`og-image.png.ts`, `hero-map.svg.ts`) set `export const prerender = true` so they are built statically and served from the CDN — this is also required for `@astrojs/sitemap` to include pages (the integration only emits prerendered routes in server mode). Only `/api/contact` stays server-rendered.
+
+### SEO / metadata
+
+`site` in `astro.config.mjs` is `https://www.bloq.media`, matching the primary Vercel domain (the apex 308-redirects to `www`). `Layout.astro` derives every absolute URL (canonical, `og:url`, OG image, JSON-LD `url`/`@id`) from `Astro.site`, so never hardcode the host. Pass `title` and `description` (≤ 160 chars) props per page; pass `noindex` to emit `noindex, follow` and skip canonical/`og:url` (used by the 404 page). The Organization JSON-LD has an `@id` that the WebSite `publisher` references. The sitemap filter excludes `.png`/`.svg` endpoints and `/404/`.
+
+Section links in `Navbar.astro` and `Footer.astro` are built as `${home}#section`, where `home` is `''` on `/` and `'/'` elsewhere, so they work from the legal and 404 pages.
+
+### Fonts
+
+Inter is self-hosted through Astro's Fonts API (`fonts` in `astro.config.mjs`, `fontsource` provider, weights 400/500/600/700, latin subset) and rendered with `<Font cssVariable="--font-inter" preload=...>` in `Layout.astro`, preloading 400 and 700. `--font-sans` in `global.css` is `var(--font-inter)`, which includes Astro's generated metric-matched fallback so the font swap doesn't shift layout. No third-party font requests are made, and the CSP `font-src` is `'self'`.
 
 ### Images & favicons
 
@@ -54,7 +64,7 @@ Tailwind CSS v4 is loaded via `@tailwindcss/vite` (no `tailwind.config.*` file).
 | `bloq-navy` | `#1A3C8F` |
 | `bloq-dark` | `#0F2260` |
 
-`global.css` also contains the `.honeypot`, `.modal-dialog`, `.modal-inner`, `.modal-header`, `.modal-close`, and `.modal-body` utility classes used by the contact form and any service-detail modals.
+`global.css` also contains the `.honeypot` utility class used by the contact form and the `.legal-content` typography (h2, p, ul, a) used by the `/privacy` and `/terms` pages.
 
 It also houses the UI enhancement utilities added for polish:
 
@@ -67,7 +77,7 @@ It also houses the UI enhancement utilities added for polish:
 | `.field-shake` | `@keyframes field-shake` animation applied to invalid form fields on submit |
 | `.nav-active` | Applied by scroll-spy in `Navbar.astro` to highlight the link for the currently visible section. Sets the navy colour, `font-weight: 600`, and a 2 px `bloq-blue` underline (`text-underline-offset: 6px`) so the active section reads clearly beyond colour alone. Unlayered so it beats Tailwind utility colours without `!important` |
 | `.copy-icon-stack` / `.copy-icon-layer` | Stack the clipboard and check SVGs inside `#copy-email-btn` so they crossfade. The check icon (`#check-icon`) starts `opacity: 0; scale(0.5)`; adding `.is-copied` to the button fades/scales it in and the clipboard out over 200 ms. Disabled under `prefers-reduced-motion: reduce` |
-| `scrollbar-color` / `::-webkit-scrollbar*` | Themed scrollbars (bloq-navy thumb on a light-gray track) instead of the default OS gray, applied globally to `html` so it covers the page and any scrollable containers like `.modal-body`. A `prefers-color-scheme: dark` block swaps in a bloq-blue thumb on a bloq-dark track to match dark browser/OS chrome |
+| `scrollbar-color` / `::-webkit-scrollbar*` | Themed scrollbars (bloq-navy thumb on a light-gray track) instead of the default OS gray, applied globally to `html` so it covers the page and any scrollable containers. A `prefers-color-scheme: dark` block swaps in a bloq-blue thumb on a bloq-dark track to match dark browser/OS chrome |
 
 ### Scroll-triggered entrance animations
 
@@ -84,7 +94,8 @@ It also houses the UI enhancement utilities added for polish:
 | Route | Purpose |
 |---|---|
 | `POST /api/contact` | Validates form data, checks honeypot + per-IP rate limit (1 req/min via in-memory `Map`), then proxies to Web3Forms |
-| `GET /og-image.png` | Generates the 1200×630 OG image at request time using **satori** + **@resvg/resvg-js**; fonts are fetched from jsDelivr and cached in module scope for warm instances |
+| `GET /og-image.png` | **Prerendered.** Generates the 1200×630 OG image at build time using **satori** + **@resvg/resvg-js**; fonts are fetched from jsDelivr. It must stay prerendered: as a runtime route it crashed on Vercel because satori's `harfbuzzjs/hb.wasm` isn't traced into the function bundle. Stick to glyphs in the Inter latin subset (no arrows) |
+| `GET /hero-map.svg` | **Prerendered.** The hero map SVG, built from `src/lib/heroMap.ts` |
 
 ### Contact form flow
 
@@ -94,8 +105,8 @@ The left column also shows `hello@bloq.media` as a `mailto:` link alongside a **
 
 ### Hero map
 
-`Hero.astro` renders an interactive D3 Mercator map of Southeast Asia. City markers (Singapore, Bangkok, Jakarta, Manila, Ho Chi Minh, Kuala Lumpur, Yangon) now have an invisible 14 px hit-target circle on top. `mouseenter` positions and reveals a glass-style `#map-tooltip` div using the marker's D3-projected coordinates scaled by `svgEl.clientWidth / width` to stay accurate after any CSS resizing. `mouseleave` hides it. The tooltip is `pointer-events-none` and `aria-hidden="true"`. The map container div has `relative` positioning to contain the absolutely-positioned tooltip.
+The hero's D3 Mercator map of Southeast Asia is drawn entirely at build time; no map JavaScript ships to the browser. `src/lib/heroMap.ts` projects the 50m world-atlas countries (paths rounded to 1 decimal) and the city markers (Singapore, Bangkok, Jakarta, Manila, Ho Chi Minh, Kuala Lumpur, Yangon) into a fixed 600×520 box. `src/pages/hero-map.svg.ts` turns that into a static SVG (country outlines, glow filter, marker dots). `Hero.astro` shows it as `<img src="/hero-map.svg" loading="lazy">` inside an `aspect-ratio: 600 / 520` container in the `hidden lg:flex` column. The lazy loading matters: browsers never fetch lazy images inside a `display:none` container, so phones and tablets skip the file. Each city gets an absolutely-positioned 28 px hover target placed with percentage `left`/`top` values from `heroMap.ts`, with a glass-style label revealed by CSS `group-hover`. The whole column is `aria-hidden="true"`.
 
 ### Tests
 
-Vitest runs in Node environment against `tests/**/*.test.ts`. The API test (`tests/api/contact.test.ts`) imports the `POST` handler directly and stubs `globalThis.fetch`—no server needed. Other test files cover SEO meta, build output, accessibility, performance, modals, and Astro config.
+Vitest runs in Node environment against `tests/**/*.test.ts`. The API test (`tests/api/contact.test.ts`) imports the `POST` handler directly and stubs `globalThis.fetch`—no server needed. Other test files cover SEO meta, build output, accessibility, performance, the legal pages, the hero map, and Astro config.
