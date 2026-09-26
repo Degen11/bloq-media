@@ -1,15 +1,32 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 
 export default defineConfig({
-  site: 'https://bloq.media',
+  // www is the primary production domain in Vercel (the apex 308-redirects
+  // to it), so canonical URLs, og:url, and the sitemap must use it too.
+  site: 'https://www.bloq.media',
   output: 'server',
   adapter: vercel(),
+  // Self-host Inter (downloaded at build time) instead of loading it from
+  // Google Fonts. Astro also generates a metric-matched fallback font so the
+  // swap to Inter doesn't shift the layout.
+  fonts: [
+    {
+      provider: fontProviders.fontsource(),
+      name: 'Inter',
+      cssVariable: '--font-inter',
+      weights: [400, 500, 600, 700],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['system-ui', 'sans-serif'],
+    },
+  ],
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('og-image'),
+      // Only HTML pages: skip prerendered image endpoints and the 404 page.
+      filter: (page) => !/\.(png|svg)$/.test(page) && !page.endsWith('/404/'),
     }),
   ],
   vite: {

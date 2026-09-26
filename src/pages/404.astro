@@ -1,0 +1,41 @@
+---
+// Built once as a static page; Vercel serves it (with a 404 status) for any
+// unknown URL instead of rendering Astro's default error page in a function.
+export const prerender = true;
+
+import Layout from '@layouts/Layout.astro';
+import Navbar from '@components/Navbar.astro';
+import Footer from '@components/Footer.astro';
+---
+
+<Layout
+  title="Page Not Found | BLOQ Media"
+  description="The page you were looking for doesn't exist. Head back to the BLOQ Media homepage."
+  noindex
+>
+  <Navbar />
+  <main id="main" class="min-h-[70svh] flex items-center pt-32 pb-20 bg-white">
+    <div class="max-w-3xl mx-auto px-6 text-center">
+      <p class="text-bloq-blue text-sm font-semibold uppercase tracking-widest mb-4">404</p>
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Page not found</h1>
+      <p class="text-lg text-gray-500 leading-relaxed mb-10">
+        The page you were looking for doesn't exist or has moved.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/"
+          class="inline-flex items-center justify-center bg-bloq-navy text-white px-8 py-4 rounded-xl font-semibold text-base hover:bg-bloq-dark transition-colors duration-200"
+        >
+          Back to homepage
+        </a>
+        <a
+          href="/#contact"
+          class="inline-flex items-center justify-center border border-gray-200 text-gray-900 px-8 py-4 rounded-xl font-semibold text-base hover:bg-gray-50 transition-colors duration-200"
+        >
+          Contact us
+        </a>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>

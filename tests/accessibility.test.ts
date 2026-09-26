@@ -1,7 +1,7 @@
 /**
  * Accessibility checks via static source analysis.
  * Issues covered: aria-required, aria-describedby, aria-invalid support,
- * role=alert on error regions, modal aria-labelledby, aria-hidden on decorative SVGs.
+ * role=alert on error regions, aria-hidden on decorative SVGs.
  */
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
@@ -71,46 +71,6 @@ describe('ContactForm accessibility', () => {
   it('submits to /api/contact not directly to Web3Forms', () => {
     expect(src).toContain("fetch('/api/contact'");
     expect(src).not.toContain("fetch('https://api.web3forms.com");
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Modals
-// ---------------------------------------------------------------------------
-describe('Footer modal accessibility', () => {
-  const src = read('src/components/Footer.astro');
-
-  it('privacy dialog has aria-labelledby', () => {
-    expect(src).toContain('aria-labelledby="privacy-title"');
-  });
-
-  it('terms dialog has aria-labelledby', () => {
-    expect(src).toContain('aria-labelledby="terms-title"');
-  });
-
-  it('modal heading IDs match aria-labelledby references', () => {
-    expect(src).toContain('id="privacy-title"');
-    expect(src).toContain('id="terms-title"');
-  });
-
-  it('close buttons have aria-label', () => {
-    const matches = src.match(/aria-label="Close/g) ?? [];
-    expect(matches.length).toBeGreaterThanOrEqual(2);
-  });
-
-  it('modal open buttons are present with correct IDs', () => {
-    expect(src).toContain('id="open-privacy"');
-    expect(src).toContain('id="open-terms"');
-  });
-
-  it('close buttons have modal-close class used by JS handler', () => {
-    const count = (src.match(/class="modal-close"/g) ?? []).length;
-    expect(count).toBeGreaterThanOrEqual(2);
-  });
-
-  it('modals use native <dialog> element', () => {
-    const count = (src.match(/<dialog /g) ?? []).length;
-    expect(count).toBeGreaterThanOrEqual(2);
   });
 });
 

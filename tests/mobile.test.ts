@@ -1,7 +1,7 @@
 /**
  * Mobile-optimization checks via static source analysis.
- * Covers: deferred/gated map bundle, touch-target sizing, anchor scroll offset,
- * responsive section spacing, mobile-safe viewport units, and trimmed/non-blocking fonts.
+ * Covers: build-time hero map, touch-target sizing, anchor scroll offset,
+ * responsive section spacing, mobile-safe viewport units, and self-hosted fonts.
  */
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
@@ -16,22 +16,22 @@ const read = (rel: string) => readFileSync(resolve(root, rel), 'utf8');
 describe('Hero mobile optimization', () => {
   const src = read('src/components/Hero.astro');
 
-  it('does not statically import the heavy map dependencies', () => {
-    // Top-level static imports would bundle d3/topojson/world-atlas for every
-    // device. They must be loaded via dynamic import() inside the gate instead.
-    expect(src).not.toMatch(/^\s*import\s+\*\s+as\s+d3\s+from\s+'d3'/m);
-    expect(src).not.toMatch(/^\s*import\s+worldData\s+from\s+'world-atlas/m);
+  it('ships no client-side map code (map is pre-rendered at build time)', () => {
+    expect(src).not.toContain('<script');
+    expect(src).not.toContain("import('d3')");
+    expect(src).not.toContain('world-atlas');
   });
 
-  it('loads the map dependencies via dynamic import', () => {
-    expect(src).toContain("await import('d3')");
-    expect(src).toContain("await import('topojson-client')");
-    expect(src).toContain("await import('world-atlas/countries-50m.json')");
+  it('loads the pre-rendered SVG lazily so hidden (mobile) layouts never fetch it', () => {
+    expect(src).toContain('src="/hero-map.svg"');
+    expect(src).toContain('loading="lazy"');
+    expect(src).toContain('hidden lg:flex');
   });
 
-  it('gates map initialization behind a desktop media query', () => {
-    expect(src).toContain('matchMedia');
-    expect(src).toContain('(min-width: 1024px)');
+  it('reserves the map box size to avoid layout shift', () => {
+    expect(src).toContain('aspect-ratio: ${MAP_WIDTH} / ${MAP_HEIGHT}');
+    expect(src).toContain('width={MAP_WIDTH}');
+    expect(src).toContain('height={MAP_HEIGHT}');
   });
 
   it('uses a mobile-safe viewport unit for the full-height section', () => {
@@ -94,22 +94,16 @@ describe('Responsive section spacing', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Fonts — trimmed weights, non-blocking load
+// Fonts — trimmed weights, self-hosted
 // ---------------------------------------------------------------------------
 describe('Font loading', () => {
-  const src = read('src/layouts/Layout.astro');
+  const cfg = read('astro.config.mjs');
 
-  it('does not request unused 800/900 weights', () => {
-    expect(src).not.toContain('500;600;700;800;900');
+  it('requests only the weights in use (no 800/900)', () => {
+    expect(cfg).toContain('weights: [400, 500, 600, 700]');
   });
 
-  it('requests only the weights in use', () => {
-    expect(src).toContain('Inter:wght@400;500;600;700&display=swap');
-  });
-
-  it('loads the stylesheet non-render-blocking with a noscript fallback', () => {
-    expect(src).toContain('media="print"');
-    expect(src).toContain("setAttribute('media','all')");
-    expect(src).toContain('<noscript>');
+  it('only downloads the latin subset', () => {
+    expect(cfg).toContain("subsets: ['latin']");
   });
 });

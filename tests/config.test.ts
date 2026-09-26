@@ -102,12 +102,13 @@ describe('vercel.json', () => {
     expect(headerMap['Content-Security-Policy']).toContain("'unsafe-inline'");
   });
 
-  it('CSP allows Google Fonts stylesheet', () => {
-    expect(headerMap['Content-Security-Policy']).toContain('fonts.googleapis.com');
+  it('CSP only allows self-hosted fonts', () => {
+    expect(headerMap['Content-Security-Policy']).toContain("font-src 'self';");
   });
 
-  it('CSP allows Google Fonts files', () => {
-    expect(headerMap['Content-Security-Policy']).toContain('fonts.gstatic.com');
+  it('CSP no longer allows Google Fonts', () => {
+    expect(headerMap['Content-Security-Policy']).not.toContain('fonts.googleapis.com');
+    expect(headerMap['Content-Security-Policy']).not.toContain('fonts.gstatic.com');
   });
 
   it('headers apply to all routes', () => {

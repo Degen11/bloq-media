@@ -1,7 +1,7 @@
 /**
  * Performance optimisation tests.
- * Issues covered: client logos missing loading=lazy, OG image fetching fonts
- * on every request (no caching).
+ * Issues covered: client logos missing loading=lazy, OG image crashing at
+ * runtime on Vercel (now prerendered), hero map shipping ~1 MB of JS.
  */
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
@@ -48,6 +48,14 @@ describe('OG image font caching (og-image.png.ts)', () => {
     expect(src).toContain('return fontCache');
   });
 
+  it('is prerendered at build time (runtime route 500ed on Vercel)', () => {
+    expect(src).toContain('export const prerender = true');
+  });
+
+  it('does not use glyphs missing from the Inter latin subset', () => {
+    expect(src).not.toContain('→');
+  });
+
   it('uses Uint8Array for Response body (TypeScript 6 BodyInit compat)', () => {
     expect(src).toContain('new Uint8Array(png)');
   });
@@ -89,20 +97,15 @@ describe('global CSS theme', () => {
     expect(css).toContain('--color-bloq-dark');
   });
 
-  it('defines custom font-sans for Inter', () => {
-    expect(css).toContain('--font-sans');
-    expect(css).toContain('Inter');
+  it('defines custom font-sans from the self-hosted Inter variable', () => {
+    expect(css).toContain('--font-sans: var(--font-inter)');
   });
 
   it('defines honeypot utility class', () => {
     expect(css).toContain('.honeypot');
   });
 
-  it('defines modal-dialog styles', () => {
-    expect(css).toContain('.modal-dialog');
-  });
-
-  it('defines dialog::backdrop', () => {
-    expect(css).toContain('::backdrop');
+  it('no longer carries the unused modal styles', () => {
+    expect(css).not.toContain('.modal-dialog');
   });
 });

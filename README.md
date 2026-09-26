@@ -1,6 +1,6 @@
 # BLOQ Media
 
-The public marketing site for **BLOQ Media** — a news organization and content studio covering the tech and blockchain sector in Southeast Asia. Live at [bloq.media](https://bloq.media).
+The public marketing site for **BLOQ Media** — a news organization and content studio covering the tech and blockchain sector in Southeast Asia. Live at [www.bloq.media](https://www.bloq.media).
 
 ![BLOQ Media hero section](docs/screenshot-hero.png)
 
@@ -21,18 +21,26 @@ Actively maintained and deployed to production on Vercel. Dependency updates are
 
 - **[Astro v6](https://astro.build)** running in SSR mode (`output: 'server'`), deployed on **Vercel**
 - **Tailwind CSS v4** via `@tailwindcss/vite` — brand tokens defined in `src/styles/global.css`
-- **D3** for the interactive Mercator map in the hero section
-- **[Satori](https://github.com/vercel/satori) + [resvg](https://github.com/RazrFalcon/resvg)** to generate the Open Graph share image server-side, at request time
+- **D3** to draw the hero section's Mercator map at build time (no map JavaScript ships to the browser)
+- **[Satori](https://github.com/vercel/satori) + [resvg](https://github.com/RazrFalcon/resvg)** to generate the Open Graph share image at build time
+- **Astro Fonts API** to self-host Inter with metric-matched fallbacks
 - **Vitest** for the test suite; **[Web3Forms](https://web3forms.com)** to deliver contact-form submissions without running a mail server
 
 ## Architecture
 
-The site has one real page (`src/pages/index.astro`), composed from section components (`Hero`, `About`, `WhyBloq`, `Services`, `Articles`, `Clients`, `ContactForm`, `Footer`). That page is prerendered at build time and served statically from Vercel's CDN, while two routes stay server-rendered per-request:
+The main page (`src/pages/index.astro`) is composed from section components (`Hero`, `About`, `WhyBloq`, `Services`, `Articles`, `Clients`, `ContactForm`, `Footer`). It, the `/privacy` and `/terms` pages, the custom 404 page, and two generated images are all prerendered at build time and served statically from Vercel's CDN:
+
+| Route | Purpose |
+|---|---|
+| `/`, `/privacy`, `/terms`, `404` | Static HTML pages |
+| `/og-image.png` | The 1200×630 social share image, rendered with satori at build time |
+| `/hero-map.svg` | The hero section's map, drawn with D3 at build time |
+
+Only one route stays server-rendered per request:
 
 | Route | Purpose |
 |---|---|
 | `POST /api/contact` | Validates form input, checks a honeypot field and a per-IP rate limit, then forwards the message to Web3Forms |
-| `GET /og-image.png` | Renders the 1200×630 social share image on the fly |
 
 See [`CLAUDE.md`](CLAUDE.md) for a deeper architectural walkthrough (styling conventions, animation system, navbar behavior, etc.) — it's written for AI coding assistants but doubles as a solid internal dev doc.
 
