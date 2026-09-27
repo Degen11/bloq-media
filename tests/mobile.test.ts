@@ -55,8 +55,8 @@ describe('Navbar touch targets', () => {
     expect(src).toMatch(/id="menu-toggle"[\s\S]*?class="[^"]*p-2\.5/);
   });
 
-  it('mobile menu links are block-level with vertical padding', () => {
-    const blockLinks = (src.match(/class="block py-2\.5 text-gray-600/g) ?? []).length;
+  it('mobile menu links are block-level with 44px+ tap targets', () => {
+    const blockLinks = (src.match(/class="block py-3 text-gray-600[^"]*text-base/g) ?? []).length;
     expect(blockLinks).toBeGreaterThanOrEqual(5);
   });
 });
@@ -105,5 +105,65 @@ describe('Font loading', () => {
 
   it('only downloads the latin subset', () => {
     expect(cfg).toContain("subsets: ['latin']");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Mobile polish — menu dismissal, hero fold, sticky CTA, client grid
+// ---------------------------------------------------------------------------
+describe('Mobile menu dismissal', () => {
+  const src = read('src/components/Navbar.astro');
+
+  it('closes on a tap outside the menu', () => {
+    expect(src).toMatch(/addEventListener\('click'[\s\S]*?menu\?\.contains\(target\)[\s\S]*?closeMenu\(\)/);
+  });
+
+  it('closes after scrolling away from where it opened', () => {
+    expect(src).toMatch(/window\.scrollY - openedAtY/);
+  });
+});
+
+describe('Hero fits the first screen on small phones', () => {
+  const src = read('src/components/Hero.astro');
+
+  it('uses tighter vertical padding below sm', () => {
+    expect(src).toContain('py-12 sm:py-24 lg:py-28');
+  });
+
+  it('scales the intro paragraph down below sm', () => {
+    expect(src).toContain('text-lg sm:text-xl');
+  });
+});
+
+describe('Sticky mobile CTA', () => {
+  const src = read('src/components/MobileCta.astro');
+  const index = read('src/pages/index.astro');
+
+  it('is rendered on the homepage', () => {
+    expect(index).toContain('<MobileCta />');
+  });
+
+  it('only shows on small screens and links to the contact section', () => {
+    expect(src).toContain('md:hidden fixed bottom-0');
+    expect(src).toContain('href="#contact"');
+  });
+
+  it('starts hidden and inert until the hero is scrolled past', () => {
+    expect(src).toMatch(/id="mobile-cta"\s+inert/);
+    expect(src).toContain('translate-y-full');
+    expect(src).toContain('[data-hero]');
+  });
+
+  it('respects the iOS home-indicator safe area', () => {
+    expect(src).toContain('env(safe-area-inset-bottom)');
+  });
+});
+
+describe('Client logo grid on phones', () => {
+  const src = read('src/components/Clients.astro');
+
+  it('uses tighter gap and padding below md so logos get more width', () => {
+    expect(src).toContain('gap-3 md:gap-6');
+    expect(src).toContain('p-4 md:p-6');
   });
 });
