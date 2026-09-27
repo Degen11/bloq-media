@@ -86,7 +86,8 @@ It also houses the UI enhancement utilities added for polish:
 ### Navbar behaviour
 
 - **Scroll-aware shadow:** The `#site-header` starts borderless-shadow; the `header-scrolled` class adds a soft `box-shadow` after 10 px of scroll. Toggled by a passive `scroll` listener in `Navbar.astro`.
-- **Mobile menu animation:** The mobile menu uses a `max-height` + `opacity` CSS transition (set inline on the element) instead of `display:none` toggling, giving a smooth slide open/close on tap. Both properties share the same `0.3s` duration so the slide and fade finish together.
+- **Mobile menu animation:** The mobile menu uses a `max-height` + `opacity` CSS transition (set inline on the element) instead of `display:none` toggling, giving a smooth slide open/close on tap. Both properties share the same `0.3s` duration so the slide and fade finish together. Its links are `py-3 text-base` (48 px tap targets).
+- **Mobile menu dismissal:** Besides link taps, the toggle and Escape, the menu closes on a tap outside it (document `click` listener) and once the page scrolls more than 40 px from where it was opened (the threshold ignores mobile address-bar jitter).
 - **Scroll-spy:** The same passive `scroll` listener also runs `updateScrollSpy()`, which walks `['about', 'why', 'services', 'articles', 'clients', 'contact']` from top to bottom and applies `.nav-active` to whichever `[data-section]` link matches the last section whose top edge has crossed the navbar bottom (plus a 32 px buffer). The "Contact Us" CTA button intentionally has no `data-section` attribute so it is excluded. `updateScrollSpy()` also fires once on page load to handle deep-links.
 
 ### Server routes
@@ -106,6 +107,10 @@ The left column also shows `hello@bloq.media` as a `mailto:` link alongside a **
 ### Hero map
 
 The hero's D3 Mercator map of Southeast Asia is drawn entirely at build time; no map JavaScript ships to the browser. `src/lib/heroMap.ts` projects the 50m world-atlas countries (paths rounded to 1 decimal) and the city markers (Singapore, Bangkok, Jakarta, Manila, Ho Chi Minh, Kuala Lumpur, Yangon) into a fixed 600×520 box. `src/pages/hero-map.svg.ts` turns that into a static SVG (country outlines, glow filter, marker dots). `Hero.astro` shows it as `<img src="/hero-map.svg" loading="lazy">` inside an `aspect-ratio: 600 / 520` container in the `hidden lg:flex` column. The lazy loading matters: browsers never fetch lazy images inside a `display:none` container, so phones and tablets skip the file. Each city gets an absolutely-positioned 28 px hover target placed with percentage `left`/`top` values from `heroMap.ts`, with a glass-style label revealed by CSS `group-hover`. The whole column is `aria-hidden="true"`.
+
+### Sticky mobile CTA
+
+`MobileCta.astro` (homepage only) renders a `md:hidden` fixed bottom bar with a "Get in Touch" link to `#contact`. A passive scroll/resize listener shows it (removes `translate-y-full` and `inert`) only once the `[data-hero]` section has scrolled out of view and while the contact section's top is still below the viewport, so it never overlaps the form or footer. Bottom padding uses `env(safe-area-inset-bottom)`.
 
 ### Tests
 
