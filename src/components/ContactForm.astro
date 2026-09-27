@@ -185,7 +185,7 @@ const inputClass =
           </div>
 
           <div id="form-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm" role="alert">
-            Something went wrong. Please try again or reach us directly on social media.
+            Something went wrong. Please try again or email us at hello@bloq.media.
           </div>
         </form>
 
@@ -215,6 +215,7 @@ const inputClass =
   const btnSpinner = document.getElementById('btn-spinner');
   const formError = document.getElementById('form-error');
   const formSuccess = document.getElementById('form-success');
+  const genericError = formError?.textContent?.trim() ?? '';
 
   function setLoading(loading: boolean) {
     if (!submitBtn) return;
@@ -296,9 +297,13 @@ const inputClass =
         formSuccess?.classList.remove('hidden');
         track('contact_form_submitted');
       } else {
-        throw new Error(data.message ?? 'Submission failed');
+        // Show the server's reason (e.g. the rate-limit notice) instead of the generic text
+        if (formError && typeof data.message === 'string') formError.textContent = data.message;
+        formError?.classList.remove('hidden');
+        setLoading(false);
       }
     } catch {
+      if (formError) formError.textContent = genericError;
       formError?.classList.remove('hidden');
       setLoading(false);
     }

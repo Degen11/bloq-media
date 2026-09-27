@@ -88,7 +88,7 @@ export const POST: APIRoute = async ({ request }) => {
   // Checked after validation so only well-formed submissions use up the slot
   if (!checkRateLimit(ip)) {
     return new Response(
-      JSON.stringify({ success: false, message: 'Too many requests — please wait a minute.' }),
+      JSON.stringify({ success: false, message: 'Too many requests. Please wait a minute and try again.' }),
       { status: 429, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -126,7 +126,7 @@ export const POST: APIRoute = async ({ request }) => {
   return new Response(
     JSON.stringify({
       success: false,
-      message: 'Unable to send your message right now. Please reach us on social media.',
+      message: 'Unable to send your message right now. Please email us at hello@bloq.media.',
     }),
     { status: 500, headers: { 'Content-Type': 'application/json' } }
   );

@@ -43,6 +43,7 @@ const home = Astro.url.pathname === '/' ? '' : '/';
 
   <div
     id="mobile-menu"
+    inert
     class="md:hidden border-t border-gray-100 overflow-hidden"
     style="max-height: 0; opacity: 0; transition: max-height 0.3s ease, opacity 0.3s ease;"
   >
@@ -74,6 +75,7 @@ const home = Astro.url.pathname === '/' ? '' : '/';
   function openMenu() {
     if (!menu) return;
     menuOpen = true;
+    menu.inert = false;
     menu.style.maxHeight = menu.scrollHeight + 'px';
     menu.style.opacity = '1';
     toggle?.setAttribute('aria-expanded', 'true');
@@ -84,6 +86,8 @@ const home = Astro.url.pathname === '/' ? '' : '/';
   function closeMenu() {
     if (!menu) return;
     menuOpen = false;
+    // Collapsed links are invisible but would still take Tab focus without this
+    menu.inert = true;
     menu.style.maxHeight = '0';
     menu.style.opacity = '0';
     toggle?.setAttribute('aria-expanded', 'false');
@@ -97,6 +101,13 @@ const home = Astro.url.pathname === '/' ? '' : '/';
 
   menu?.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', closeMenu);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menuOpen) {
+      closeMenu();
+      toggle?.focus();
+    }
   });
 
   // ── Scroll-aware navbar shadow ────────────────────────────────────────────
