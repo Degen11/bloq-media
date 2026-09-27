@@ -2,6 +2,8 @@
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
 
+// Build-time year; the script below refreshes it in the browser since the
+// pages are prerendered and would otherwise show the year of the last deploy.
 const year = new Date().getFullYear();
 
 // Section anchors live on the homepage, so prefix them with "/" on other pages
@@ -12,8 +14,8 @@ const links = [
   { label: 'About', href: `${home}#about` },
   { label: 'Why BLOQ', href: `${home}#why` },
   { label: 'Services', href: `${home}#services` },
-  { label: 'Clients', href: `${home}#clients` },
   { label: 'Articles', href: `${home}#articles` },
+  { label: 'Clients', href: `${home}#clients` },
 ];
 
 const socials = [
@@ -90,9 +92,13 @@ const socials = [
         </a>
       </div>
       <p class="text-gray-500 text-sm">
-        &copy; {year} BLOQ Media. All rights reserved.
+        &copy; <span id="copyright-year">{year}</span> BLOQ Media. All rights reserved.
       </p>
     </div>
   </div>
 </footer>
 
+<script>
+  const yearEl = document.getElementById('copyright-year');
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+</script>
