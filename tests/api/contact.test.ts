@@ -1,6 +1,7 @@
 /**
  * Contact form API endpoint unit tests.
- * Issues covered: honeypot detection, rate limiting, field validation,
+ * Issues covered: honeypot detection, rate limiting, field validation
+ * (types, lengths, email format),
  * Web3Forms integration, and correct HTTP status codes.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -89,6 +90,23 @@ describe('rate limiting', () => {
     expect(data.message).toMatch(/too many/i);
   });
 
+  it('invalid submissions do not use up the rate limit', async () => {
+    const ip = `rate-limit-invalid-${Math.random()}`;
+    const bad = await POST(makeCtx({ ...validBody, email: '' }, ip));
+    expect(bad.status).toBe(400);
+    const good = await POST(makeCtx(validBody, ip));
+    expect(good.status).toBe(200);
+  });
+
+  it('allows an immediate retry when Web3Forms fails', async () => {
+    const ip = `rate-limit-retry-${Math.random()}`;
+    vi.mocked(fetch).mockRejectedValueOnce(new Error('Network error'));
+    const failed = await POST(makeCtx(validBody, ip));
+    expect(failed.status).toBe(500);
+    const retry = await POST(makeCtx(validBody, ip));
+    expect(retry.status).toBe(200);
+  });
+
   it('allows different IPs to submit independently', async () => {
     const ip1 = `ip-a-${Math.random()}`;
     const ip2 = `ip-b-${Math.random()}`;
@@ -127,6 +145,70 @@ describe('field validation', () => {
     });
     const res = await POST({ request } as Parameters<typeof POST>[0]);
     expect(res.status).toBe(400);
+  });
+
+  it.each([
+    ['null', 'null'],
+    ['an array', '[]'],
+    ['a string', '"hello"'],
+  ])('returns 400 when the body is %s', async (_, raw) => {
+    const request = new Request('http://localhost/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-forwarded-for': `raw-${Math.random()}` },
+      body: raw,
+    });
+    const res = await POST({ request } as Parameters<typeof POST>[0]);
+    expect(res.status).toBe(400);
+    expect(vi.mocked(fetch)).not.toHaveBeenCalled();
+  });
+
+  it.each(['name', 'email', 'company', 'message'])(
+    'returns 400 when %s is not a string',
+    async (key) => {
+      const res = await POST(makeCtx({ ...validBody, [key]: { trim: 1 } }));
+      expect(res.status).toBe(400);
+      expect(vi.mocked(fetch)).not.toHaveBeenCalled();
+    }
+  );
+
+  it('returns 400 for a malformed email', async () => {
+    const res = await POST(makeCtx({ ...validBody, email: 'not-an-email' }));
+    expect(res.status).toBe(400);
+  });
+
+  it.each([
+    ['name', 101],
+    ['email', 255],
+    ['company', 101],
+    ['message', 5001],
+  ])('returns 400 when %s is longer than the limit', async (key, len) => {
+    const value = key === 'email' ? `${'a'.repeat(len - 12)}@example.com` : 'a'.repeat(len);
+    const res = await POST(makeCtx({ ...validBody, [key]: value }));
+    expect(res.status).toBe(400);
+    expect(vi.mocked(fetch)).not.toHaveBeenCalled();
+  });
+
+  it('accepts fields exactly at the limit', async () => {
+    const res = await POST(
+      makeCtx({
+        ...validBody,
+        name: 'a'.repeat(100),
+        email: `${'a'.repeat(242)}@example.com`,
+        company: 'a'.repeat(100),
+        message: 'a'.repeat(5000),
+      })
+    );
+    expect(res.status).toBe(200);
+  });
+
+  it('collapses line breaks in single-line fields but keeps them in the message', async () => {
+    await POST(
+      makeCtx({ ...validBody, name: 'Jane\r\nBcc: x@evil.test', message: 'Line 1\nLine 2' })
+    );
+    const [, opts] = vi.mocked(fetch).mock.calls[0] as [string, RequestInit];
+    const sent = JSON.parse(opts.body as string);
+    expect(sent.name).toBe('Jane Bcc: x@evil.test');
+    expect(sent.message).toBe('Line 1\nLine 2');
   });
 
   it('company field is optional', async () => {

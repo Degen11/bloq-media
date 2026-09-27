@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
+import { createHash } from 'node:crypto';
 
 // Render once at build time and serve the PNG as a static file. As a runtime
 // route it crashed on Vercel: satori's harfbuzz WASM file isn't traced into the
@@ -10,11 +11,20 @@ export const prerender = true;
 // Module-scope cache so the fonts are only fetched once per build
 let fontCache: { fontBlack: ArrayBuffer; fontBold: ArrayBuffer } | null = null;
 
+// SHA-256 of each pinned font file, so a tampered CDN response fails the build
+const FONT_SHA256: Record<number, string> = {
+  700: '51df444d3a9a5b5368402f46d7ec6145d78a8e55d184c12bf431c72a3c982da6',
+  900: 'c38e95e0fea0113aeb45d3002cfe9b6b75f42695c79bced6157d09e122837564',
+};
+
 async function loadFont(weight: number): Promise<ArrayBuffer> {
   const url = `https://cdn.jsdelivr.net/npm/@fontsource/inter@4.5.15/files/inter-latin-${weight}-normal.woff`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to load Inter ${weight} font: ${res.status}`);
-  return res.arrayBuffer();
+  const font = await res.arrayBuffer();
+  const hash = createHash('sha256').update(Buffer.from(font)).digest('hex');
+  if (hash !== FONT_SHA256[weight]) throw new Error(`Inter ${weight} font failed its integrity check`);
+  return font;
 }
 
 async function getFonts() {
