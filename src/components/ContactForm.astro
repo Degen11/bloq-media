@@ -107,6 +107,7 @@ const inputClass =
                   name="name"
                   required
                   autocomplete="name"
+                  maxlength="100"
                   placeholder="Jane Smith"
                   aria-required="true"
                   aria-describedby="name-error"
@@ -124,6 +125,7 @@ const inputClass =
                   name="email"
                   required
                   autocomplete="email"
+                  maxlength="254"
                   placeholder="jane@company.com"
                   aria-required="true"
                   aria-describedby="email-error"
@@ -142,6 +144,7 @@ const inputClass =
                 id="company"
                 name="company"
                 autocomplete="organization"
+                maxlength="100"
                 placeholder="Your company"
                 class={inputClass}
               />
@@ -156,6 +159,7 @@ const inputClass =
                 name="message"
                 required
                 rows="5"
+                maxlength="5000"
                 placeholder="Tell us about your project or what you're looking for…"
                 aria-required="true"
                 aria-describedby="message-error"
