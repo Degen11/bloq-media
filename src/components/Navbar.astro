@@ -100,7 +100,8 @@ const contactHref = sectionHref(CONTACT_SECTION_ID, pathname);
   }
 
   toggle?.addEventListener('click', () => {
-    menuOpen ? closeMenu() : openMenu();
+    if (menuOpen) closeMenu();
+    else openMenu();
   });
 
   menu?.querySelectorAll('a').forEach((link) => {

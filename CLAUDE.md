@@ -10,6 +10,8 @@ npm run dev          # start dev server (localhost:4321)
 npm run build        # production build
 npm run preview      # preview production build locally
 npm run check        # TypeScript / Astro type-check
+npm run lint         # ESLint (JS/TS/Astro)
+npm run format       # Prettier, writes changes (format:check only reports)
 
 # Testing
 npm test             # run all tests once
