@@ -45,9 +45,7 @@ describe.skipIf(!hasBuild)('client bundle', () => {
 
   it('contact form script is bundled as external file (has npm import)', () => {
     const files = existsSync(clientDir) ? readdirSync(clientDir) : [];
-    const hasContactScript = files.some((f: string) =>
-      f.includes('ContactForm')
-    );
+    const hasContactScript = files.some((f: string) => f.includes('ContactForm'));
     expect(hasContactScript).toBe(true);
   });
 });

@@ -13,9 +13,9 @@ interface Article {
 
 const articles: Article[] = [
   {
-    title: 'Money 20/20 Asia Lands in Bangkok: A Look at Fintech\'s Thriving Asian Landscape',
+    title: "Money 20/20 Asia Lands in Bangkok: A Look at Fintech's Thriving Asian Landscape",
     description:
-      'Fintech meets Southeast Asia\'s fastest-growing market. A firsthand look at the key themes, innovations, and players emerging from Money 20/20\'s inaugural Bangkok edition.',
+      "Fintech meets Southeast Asia's fastest-growing market. A firsthand look at the key themes, innovations, and players emerging from Money 20/20's inaugural Bangkok edition.",
     url: 'https://medium.com/@bloqmedia/money-20-20-asia-lands-in-bangkok-a-look-at-fintechs-thriving-asian-landscape-ee9b9f94c71b',
     tag: 'Fintech',
   },
@@ -30,7 +30,6 @@ const articles: Article[] = [
 ---
 
 <Section id="articles" class="bg-white">
-
   <div data-animate class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
     <SectionHeading eyebrow="Latest Work" title="From the Newsroom" />
     <a
@@ -60,9 +59,7 @@ const articles: Article[] = [
         <h3 class="text-xl font-bold text-gray-900 leading-snug mb-4 group-hover:text-bloq-navy transition-colors">
           {article.title}
         </h3>
-        <p class="text-gray-500 text-sm leading-relaxed flex-1">
-          {article.description}
-        </p>
+        <p class="text-gray-500 text-sm leading-relaxed flex-1">{article.description}</p>
         <div class="mt-6 inline-flex items-center gap-2 text-bloq-navy font-semibold text-sm group-hover:text-bloq-blue transition-colors">
           <Icon name="medium" class="w-4 h-4 opacity-60" />
           Read on Medium
@@ -71,5 +68,4 @@ const articles: Article[] = [
       </a>
     ))}
   </div>
-
 </Section>

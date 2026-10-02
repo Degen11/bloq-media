@@ -37,14 +37,12 @@ const classes = [
 ];
 ---
 
-{
-  href ? (
-    <a href={href} class:list={classes} {...attrs}>
-      <slot />
-    </a>
-  ) : (
-    <button type="button" class:list={classes} {...attrs}>
-      <slot />
-    </button>
-  )
-}
+{href ? (
+  <a href={href} class:list={classes} {...attrs}>
+    <slot />
+  </a>
+) : (
+  <button type="button" class:list={classes} {...attrs}>
+    <slot />
+  </button>
+)}

@@ -60,8 +60,8 @@ Display images (BLOQ logo, client logos) live in `src/assets/` and are rendered 
 
 Tailwind CSS v4 is loaded via `@tailwindcss/vite` (no `tailwind.config.*` file). Custom brand tokens are defined in `src/styles/global.css` under `@theme`:
 
-| Token | Hex |
-|---|---|
+| Token       | Hex       |
+| ----------- | --------- |
 | `bloq-blue` | `#29ABE2` |
 | `bloq-navy` | `#1A3C8F` |
 | `bloq-dark` | `#0F2260` |
@@ -70,16 +70,16 @@ Tailwind CSS v4 is loaded via `@tailwindcss/vite` (no `tailwind.config.*` file).
 
 It also houses the UI enhancement utilities added for polish:
 
-| Class / selector | Purpose |
-|---|---|
-| `html.js-ready [data-animate]` | Initial hidden state for scroll-triggered elements (`opacity: 0; transform: translateY(16px)`) |
-| `html.js-ready [data-animate].is-visible` | Visible state applied by `IntersectionObserver` in `Layout.astro` |
-| `#site-header` | Smooth `box-shadow` transition for scroll-aware navbar |
-| `#site-header.header-scrolled` | Shadow applied after 10 px of scroll; toggled by `Navbar.astro` script |
-| `.field-shake` | `@keyframes field-shake` animation applied to invalid form fields on submit |
-| `.nav-active` | Applied by scroll-spy in `Navbar.astro` to highlight the link for the currently visible section. Sets the navy color, `font-weight: 600`, and a 2 px `bloq-blue` underline (`text-underline-offset: 6px`) so the active section reads clearly beyond color alone. Unlayered so it beats Tailwind utility colors without `!important` |
-| `.copy-icon-stack` / `.copy-icon-layer` | Stack the clipboard and check SVGs inside `#copy-email-btn` so they crossfade. The check icon (`#check-icon`) starts `opacity: 0; scale(0.5)`; adding `.is-copied` to the button fades/scales it in and the clipboard out over 200 ms. Disabled under `prefers-reduced-motion: reduce` |
-| `scrollbar-color` / `::-webkit-scrollbar*` | Themed scrollbars (bloq-navy thumb on a light-gray track) instead of the default OS gray, applied globally to `html` so it covers the page and any scrollable containers. A `prefers-color-scheme: dark` block swaps in a bloq-blue thumb on a bloq-dark track to match dark browser/OS chrome |
+| Class / selector                           | Purpose                                                                                                                                                                                                                                                                                                                              |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `html.js-ready [data-animate]`             | Initial hidden state for scroll-triggered elements (`opacity: 0; transform: translateY(16px)`)                                                                                                                                                                                                                                       |
+| `html.js-ready [data-animate].is-visible`  | Visible state applied by `IntersectionObserver` in `Layout.astro`                                                                                                                                                                                                                                                                    |
+| `#site-header`                             | Smooth `box-shadow` transition for scroll-aware navbar                                                                                                                                                                                                                                                                               |
+| `#site-header.header-scrolled`             | Shadow applied after 10 px of scroll; toggled by `Navbar.astro` script                                                                                                                                                                                                                                                               |
+| `.field-shake`                             | `@keyframes field-shake` animation applied to invalid form fields on submit                                                                                                                                                                                                                                                          |
+| `.nav-active`                              | Applied by scroll-spy in `Navbar.astro` to highlight the link for the currently visible section. Sets the navy color, `font-weight: 600`, and a 2 px `bloq-blue` underline (`text-underline-offset: 6px`) so the active section reads clearly beyond color alone. Unlayered so it beats Tailwind utility colors without `!important` |
+| `.copy-icon-stack` / `.copy-icon-layer`    | Stack the clipboard and check SVGs inside `#copy-email-btn` so they crossfade. The check icon (`#check-icon`) starts `opacity: 0; scale(0.5)`; adding `.is-copied` to the button fades/scales it in and the clipboard out over 200 ms. Disabled under `prefers-reduced-motion: reduce`                                               |
+| `scrollbar-color` / `::-webkit-scrollbar*` | Themed scrollbars (bloq-navy thumb on a light-gray track) instead of the default OS gray, applied globally to `html` so it covers the page and any scrollable containers. A `prefers-color-scheme: dark` block swaps in a bloq-blue thumb on a bloq-dark track to match dark browser/OS chrome                                       |
 
 ### Scroll-triggered entrance animations
 
@@ -94,11 +94,11 @@ It also houses the UI enhancement utilities added for polish:
 
 ### Server routes
 
-| Route | Purpose |
-|---|---|
-| `POST /api/contact` | Checks honeypot, validates form data (object body, string fields, email format, max lengths 100/254/100/5000 for name/email/company/message, mirrored by `maxlength` in `ContactForm.astro`), then applies the per-IP rate limit (1 req/min via in-memory `Map`, only for valid submissions and released if Web3Forms fails) and proxies to Web3Forms |
+| Route               | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /api/contact` | Checks honeypot, validates form data (object body, string fields, email format, max lengths 100/254/100/5000 for name/email/company/message, mirrored by `maxlength` in `ContactForm.astro`), then applies the per-IP rate limit (1 req/min via in-memory `Map`, only for valid submissions and released if Web3Forms fails) and proxies to Web3Forms                                                                                           |
 | `GET /og-image.png` | **Prerendered.** Generates the 1200×630 OG image at build time using **satori** + **@resvg/resvg-js**; fonts are fetched from jsDelivr and checked against pinned SHA-256 hashes (`FONT_SHA256`), so update those if the font URL changes. It must stay prerendered: as a runtime route it crashed on Vercel because satori's `harfbuzzjs/hb.wasm` isn't traced into the function bundle. Stick to glyphs in the Inter latin subset (no arrows) |
-| `GET /hero-map.svg` | **Prerendered.** The hero map SVG, built from `src/lib/heroMap.ts` |
+| `GET /hero-map.svg` | **Prerendered.** The hero map SVG, built from `src/lib/heroMap.ts`                                                                                                                                                                                                                                                                                                                                                                              |
 
 ### Contact form flow
 

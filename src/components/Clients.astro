@@ -23,26 +23,30 @@ const clients: Client[] = [
 ---
 
 <Section id="clients" class="bg-gray-50">
+  <SectionHeading
+    data-animate
+    align="center"
+    class="mb-14"
+    eyebrow="Our Partners"
+    title="Clients We've Worked With"
+  />
 
-    <SectionHeading data-animate align="center" class="mb-14" eyebrow="Our Partners" title="Clients We've Worked With" />
-
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 items-center">
-      {clients.map((client, i) => (
-        <div
-          data-animate
-          style={i > 0 ? `transition-delay: ${i * 75}ms` : undefined}
-          class="bg-white rounded-2xl border border-gray-100 p-4 md:p-6 flex items-center justify-center h-28 hover:shadow-md hover:border-gray-200 transition-all duration-300"
-        >
-          <Image
-            src={client.logo}
-            alt={client.name}
-            height={128}
-            loading="lazy"
-            decoding="async"
-            class={`${client.logoClass ?? 'max-h-12'} w-auto max-w-full object-contain`}
-          />
-        </div>
-      ))}
-    </div>
-
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 items-center">
+    {clients.map((client, i) => (
+      <div
+        data-animate
+        style={i > 0 ? `transition-delay: ${i * 75}ms` : undefined}
+        class="bg-white rounded-2xl border border-gray-100 p-4 md:p-6 flex items-center justify-center h-28 hover:shadow-md hover:border-gray-200 transition-all duration-300"
+      >
+        <Image
+          src={client.logo}
+          alt={client.name}
+          height={128}
+          loading="lazy"
+          decoding="async"
+          class={`${client.logoClass ?? 'max-h-12'} w-auto max-w-full object-contain`}
+        />
+      </div>
+    ))}
+  </div>
 </Section>

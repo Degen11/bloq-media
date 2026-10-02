@@ -37,8 +37,7 @@ function field(value: unknown, singleLine = true): string | null {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const ip =
-    request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
 
   let body: Record<string, unknown> | null;
   try {

@@ -34,11 +34,11 @@ const hasIntro = Astro.slots.has('default');
   >
     {title}
   </Heading>
-  {
-    hasIntro && (
-      <p class:list={['text-lg leading-relaxed', tone === 'dark' ? 'text-white/60' : 'text-gray-500']}>
-        <slot />
-      </p>
-    )
-  }
+  {hasIntro && (
+    <p
+      class:list={['text-lg leading-relaxed', tone === 'dark' ? 'text-white/60' : 'text-gray-500']}
+    >
+      <slot />
+    </p>
+  )}
 </div>

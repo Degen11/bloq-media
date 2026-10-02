@@ -15,8 +15,7 @@ interface Props {
 
 const {
   title = 'BLOQ Media | Shaping Tech Narratives in Southeast Asia',
-  description =
-    'BLOQ Media covers tech and blockchain in Southeast Asia, with news, content strategy, and digital marketing for the region\'s most innovative companies.',
+  description = "BLOQ Media covers tech and blockchain in Southeast Asia, with news, content strategy, and digital marketing for the region's most innovative companies.",
   ogImage = '/og-image.png',
   noindex = false,
 } = Astro.props;
@@ -48,7 +47,14 @@ const orgSchema = {
   },
   areaServed: 'Southeast Asia',
   sameAs: socials.map((s) => s.href),
-  knowsAbout: ['Blockchain', 'Technology', 'Digital Marketing', 'Content Strategy', 'Fintech', 'Web3'],
+  knowsAbout: [
+    'Blockchain',
+    'Technology',
+    'Digital Marketing',
+    'Content Strategy',
+    'Fintech',
+    'Web3',
+  ],
 };
 
 const websiteSchema = {
@@ -57,7 +63,8 @@ const websiteSchema = {
   '@id': `${siteUrl}#website`,
   name: SITE_NAME,
   url: siteUrl,
-  description: 'News organization and digital marketing agency for tech and blockchain in Southeast Asia',
+  description:
+    'News organization and digital marketing agency for tech and blockchain in Southeast Asia',
   publisher: { '@id': orgId },
 };
 ---
@@ -74,7 +81,11 @@ const websiteSchema = {
     <meta name="description" content={description} />
     <meta
       name="robots"
-      content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+      content={
+        noindex
+          ? 'noindex, follow'
+          : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+      }
     />
     <meta name="author" content={SITE_NAME} />
     {!noindex && <link rel="canonical" href={canonicalURL} />}
@@ -89,7 +100,10 @@ const websiteSchema = {
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="BLOQ Media — Shaping Tech Narratives in Southeast Asia" />
+    <meta
+      property="og:image:alt"
+      content="BLOQ Media — Shaping Tech Narratives in Southeast Asia"
+    />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter / X -->
@@ -99,7 +113,10 @@ const websiteSchema = {
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={absoluteOgImage} />
-    <meta name="twitter:image:alt" content="BLOQ Media — Shaping Tech Narratives in Southeast Asia" />
+    <meta
+      name="twitter:image:alt"
+      content="BLOQ Media — Shaping Tech Narratives in Southeast Asia"
+    />
 
     <!-- Favicons -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -115,9 +132,10 @@ const websiteSchema = {
     <!-- Structured data -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
     <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
-
     <!-- Gate scroll-animation hidden state: elements stay visible if JS never runs -->
-    <script is:inline>document.documentElement.classList.add('js-ready');</script>
+    <script is:inline>
+      document.documentElement.classList.add('js-ready');
+    </script>
   </head>
   <body class="font-sans antialiased text-gray-900 bg-white">
     <a

@@ -115,7 +115,9 @@ describe('Mobile menu dismissal', () => {
   const src = read('src/components/Navbar.astro');
 
   it('closes on a tap outside the menu', () => {
-    expect(src).toMatch(/addEventListener\('click'[\s\S]*?menu\?\.contains\(target\)[\s\S]*?closeMenu\(\)/);
+    expect(src).toMatch(
+      /addEventListener\('click'[\s\S]*?menu\?\.contains\(target\)[\s\S]*?closeMenu\(\)/,
+    );
   });
 
   it('closes after scrolling away from where it opened', () => {

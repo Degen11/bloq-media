@@ -50,7 +50,9 @@ describe.each([
   });
 
   it('uses US spelling', () => {
-    expect(src).not.toMatch(/specialis|authoris|organis|recognis|enquir|colour|behaviour|licence|centre/i);
+    expect(src).not.toMatch(
+      /specialis|authoris|organis|recognis|enquir|colour|behaviour|licence|centre/i,
+    );
   });
 
   it('renders inside the shared layout with navbar and footer', () => {

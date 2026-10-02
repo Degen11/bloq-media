@@ -20,21 +20,26 @@ const services: Service[] = [
   {
     title: 'Digital Marketing',
     description:
-      "SEO, social, and targeted campaigns designed for the tech and blockchain audience. We get your brand in front of founders, investors, and early adopters — where they actually spend time.",
+      'SEO, social, and targeted campaigns designed for the tech and blockchain audience. We get your brand in front of founders, investors, and early adopters — where they actually spend time.',
     icon: 'megaphone',
   },
   {
     title: 'News & Thought Leadership',
     description:
-      "Original articles, market reports, and op-eds that earn attention rather than fill column inches. We help you say something worth reading — and build the credibility that comes with it.",
+      'Original articles, market reports, and op-eds that earn attention rather than fill column inches. We help you say something worth reading — and build the credibility that comes with it.',
     icon: 'newspaper',
   },
 ];
 ---
 
 <Section id="services" class="bg-white">
-
-  <SectionHeading data-animate align="center" class="max-w-2xl mb-16" eyebrow="What We Offer" title="Our Services" />
+  <SectionHeading
+    data-animate
+    align="center"
+    class="max-w-2xl mb-16"
+    eyebrow="What We Offer"
+    title="Our Services"
+  />
 
   <div class="grid md:grid-cols-3 gap-8">
     {services.map((service, i) => (
@@ -52,11 +57,15 @@ const services: Service[] = [
           href="#contact"
           class="group/cta mt-6 inline-flex items-center text-bloq-navy font-semibold text-sm hover:text-bloq-blue transition-colors"
         >
-          <span class="group-hover/cta:underline underline-offset-4 decoration-2">Get in touch</span>
-          <Icon name="arrow-right" class="ml-1.5 w-4 h-4 transition-transform duration-200 group-hover/cta:translate-x-1" />
+          <span class="group-hover/cta:underline underline-offset-4 decoration-2">
+            Get in touch
+          </span>
+          <Icon
+            name="arrow-right"
+            class="ml-1.5 w-4 h-4 transition-transform duration-200 group-hover/cta:translate-x-1"
+          />
         </a>
       </div>
     ))}
   </div>
-
 </Section>

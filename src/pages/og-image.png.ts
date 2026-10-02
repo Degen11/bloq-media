@@ -24,7 +24,8 @@ async function loadFont(weight: number): Promise<ArrayBuffer> {
   if (!res.ok) throw new Error(`Failed to load Inter ${weight} font: ${res.status}`);
   const font = await res.arrayBuffer();
   const hash = createHash('sha256').update(Buffer.from(font)).digest('hex');
-  if (hash !== FONT_SHA256[weight]) throw new Error(`Inter ${weight} font failed its integrity check`);
+  if (hash !== FONT_SHA256[weight])
+    throw new Error(`Inter ${weight} font failed its integrity check`);
   return font;
 }
 
@@ -97,8 +98,7 @@ export const GET: APIRoute = async () => {
                       fontWeight: 700,
                       marginTop: 8,
                     },
-                    children:
-                      'Authoritative reporting · Strategic content · Digital marketing',
+                    children: 'Authoritative reporting · Strategic content · Digital marketing',
                   },
                 },
               ],
@@ -154,7 +154,7 @@ export const GET: APIRoute = async () => {
         { name: 'Inter', data: fontBlack, weight: 900 as const, style: 'normal' as const },
         { name: 'Inter', data: fontBold, weight: 700 as const, style: 'normal' as const },
       ],
-    }
+    },
   );
 
   const png = new Resvg(svg).render().asPng();

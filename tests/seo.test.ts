@@ -30,7 +30,7 @@ describe('structured data (Layout.astro)', () => {
 
   it('WebSite publisher references the Organization by @id', () => {
     expect(src).toContain("'@id': orgId");
-    expect(src).toContain('publisher: { \'@id\': orgId }');
+    expect(src).toContain("publisher: { '@id': orgId }");
   });
 
   it('schema email matches the address shown on the page', () => {
@@ -70,13 +70,14 @@ describe('structured data (Layout.astro)', () => {
 
   it('skips canonical and emits noindex when the noindex prop is set', () => {
     expect(src).toContain('{!noindex && <link rel="canonical"');
-    expect(src).toContain("noindex ? 'noindex, follow'");
+    expect(src).toMatch(/noindex\s*\?\s*'noindex, follow'/);
   });
 
   it('default meta description fits in a search snippet (<= 160 chars)', () => {
-    const match = src.match(/description =\s*\n\s*'((?:[^'\\]|\\.)*)'/);
+    // The first `description =` is the prop default; either quote style is fine
+    const match = src.match(/description =\s*(['"])((?:\\.|(?!\1)[^\\])*)\1/);
     expect(match).not.toBeNull();
-    const text = match![1].replace(/\\'/g, "'");
+    const text = match![2].replace(/\\(['"])/g, '$1');
     expect(text.length).toBeGreaterThan(70);
     expect(text.length).toBeLessThanOrEqual(160);
   });

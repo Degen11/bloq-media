@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bloq-blue: #29ABE2;
-  --color-bloq-navy: #1A3C8F;
-  --color-bloq-dark: #0F2260;
+  --color-bloq-blue: #29abe2;
+  --color-bloq-navy: #1a3c8f;
+  --color-bloq-dark: #0f2260;
   /* Lighter blue for hover states on dark backgrounds */
-  --color-bloq-blue-light: #7FCBEE;
+  --color-bloq-blue-light: #7fcbee;
 
   /* Inter via Astro's Fonts API, which appends metric-matched fallbacks */
   --font-sans: var(--font-inter);
@@ -138,7 +138,9 @@ html {
 html.js-ready [data-animate] {
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
 }
 
 html.js-ready [data-animate].is-visible {
@@ -166,11 +168,22 @@ html.js-ready [data-animate].is-visible {
 
 /* ─── Form field shake on validation failure ────────────────────────────── */
 @keyframes field-shake {
-  0%, 100% { transform: translateX(0); }
-  20%       { transform: translateX(-6px); }
-  40%       { transform: translateX(6px); }
-  60%       { transform: translateX(-4px); }
-  80%       { transform: translateX(4px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
 }
 
 .field-shake {
@@ -205,7 +218,9 @@ html.js-ready [data-animate].is-visible {
   inset: 0;
   width: 100%;
   height: 100%;
-  transition: opacity 200ms ease, transform 200ms ease;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
 }
 
 #check-icon {

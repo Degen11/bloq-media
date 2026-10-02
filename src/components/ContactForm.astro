@@ -21,157 +21,176 @@ const inputClass =
     <div class="absolute -bottom-32 -left-32 w-[600px] h-[600px] bg-bloq-blue rounded-full blur-3xl"></div>
   </div>
 
-    <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+  <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+    <!-- Left: copy + contact details -->
+    <div data-animate class="lg:pt-6">
+      <SectionHeading tone="dark" eyebrow="Get in Touch" title="Ready to make an impact?">
+        Whether you need a news partner, a content studio, or a full campaign — we're ready to talk.
+      </SectionHeading>
 
-      <!-- Left: copy + contact details -->
-      <div data-animate class="lg:pt-6">
-        <SectionHeading tone="dark" eyebrow="Get in Touch" title="Ready to make an impact?">
-          Whether you need a news partner, a content studio, or a full campaign — we're ready to talk.
-        </SectionHeading>
-
-        <div class="mt-10 flex items-center gap-3">
-          {socials.map((s) => (
-            <a
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={s.label}
-              class="w-10 h-10 bg-white/10 hover:bg-bloq-blue rounded-xl flex items-center justify-center transition-colors duration-200"
-            >
-              <Icon name={s.icon} class="w-4 h-4 text-white" />
-            </a>
-          ))}
-        </div>
-
-        <div class="mt-4 flex items-center gap-3">
+      <div class="mt-10 flex items-center gap-3">
+        {socials.map((s) => (
           <a
-            href={`mailto:${CONTACT_EMAIL}`}
-            class="text-white/60 text-sm font-medium hover:text-white/90 transition-colors duration-200"
+            href={s.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={s.label}
+            class="w-10 h-10 bg-white/10 hover:bg-bloq-blue rounded-xl flex items-center justify-center transition-colors duration-200"
           >
-            {CONTACT_EMAIL}
+            <Icon name={s.icon} class="w-4 h-4 text-white" />
           </a>
-          <button
-            id="copy-email-btn"
-            type="button"
-            aria-label="Copy email address"
-            title="Copy email address"
-            class="w-8 h-8 bg-white/10 hover:bg-bloq-blue rounded-lg flex items-center justify-center transition-colors duration-200 shrink-0"
-          >
-            <span class="copy-icon-stack" aria-hidden="true">
-              <Icon name="clipboard" id="copy-icon" class="copy-icon-layer text-white" />
-              <Icon name="check" id="check-icon" class="copy-icon-layer text-green-400" stroke-width="2.5" />
-            </span>
-          </button>
-          <span id="copy-status" class="sr-only" aria-live="polite"></span>
-        </div>
+        ))}
       </div>
 
-      <!-- Right: form card -->
-      <div data-animate style="transition-delay: 100ms" class="bg-white rounded-2xl p-6 sm:p-8 shadow-2xl shadow-black/25">
+      <div class="mt-4 flex items-center gap-3">
+        <a
+          href={`mailto:${CONTACT_EMAIL}`}
+          class="text-white/60 text-sm font-medium hover:text-white/90 transition-colors duration-200"
+        >
+          {CONTACT_EMAIL}
+        </a>
+        <button
+          id="copy-email-btn"
+          type="button"
+          aria-label="Copy email address"
+          title="Copy email address"
+          class="w-8 h-8 bg-white/10 hover:bg-bloq-blue rounded-lg flex items-center justify-center transition-colors duration-200 shrink-0"
+        >
+          <span class="copy-icon-stack" aria-hidden="true">
+            <Icon name="clipboard" id="copy-icon" class="copy-icon-layer text-white" />
+            <Icon
+              name="check"
+              id="check-icon"
+              class="copy-icon-layer text-green-400"
+              stroke-width="2.5"
+            />
+          </span>
+        </button>
+        <span id="copy-status" class="sr-only" aria-live="polite"></span>
+      </div>
+    </div>
 
-        <form id="contact-form" novalidate>
-          <!-- Honeypot: hidden from humans, bots fill it in -->
-          <div class="honeypot" aria-hidden="true">
-            <label for="website">Website</label>
-            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
-          </div>
+    <!-- Right: form card -->
+    <div
+      data-animate
+      style="transition-delay: 100ms"
+      class="bg-white rounded-2xl p-6 sm:p-8 shadow-2xl shadow-black/25"
+    >
+      <form id="contact-form" novalidate>
+        <!-- Honeypot: hidden from humans, bots fill it in -->
+        <div class="honeypot" aria-hidden="true">
+          <label for="website">Website</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+        </div>
 
-          <div class="flex flex-col gap-5">
-            <div class="grid sm:grid-cols-2 gap-5">
-              <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">
-                  Name <span class="text-bloq-blue" aria-hidden="true">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  autocomplete="name"
-                  maxlength={MAX_LENGTH.name}
-                  placeholder="Jane Smith"
-                  aria-required="true"
-                  aria-describedby="name-error"
-                  class={inputClass}
-                />
-                <div id="name-error" class="hidden mt-1 text-red-600 text-xs" role="alert"></div>
-              </div>
-              <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">
-                  Email <span class="text-bloq-blue" aria-hidden="true">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  autocomplete="email"
-                  maxlength={MAX_LENGTH.email}
-                  placeholder="jane@company.com"
-                  aria-required="true"
-                  aria-describedby="email-error"
-                  class={inputClass}
-                />
-                <div id="email-error" class="hidden mt-1 text-red-600 text-xs" role="alert"></div>
-              </div>
-            </div>
-
+        <div class="flex flex-col gap-5">
+          <div class="grid sm:grid-cols-2 gap-5">
             <div>
-              <label for="company" class="block text-sm font-medium text-gray-700 mb-1.5">
-                Company <span class="text-gray-500 font-normal">(optional)</span>
+              <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">
+                Name{' '}
+                <span class="text-bloq-blue" aria-hidden="true">
+                  *
+                </span>
               </label>
               <input
                 type="text"
-                id="company"
-                name="company"
-                autocomplete="organization"
-                maxlength={MAX_LENGTH.company}
-                placeholder="Your company"
+                id="name"
+                name="name"
+                required
+                autocomplete="name"
+                maxlength={MAX_LENGTH.name}
+                placeholder="Jane Smith"
+                aria-required="true"
+                aria-describedby="name-error"
                 class={inputClass}
               />
+              <div id="name-error" class="hidden mt-1 text-red-600 text-xs" role="alert"></div>
             </div>
-
             <div>
-              <label for="message" class="block text-sm font-medium text-gray-700 mb-1.5">
-                Message <span class="text-bloq-blue" aria-hidden="true">*</span>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">
+                Email{' '}
+                <span class="text-bloq-blue" aria-hidden="true">
+                  *
+                </span>
               </label>
-              <textarea
-                id="message"
-                name="message"
+              <input
+                type="email"
+                id="email"
+                name="email"
                 required
-                rows="5"
-                maxlength={MAX_LENGTH.message}
-                placeholder="Tell us about your project or what you're looking for…"
+                autocomplete="email"
+                maxlength={MAX_LENGTH.email}
+                placeholder="jane@company.com"
                 aria-required="true"
-                aria-describedby="message-error"
-                class={`${inputClass} resize-none`}
-              ></textarea>
-              <div id="message-error" class="hidden mt-1 text-red-600 text-xs" role="alert"></div>
+                aria-describedby="email-error"
+                class={inputClass}
+              />
+              <div id="email-error" class="hidden mt-1 text-red-600 text-xs" role="alert"></div>
             </div>
-
-            <Button type="submit" id="submit-btn" class="w-full">
-              <span id="btn-label">Send Message</span>
-              <Icon name="arrow-right" id="btn-arrow" class="w-4 h-4" />
-              <Icon name="spinner" id="btn-spinner" class="hidden w-4 h-4 animate-spin" />
-            </Button>
           </div>
 
-          <div id="form-error" class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm" role="alert">
-            Something went wrong. Please try again or email us at {CONTACT_EMAIL}.
+          <div>
+            <label for="company" class="block text-sm font-medium text-gray-700 mb-1.5">
+              Company <span class="text-gray-500 font-normal">(optional)</span>
+            </label>
+            <input
+              type="text"
+              id="company"
+              name="company"
+              autocomplete="organization"
+              maxlength={MAX_LENGTH.company}
+              placeholder="Your company"
+              class={inputClass}
+            />
           </div>
-        </form>
 
-        <!-- Success state (replaces form) -->
-        <div id="form-success" class="hidden py-6 text-center" role="status">
-          <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-5">
-            <Icon name="check" class="w-8 h-8 text-green-500" />
+          <div>
+            <label for="message" class="block text-sm font-medium text-gray-700 mb-1.5">
+              Message{' '}
+              <span class="text-bloq-blue" aria-hidden="true">
+                *
+              </span>
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              required
+              rows="5"
+              maxlength={MAX_LENGTH.message}
+              placeholder="Tell us about your project or what you're looking for…"
+              aria-required="true"
+              aria-describedby="message-error"
+              class={`${inputClass} resize-none`}
+            ></textarea>
+            <div id="message-error" class="hidden mt-1 text-red-600 text-xs" role="alert"></div>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-2">Message sent!</h3>
-          <p class="text-gray-500 text-sm">Thanks for reaching out — we'll be in touch shortly.</p>
+
+          <Button type="submit" id="submit-btn" class="w-full">
+            <span id="btn-label">Send Message</span>
+            <Icon name="arrow-right" id="btn-arrow" class="w-4 h-4" />
+            <Icon name="spinner" id="btn-spinner" class="hidden w-4 h-4 animate-spin" />
+          </Button>
         </div>
 
+        <div
+          id="form-error"
+          class="hidden mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm"
+          role="alert"
+        >
+          Something went wrong. Please try again or email us at {CONTACT_EMAIL}.
+        </div>
+      </form>
+
+      <!-- Success state (replaces form) -->
+      <div id="form-success" class="hidden py-6 text-center" role="status">
+        <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-5">
+          <Icon name="check" class="w-8 h-8 text-green-500" />
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Message sent!</h3>
+        <p class="text-gray-500 text-sm">Thanks for reaching out — we'll be in touch shortly.</p>
       </div>
     </div>
+  </div>
 </Section>
 
 <script>
@@ -209,7 +228,9 @@ const inputClass =
       input.classList.remove('field-shake');
       void (input as HTMLElement).offsetWidth; // force reflow so animation restarts
       input.classList.add('field-shake');
-      input.addEventListener('animationend', () => input.classList.remove('field-shake'), { once: true });
+      input.addEventListener('animationend', () => input.classList.remove('field-shake'), {
+        once: true,
+      });
     }
   }
 
@@ -244,12 +265,18 @@ const inputClass =
     const website = (form.elements.namedItem('website') as HTMLInputElement).value;
 
     let hasErrors = false;
-    if (!name) { setFieldError('name', 'Name is required.'); hasErrors = true; }
+    if (!name) {
+      setFieldError('name', 'Name is required.');
+      hasErrors = true;
+    }
     if (!email || !EMAIL_RE.test(email)) {
       setFieldError('email', 'A valid email address is required.');
       hasErrors = true;
     }
-    if (!message) { setFieldError('message', 'Message is required.'); hasErrors = true; }
+    if (!message) {
+      setFieldError('message', 'Message is required.');
+      hasErrors = true;
+    }
     if (hasErrors) return;
 
     setLoading(true);
