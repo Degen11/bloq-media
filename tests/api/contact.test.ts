@@ -249,3 +249,32 @@ describe('Web3Forms forwarding', () => {
     expect(res.headers.get('Content-Type')).toBe('application/json');
   });
 });
+
+// ---------------------------------------------------------------------------
+// Optional "What do you need?" picker
+// ---------------------------------------------------------------------------
+describe('interest field', () => {
+  it('is optional and forwarded as "Not specified" when absent', async () => {
+    const res = await POST(makeCtx(validBody));
+    expect(res.status).toBe(200);
+    const [, opts] = vi.mocked(fetch).mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(opts.body as string).interest).toBe('Not specified');
+  });
+
+  it('forwards a listed option', async () => {
+    const res = await POST(makeCtx({ ...validBody, interest: 'Full campaign' }));
+    expect(res.status).toBe(200);
+    const [, opts] = vi.mocked(fetch).mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(opts.body as string).interest).toBe('Full campaign');
+  });
+
+  it('rejects a value that is not one of the options', async () => {
+    const res = await POST(makeCtx({ ...validBody, interest: 'Free money' }));
+    expect(res.status).toBe(400);
+  });
+
+  it('rejects a non-string value', async () => {
+    const res = await POST(makeCtx({ ...validBody, interest: ['Full campaign'] }));
+    expect(res.status).toBe(400);
+  });
+});

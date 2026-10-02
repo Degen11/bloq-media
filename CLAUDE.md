@@ -46,7 +46,7 @@ Section links in `Navbar.astro` and `Footer.astro` are built as `${home}#section
 
 ### Fonts
 
-Inter is self-hosted through Astro's Fonts API (`fonts` in `astro.config.mjs`, `fontsource` provider, weights 400/500/600/700, latin subset) and rendered with `<Font cssVariable="--font-inter" preload=...>` in `Layout.astro`, preloading 400 and 700. `--font-sans` in `global.css` is `var(--font-inter)`, which includes Astro's generated metric-matched fallback so the font swap doesn't shift layout. No third-party font requests are made, and the CSP `font-src` is `'self'`.
+Plus Jakarta Sans is self-hosted through Astro's Fonts API (`fonts` in `astro.config.mjs`, `fontsource` provider, weights 400/500/600/700/800, latin subset) and rendered with `<Font cssVariable="--font-jakarta" preload=...>` in `Layout.astro`, preloading 400 (body) and 800 (headings). `--font-sans` in `global.css` is `var(--font-jakarta)`, which includes Astro's generated metric-matched fallback so the font swap doesn't shift layout. No third-party font requests are made, and the CSP `font-src` is `'self'`.
 
 ### Images & favicons
 
@@ -72,11 +72,23 @@ Site copy uses US spelling.
 
 Tailwind CSS v4 is loaded via `@tailwindcss/vite` (no `tailwind.config.*` file). Custom brand tokens are defined in `src/styles/global.css` under `@theme`:
 
-| Token       | Hex       |
-| ----------- | --------- |
-| `bloq-blue` | `#29ABE2` |
-| `bloq-navy` | `#1A3C8F` |
-| `bloq-dark` | `#0F2260` |
+| Token              | Hex       | Use                                             |
+| ------------------ | --------- | ----------------------------------------------- |
+| `bloq-blue`        | `#29ABE2` | Accent fills, rings, underlines (not body text) |
+| `bloq-navy`        | `#1A3C8F` | Primary buttons, icons, the Engage tile         |
+| `bloq-dark`        | `#0F2260` | Headings, utility bar, Why BLOQ band, footer    |
+| `bloq-blue-light`  | `#7FCBEE` | Eyebrows and hovers on navy                     |
+| `bloq-tint`        | `#E6EFF9` | Tinted sections (hero, Articles) and icon tiles |
+| `bloq-sky`         | `#E8F5FC` | Light blue panels and tag chips                 |
+| `bloq-line`        | `#E1E8F3` | Card borders                                    |
+| `bloq-line-strong` | `#CFDBEE` | Input and secondary button borders              |
+| `bloq-ink`         | `#1B2440` | Labels, strong body text                        |
+| `bloq-slate`       | `#44506A` | Body copy                                       |
+| `bloq-muted`       | `#5B6680` | Secondary text                                  |
+| `bloq-link`        | `#0B6FA4` | Blue text on light backgrounds (AA contrast)    |
+| `bloq-mist`        | `#C9D6EE` | Body copy on navy                               |
+
+The design is light mode with a deliberate rhythm of section backgrounds so the page never reads as one long white sheet: tinted hero, white logo strip and About, navy Why BLOQ, white Services, tinted Articles, white Contact, navy footer. `bg-dots` / `bg-dots-light` add a faint dot grid to tinted and navy sections.
 
 `global.css` also contains the `.honeypot` utility class used by the contact form and the `.legal-content` typography (h2, p, ul, a) used by the `/privacy` and `/terms` pages.
 
@@ -99,28 +111,29 @@ It also houses the UI enhancement utilities added for polish:
 
 ### Navbar behavior
 
+- **Utility bar + sticky header:** `Navbar.astro` renders a thin navy utility bar (latest article from `src/lib/articles.ts`, email, socials) that scrolls away, then the `sticky top-0` header. Because the header is sticky rather than fixed, pages don't need top padding to clear it.
 - **Scroll-aware shadow:** The `#site-header` starts borderless-shadow; the `header-scrolled` class adds a soft `box-shadow` after 10 px of scroll. Toggled by a passive `scroll` listener in `Navbar.astro`.
 - **Mobile menu animation:** The mobile menu uses a `max-height` + `opacity` CSS transition (set inline on the element) instead of `display:none` toggling, giving a smooth slide open/close on tap. Both properties share the same `0.3s` duration so the slide and fade finish together. Its links are `py-3 text-base` (48 px tap targets).
 - **Mobile menu dismissal:** Besides link taps, the toggle and Escape, the menu closes on a tap outside it (document `click` listener) and once the page scrolls more than 40 px from where it was opened (the threshold ignores mobile address-bar jitter).
-- **Scroll-spy:** The same passive `scroll` listener also runs `updateScrollSpy()`, which walks `['about', 'why', 'services', 'articles', 'clients', 'contact']` from top to bottom and applies `.nav-active` to whichever `[data-section]` link matches the last section whose top edge has crossed the navbar bottom (plus a 32 px buffer). The "Contact Us" CTA button intentionally has no `data-section` attribute so it is excluded. `updateScrollSpy()` also fires once on page load to handle deep-links.
+- **Scroll-spy:** The same passive `scroll` listener also runs `updateScrollSpy()`, which checks every nav section plus `contact` and applies `.nav-active` to the `[data-section]` link for the lowest section whose top edge has crossed the navbar bottom (plus a 32 px buffer). It compares page positions rather than list order, because the client logo strip (`#clients`) sits right under the hero while its nav link comes last. The "Contact Us" CTA button intentionally has no `data-section` attribute so it is excluded. `updateScrollSpy()` also fires once on page load to handle deep-links.
 
 ### Server routes
 
-| Route               | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `POST /api/contact` | Checks honeypot, validates form data (object body, string fields, email format, max lengths 100/254/100/5000 for name/email/company/message, mirrored by `maxlength` in `ContactForm.astro`), then applies the per-IP rate limit (1 req/min via in-memory `Map`, only for valid submissions and released if Web3Forms fails) and proxies to Web3Forms                                                                                           |
-| `GET /og-image.png` | **Prerendered.** Generates the 1200×630 OG image at build time using **satori** + **@resvg/resvg-js**; fonts are fetched from jsDelivr and checked against pinned SHA-256 hashes (`FONT_SHA256`), so update those if the font URL changes. It must stay prerendered: as a runtime route it crashed on Vercel because satori's `harfbuzzjs/hb.wasm` isn't traced into the function bundle. Stick to glyphs in the Inter latin subset (no arrows) |
-| `GET /hero-map.svg` | **Prerendered.** The hero map SVG, built from `src/lib/heroMap.ts`                                                                                                                                                                                                                                                                                                                                                                              |
+| Route               | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /api/contact` | Checks honeypot, validates form data (object body, string fields, email format, max lengths 100/254/100/5000 for name/email/company/message, mirrored by `maxlength` in `ContactForm.astro`, and the optional `interest`, which must be empty or one of `INTERESTS` in `src/lib/contact.ts`; it's forwarded as "Not specified" when empty), then applies the per-IP rate limit (1 req/min via in-memory `Map`, only for valid submissions and released if Web3Forms fails) and proxies to Web3Forms |
+| `GET /og-image.png` | **Prerendered.** Generates the 1200×630 OG image at build time using **satori** + **@resvg/resvg-js**; fonts are fetched from jsDelivr and checked against pinned SHA-256 hashes (`FONT_SHA256`), so update those if the font URL changes. It must stay prerendered: as a runtime route it crashed on Vercel because satori's `harfbuzzjs/hb.wasm` isn't traced into the function bundle. Stick to glyphs in the Inter latin subset (no arrows)                                                     |
+| `GET /hero-map.svg` | **Prerendered.** The hero map SVG, built from `src/lib/heroMap.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 ### Contact form flow
 
 `ContactForm.astro` handles client-side validation and submission entirely in its own `<script>` block. It posts JSON to `/api/contact`, shows a spinner during submission, and swaps the form out for a success state on `{ success: true }`. It also fires a Vercel Analytics `track('contact_form_submitted')` event on success. The honeypot field (`name="website"`) is CSS-hidden (`.honeypot` class) rather than `display:none` so bots still fill it; the API silently returns 200 when it's non-empty.
 
-The left column also shows `hello@bloq.media` as a `mailto:` link alongside a **click-to-copy** button (`#copy-email-btn`). Clicking it calls `navigator.clipboard.writeText('hello@bloq.media')`, then toggles `.is-copied` on the button to crossfade the clipboard icon into a green checkmark (via `.copy-icon-stack`/`.copy-icon-layer`) for 2 s before reverting. If the Clipboard API is unavailable the handler falls back to `window.location.href = 'mailto:hello@bloq.media'`.
+The form sits in a split card: the left panel has the heading, a three-step "what happens next" list and the email box; the right has the fields plus an optional "What do you need?" picker (radio inputs styled as chips with `peer-checked`, options from `INTERESTS`). The email box shows `hello@bloq.media` as a `mailto:` link alongside a **click-to-copy** button (`#copy-email-btn`). Clicking it calls `navigator.clipboard.writeText('hello@bloq.media')`, then toggles `.is-copied` on the button to crossfade the clipboard icon into a green checkmark (via `.copy-icon-stack`/`.copy-icon-layer`) for 2 s before reverting. If the Clipboard API is unavailable the handler falls back to `window.location.href = 'mailto:hello@bloq.media'`.
 
 ### Hero map
 
-The hero's D3 Mercator map of Southeast Asia is drawn entirely at build time; no map JavaScript ships to the browser. `src/lib/heroMap.ts` projects the 50m world-atlas countries (paths rounded to 1 decimal) and the city markers (Singapore, Bangkok, Jakarta, Manila, Ho Chi Minh, Kuala Lumpur, Yangon) into a fixed 600×520 box. `src/pages/hero-map.svg.ts` turns that into a static SVG (country outlines, glow filter, marker dots). `Hero.astro` shows it as `<img src="/hero-map.svg" loading="lazy">` inside an `aspect-ratio: 600 / 520` container in the `hidden lg:flex` column. The lazy loading matters: browsers never fetch lazy images inside a `display:none` container, so phones and tablets skip the file. Each city gets an absolutely-positioned 28 px hover target placed with percentage `left`/`top` values from `heroMap.ts`, with a glass-style label revealed by CSS `group-hover`. The whole column is `aria-hidden="true"`.
+The hero's D3 Mercator map of Southeast Asia is drawn entirely at build time; no map JavaScript ships to the browser. `src/lib/heroMap.ts` projects the 50m world-atlas countries (paths rounded to 1 decimal) and the city markers (Singapore, Bangkok, Jakarta, Manila, Ho Chi Minh, Kuala Lumpur, Yangon) into a fixed 600×520 box. `src/pages/hero-map.svg.ts` turns that into a static SVG styled for the light hero (navy country outlines on a pale fill, navy city dots ringed in blue). `Hero.astro` shows it as `<img src="/hero-map.svg" loading="lazy">` inside an `aspect-ratio: 600 / 520` container in a white "coverage map" card, in the `hidden lg:block` column. The lazy loading matters: browsers never fetch lazy images inside a `display:none` container, so phones and tablets skip the file. Each city gets an always-visible label pill placed with percentage `left`/`top` values from `heroMap.ts`. The map card is `aria-hidden="true"`; a "Latest story" link card (the first entry in `src/lib/articles.ts`) overlaps its lower-left corner.
 
 ### Sticky mobile CTA
 

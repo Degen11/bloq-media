@@ -4,17 +4,30 @@
   --color-bloq-blue: #29abe2;
   --color-bloq-navy: #1a3c8f;
   --color-bloq-dark: #0f2260;
-  /* Lighter blue for hover states on dark backgrounds */
+  /* Lighter blue for eyebrows and hover states on dark backgrounds */
   --color-bloq-blue-light: #7fcbee;
 
-  /* Inter via Astro's Fonts API, which appends metric-matched fallbacks */
-  --font-sans: var(--font-inter);
+  /* Light-mode surfaces */
+  --color-bloq-tint: #e6eff9; /* tinted section background */
+  --color-bloq-sky: #e8f5fc; /* light blue panels and chips */
+  --color-bloq-line: #e1e8f3; /* card borders */
+  --color-bloq-line-strong: #cfdbee; /* input and secondary button borders */
+
+  /* Text */
+  --color-bloq-ink: #1b2440; /* labels and strong body text */
+  --color-bloq-slate: #44506a; /* body copy */
+  --color-bloq-muted: #5b6680; /* secondary text */
+  --color-bloq-link: #0b6fa4; /* blue text on light backgrounds (AA contrast) */
+  --color-bloq-mist: #c9d6ee; /* body copy on navy */
+
+  /* Plus Jakarta Sans via Astro's Fonts API, which appends metric-matched fallbacks */
+  --font-sans: var(--font-jakarta);
 }
 
-/* Offset in-page anchor scrolling so section headings clear the fixed navbar
+/* Offset in-page anchor scrolling so section headings clear the sticky navbar
    (≈ header height) instead of hiding underneath it. */
 html {
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 5.5rem;
 }
 
 /* ─── Themed scrollbars ──────────────────────────────────────────────────── */
@@ -70,10 +83,22 @@ html {
 }
 
 /* ─── Content card ───────────────────────────────────────────────────────── */
-/* Shared card used by the About, Why BLOQ, Services and Articles sections. */
+/* Shared white card (Why BLOQ, Articles). Lifts slightly on hover. */
 @utility card {
-  @apply rounded-2xl border border-gray-100 bg-white p-6 sm:p-8 transition-all duration-300;
-  @apply hover:border-bloq-blue/30 hover:shadow-xl hover:shadow-bloq-navy/8;
+  @apply rounded-[20px] border border-bloq-line bg-white transition duration-200;
+  @apply hover:shadow-[0_16px_40px_-16px_rgb(15_34_96/0.25)] motion-safe:hover:-translate-y-[3px];
+}
+
+/* ─── Dot-grid backgrounds ──────────────────────────────────────────────── */
+/* Subtle texture for tinted (bg-dots) and navy (bg-dots-light) sections. */
+@utility bg-dots {
+  background-image: radial-gradient(rgb(26 60 143 / 0.16) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+@utility bg-dots-light {
+  background-image: radial-gradient(rgb(255 255 255 / 0.1) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 /* Honeypot field — visually hidden but not display:none (bots detect that) */
@@ -89,13 +114,13 @@ html {
 .legal-content {
   font-size: 0.9375rem;
   line-height: 1.7;
-  color: var(--color-gray-700);
+  color: var(--color-bloq-slate);
 }
 
 .legal-content h2 {
   font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--color-gray-900);
+  font-weight: 700;
+  color: var(--color-bloq-dark);
   margin-top: 2rem;
   margin-bottom: 0.5rem;
 }
@@ -209,8 +234,8 @@ html.js-ready [data-animate].is-visible {
 .copy-icon-stack {
   position: relative;
   display: inline-flex;
-  width: 0.875rem;
-  height: 0.875rem;
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 .copy-icon-layer {

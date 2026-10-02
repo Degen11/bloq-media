@@ -25,7 +25,7 @@ describe('Hero mobile optimization', () => {
   it('loads the pre-rendered SVG lazily so hidden (mobile) layouts never fetch it', () => {
     expect(src).toContain('src="/hero-map.svg"');
     expect(src).toContain('loading="lazy"');
-    expect(src).toContain('hidden lg:flex');
+    expect(src).toContain('hidden lg:block');
   });
 
   it('reserves the map box size to avoid layout shift', () => {
@@ -34,13 +34,13 @@ describe('Hero mobile optimization', () => {
     expect(src).toContain('height={MAP_HEIGHT}');
   });
 
-  it('uses a mobile-safe viewport unit for the full-height section', () => {
-    expect(src).toContain('min-h-[100svh]');
+  it('sizes to its content instead of a viewport-height unit (no address-bar jumps)', () => {
     expect(src).not.toContain('min-h-screen');
+    expect(src).not.toContain('100vh');
   });
 
   it('scales the headline down on the smallest screens', () => {
-    expect(src).toContain('text-4xl sm:text-5xl');
+    expect(src).toContain('text-[44px] sm:text-6xl lg:text-[68px]');
   });
 });
 
@@ -85,10 +85,10 @@ describe('Responsive section spacing', () => {
 
   it('the shared Section component ramps padding by breakpoint', () => {
     const sectionTag = read('src/components/Section.astro').match(/<section[^>]*>/)?.[0] ?? '';
-    expect(sectionTag).toContain('py-20 sm:py-24 lg:py-28');
+    expect(sectionTag).toContain('py-16 sm:py-20');
   });
 
-  it.each([...sections, 'src/components/Clients.astro'])('%s is built on <Section>', (rel) => {
+  it.each(sections)('%s is built on <Section>', (rel) => {
     expect(read(rel)).toMatch(/<Section\b/);
   });
 });
@@ -99,8 +99,8 @@ describe('Responsive section spacing', () => {
 describe('Font loading', () => {
   const cfg = read('astro.config.mjs');
 
-  it('requests only the weights in use (no 800/900)', () => {
-    expect(cfg).toContain('weights: [400, 500, 600, 700]');
+  it('requests only the weights in use (no 900)', () => {
+    expect(cfg).toContain('weights: [400, 500, 600, 700, 800]');
   });
 
   it('only downloads the latin subset', () => {
@@ -129,11 +129,11 @@ describe('Hero fits the first screen on small phones', () => {
   const src = read('src/components/Hero.astro');
 
   it('uses tighter vertical padding below sm', () => {
-    expect(src).toContain('py-12 sm:py-24 lg:py-28');
+    expect(src).toContain('py-12 sm:py-16 lg:py-[72px]');
   });
 
   it('scales the intro paragraph down below sm', () => {
-    expect(src).toContain('text-lg sm:text-xl');
+    expect(src).toContain('text-lg sm:text-[19px]');
   });
 });
 

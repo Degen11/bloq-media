@@ -30,7 +30,7 @@ describe.each([
 
   it('has exactly one h1 with the page title', () => {
     expect(src.match(/<h1/g)?.length).toBe(1);
-    expect(src).toContain(`>${title}</h1>`);
+    expect(src).toMatch(new RegExp(`>\\s*${title}\\s*</h1>`));
   });
 
   it('uses h2 for sections (no skipped levels)', () => {
@@ -78,10 +78,9 @@ describe('Footer legal links', () => {
     expect(footer).not.toContain('showModal');
   });
 
-  it('bottom bar uses centered flex layout (not justify-between)', () => {
-    const bottomBar = footer.slice(footer.lastIndexOf('border-t border-white/10'));
-    expect(bottomBar).toContain('items-center gap-3');
-    expect(bottomBar).not.toContain('justify-between');
+  it('bottom bar stacks centered on phones and spreads out from sm up', () => {
+    const bottomBar = footer.slice(footer.lastIndexOf('border-t border-white/15'));
+    expect(bottomBar).toContain('flex-col sm:flex-row items-center sm:justify-between');
   });
 
   it('copyright text is present', () => {

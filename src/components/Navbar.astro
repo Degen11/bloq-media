@@ -1,37 +1,85 @@
 ---
 import { Image } from 'astro:assets';
 import Button from '@components/Button.astro';
+import Icon from '@components/Icon.astro';
 import logo from '@assets/logo.png';
-import { CONTACT_SECTION_ID, SITE_NAME, sectionHref, sections } from '@lib/site';
+import { latestArticle } from '@lib/articles';
+import {
+  CONTACT_EMAIL,
+  CONTACT_SECTION_ID,
+  SITE_NAME,
+  sectionHref,
+  sections,
+  socials,
+} from '@lib/site';
 
 const { pathname } = Astro.url;
 const contactHref = sectionHref(CONTACT_SECTION_ID, pathname);
 ---
 
-<header id="site-header" class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+<!-- Utility bar: scrolls away; only the header below it sticks -->
+<div class="bg-bloq-dark text-[13px] text-[#dce6f7]">
+  <div class="max-w-7xl mx-auto px-6 h-[38px] flex items-center justify-between gap-4">
+    <p class="flex items-center gap-2.5 min-w-0">
+      <span class="w-[7px] h-[7px] shrink-0 rounded-full bg-bloq-blue" aria-hidden="true"></span>
+      <span class="truncate">New on Medium: {latestArticle.shortTitle}</span>
+      <a
+        href={latestArticle.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="shrink-0 font-semibold text-white underline underline-offset-[3px] hover:text-bloq-blue-light"
+      >
+        Read it
+      </a>
+    </p>
+    <div class="hidden md:flex items-center gap-[18px]">
+      <a href={`mailto:${CONTACT_EMAIL}`} class="hover:text-white transition-colors">
+        {CONTACT_EMAIL}
+      </a>
+      <span class="w-px h-3.5 bg-white/25" aria-hidden="true"></span>
+      {socials.map((social) => (
+        <a
+          href={social.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${SITE_NAME} on ${social.label}`}
+          class="flex hover:text-white transition-colors"
+        >
+          <Icon name={social.icon} class="w-3.5 h-3.5" />
+        </a>
+      ))}
+    </div>
+  </div>
+</div>
+
+<header
+  id="site-header"
+  class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-bloq-line"
+>
+  <div class="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
     <a href="/" aria-label="BLOQ Media Home">
-      <Image src={logo} alt={SITE_NAME} height={72} loading="eager" class="h-9 w-auto" />
+      <Image src={logo} alt={SITE_NAME} height={68} loading="eager" class="h-[34px] w-auto" />
     </a>
 
-    <nav class="hidden md:flex items-center gap-8">
+    <nav class="hidden md:flex items-center gap-[30px]">
       {sections.map((section) => (
         <a
           href={sectionHref(section.id, pathname)}
           data-section={section.id}
-          class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200"
+          class="text-bloq-slate hover:text-bloq-dark text-[15px] font-medium transition-colors duration-200"
         >
           {section.label}
         </a>
       ))}
       <Button href={contactHref} size="sm">
-        Contact Us
+        Contact us
+        <Icon name="arrow-right" class="w-4 h-4" />
       </Button>
     </nav>
 
     <button
       id="menu-toggle"
-      class="md:hidden text-gray-700 p-2.5 -mr-2.5"
+      class="md:hidden text-bloq-dark p-2.5 -mr-2.5"
       aria-label="Toggle menu"
       aria-expanded="false"
       aria-controls="mobile-menu"
@@ -43,7 +91,7 @@ const contactHref = sectionHref(CONTACT_SECTION_ID, pathname);
           stroke-linejoin="round"
           stroke-width="2"
           d="M4 6h16M4 12h16M4 18h16"
-        />
+        ></path>
         <path
           id="icon-close"
           class="hidden"
@@ -51,7 +99,7 @@ const contactHref = sectionHref(CONTACT_SECTION_ID, pathname);
           stroke-linejoin="round"
           stroke-width="2"
           d="M6 18L18 6M6 6l12 12"
-        />
+        ></path>
       </svg>
     </button>
   </div>
@@ -59,7 +107,7 @@ const contactHref = sectionHref(CONTACT_SECTION_ID, pathname);
   <div
     id="mobile-menu"
     inert
-    class="md:hidden border-t border-gray-100 overflow-hidden"
+    class="md:hidden border-t border-bloq-line overflow-hidden"
     style="max-height: 0; opacity: 0; transition: max-height 0.3s ease, opacity 0.3s ease;"
   >
     <div class="px-6 py-4 flex flex-col gap-1">
@@ -67,13 +115,13 @@ const contactHref = sectionHref(CONTACT_SECTION_ID, pathname);
         <a
           href={sectionHref(section.id, pathname)}
           data-section={section.id}
-          class="block py-3 text-gray-600 hover:text-gray-900 text-base font-medium"
+          class="block py-3 text-gray-600 hover:text-bloq-dark text-base font-medium"
         >
           {section.label}
         </a>
       ))}
       <Button href={contactHref} class="mt-2">
-        Contact Us
+        Contact us
       </Button>
     </div>
   </div>
@@ -148,15 +196,22 @@ const contactHref = sectionHref(CONTACT_SECTION_ID, pathname);
   const spySectionIds = [...sections.map((s) => s.id), CONTACT_SECTION_ID];
   const spyLinks = document.querySelectorAll<HTMLAnchorElement>('[data-section]');
 
+  // Picks the lowest section whose top has passed the navbar. Compares page
+  // positions rather than relying on list order, since the nav order doesn't
+  // match the page order (Clients sits right under the hero).
   function getActiveSection(): string {
     const navHeight = header?.offsetHeight ?? 80;
     // Extra buffer so the link activates just before the section top hits the navbar
-    const offset = navHeight + 32;
+    const line = window.scrollY + navHeight + 32;
     let active = '';
+    let activeTop = -Infinity;
     for (const id of spySectionIds) {
       const el = document.getElementById(id);
-      if (el && window.scrollY >= el.offsetTop - offset) {
+      if (!el) continue;
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      if (top <= line && top > activeTop) {
         active = id;
+        activeTop = top;
       }
     }
     return active;

@@ -21,23 +21,29 @@ const {
   ...attrs
 } = Astro.props;
 const hasIntro = Astro.slots.has('default');
+const dark = tone === 'dark';
 ---
 
 <div class:list={[align === 'center' && 'text-center mx-auto', className]} {...attrs}>
-  <p class="text-bloq-blue text-sm font-semibold uppercase tracking-widest mb-4">{eyebrow}</p>
+  <p
+    class:list={[
+      'text-[13px] font-bold uppercase tracking-[0.12em] mb-3.5',
+      dark ? 'text-bloq-blue-light' : 'text-bloq-link',
+    ]}
+  >
+    {eyebrow}
+  </p>
   <Heading
     class:list={[
-      'text-4xl md:text-5xl font-bold leading-tight',
-      tone === 'dark' ? 'text-white' : 'text-gray-900',
-      hasIntro && 'mb-6',
+      'text-4xl md:text-5xl font-extrabold leading-[1.05] tracking-tight',
+      dark ? 'text-white' : 'text-bloq-dark',
+      hasIntro && 'mb-4',
     ]}
   >
     {title}
   </Heading>
   {hasIntro && (
-    <p
-      class:list={['text-lg leading-relaxed', tone === 'dark' ? 'text-white/60' : 'text-gray-500']}
-    >
+    <p class:list={['text-[17px] leading-relaxed', dark ? 'text-bloq-mist' : 'text-bloq-slate']}>
       <slot />
     </p>
   )}
