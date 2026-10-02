@@ -1,8 +1,9 @@
 ---
 import Analytics from '@vercel/analytics/astro';
 import { Font } from 'astro:assets';
-import logoImg from '../assets/logo.png';
-import '../styles/global.css';
+import logoImg from '@assets/logo.png';
+import { BRAND, CONTACT_EMAIL, SITE_NAME, TWITTER_HANDLE, socials } from '@lib/site';
+import '@styles/global.css';
 
 interface Props {
   title?: string;
@@ -14,8 +15,7 @@ interface Props {
 
 const {
   title = 'BLOQ Media | Shaping Tech Narratives in Southeast Asia',
-  description =
-    'BLOQ Media covers tech and blockchain in Southeast Asia, with news, content strategy, and digital marketing for the region\'s most innovative companies.',
+  description = "BLOQ Media covers tech and blockchain in Southeast Asia, with news, content strategy, and digital marketing for the region's most innovative companies.",
   ogImage = '/og-image.png',
   noindex = false,
 } = Astro.props;
@@ -32,35 +32,39 @@ const orgSchema = {
   '@context': 'https://schema.org',
   '@type': ['Organization', 'NewsMediaOrganization'],
   '@id': orgId,
-  name: 'BLOQ Media',
+  name: SITE_NAME,
   url: siteUrl,
   logo: absoluteLogo,
   description:
     'BLOQ Media is a news organization and digital marketing agency specializing in tech and blockchain in Southeast Asia.',
-  email: 'hello@bloq.media',
+  email: CONTACT_EMAIL,
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer support',
-    email: 'hello@bloq.media',
+    email: CONTACT_EMAIL,
     url: `${siteUrl}#contact`,
     availableLanguage: 'English',
   },
   areaServed: 'Southeast Asia',
-  sameAs: [
-    'https://x.com/_BLOQMedia',
-    'https://www.linkedin.com/company/bloq-media/',
-    'https://medium.com/@bloqmedia',
+  sameAs: socials.map((s) => s.href),
+  knowsAbout: [
+    'Blockchain',
+    'Technology',
+    'Digital Marketing',
+    'Content Strategy',
+    'Fintech',
+    'Web3',
   ],
-  knowsAbout: ['Blockchain', 'Technology', 'Digital Marketing', 'Content Strategy', 'Fintech', 'Web3'],
 };
 
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   '@id': `${siteUrl}#website`,
-  name: 'BLOQ Media',
+  name: SITE_NAME,
   url: siteUrl,
-  description: 'News organization and digital marketing agency for tech and blockchain in Southeast Asia',
+  description:
+    'News organization and digital marketing agency for tech and blockchain in Southeast Asia',
   publisher: { '@id': orgId },
 };
 ---
@@ -70,39 +74,49 @@ const websiteSchema = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#1A3C8F" />
+    <meta name="theme-color" content={BRAND.navy} />
 
     <!-- Primary meta -->
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta
       name="robots"
-      content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+      content={
+        noindex
+          ? 'noindex, follow'
+          : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+      }
     />
-    <meta name="author" content="BLOQ Media" />
+    <meta name="author" content={SITE_NAME} />
     {!noindex && <link rel="canonical" href={canonicalURL} />}
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     {!noindex && <meta property="og:url" content={canonicalURL} />}
-    <meta property="og:site_name" content="BLOQ Media" />
+    <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={absoluteOgImage} />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="BLOQ Media — Shaping Tech Narratives in Southeast Asia" />
+    <meta
+      property="og:image:alt"
+      content="BLOQ Media — Shaping Tech Narratives in Southeast Asia"
+    />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@_BLOQMedia" />
-    <meta name="twitter:creator" content="@_BLOQMedia" />
+    <meta name="twitter:site" content={TWITTER_HANDLE} />
+    <meta name="twitter:creator" content={TWITTER_HANDLE} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={absoluteOgImage} />
-    <meta name="twitter:image:alt" content="BLOQ Media — Shaping Tech Narratives in Southeast Asia" />
+    <meta
+      name="twitter:image:alt"
+      content="BLOQ Media — Shaping Tech Narratives in Southeast Asia"
+    />
 
     <!-- Favicons -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -118,9 +132,10 @@ const websiteSchema = {
     <!-- Structured data -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
     <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
-
     <!-- Gate scroll-animation hidden state: elements stay visible if JS never runs -->
-    <script is:inline>document.documentElement.classList.add('js-ready');</script>
+    <script is:inline>
+      document.documentElement.classList.add('js-ready');
+    </script>
   </head>
   <body class="font-sans antialiased text-gray-900 bg-white">
     <a

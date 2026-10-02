@@ -10,6 +10,8 @@ npm run dev          # start dev server (localhost:4321)
 npm run build        # production build
 npm run preview      # preview production build locally
 npm run check        # TypeScript / Astro type-check
+npm run lint         # ESLint (JS/TS/Astro)
+npm run format       # Prettier, writes changes (format:check only reports)
 
 # Testing
 npm test             # run all tests once
@@ -52,14 +54,26 @@ Display images (BLOQ logo, client logos) live in `src/assets/` and are rendered 
 
 ### Path aliases
 
-`tsconfig.json` maps `@components/*` → `src/components/*` and `@layouts/*` → `src/layouts/*`. Use these everywhere instead of relative paths.
+`tsconfig.json` maps `@components/*`, `@layouts/*`, `@assets/*`, `@lib/*` and `@styles/*` to the matching `src/` folders, and `vitest.config.ts` mirrors them. Use these everywhere instead of relative paths.
+
+### Shared data and building blocks
+
+- `src/lib/site.ts` is the single source for `SITE_NAME`, `CONTACT_EMAIL` (public), `TEAM_EMAIL` (legal pages and the API's CC), `socials`, the homepage `sections` list, `BRAND` colors (for places that can't read the Tailwind theme, like the OG image), and `sectionHref(id, pathname)`. Navbar, Footer, scroll-spy, ContactForm, the legal pages, JSON-LD and the API all read from it, so never hardcode an email, social URL or section id.
+- `src/lib/contact.ts` holds `EMAIL_RE` and `MAX_LENGTH`, shared by the form and the API.
+- `src/lib/icons.ts` holds every inline SVG icon; render them with `<Icon name="..." class="w-5 h-5" />` (always `aria-hidden`).
+- `<Section id class containerClass>` wraps homepage sections with the standard `py-20 sm:py-24 lg:py-28` padding and `max-w-7xl` container (a `background` slot sits behind the content).
+- `<SectionHeading eyebrow title align tone as>` renders the eyebrow, heading and optional intro (default slot). `tone="dark"` is for navy backgrounds.
+- `<Button href? variant size>` renders an `<a>` or `<button>`. Variants: `primary` (navy), `accent` (bloq-blue), `outline` (light bg), `ghost` (dark bg). Sizes: `sm`, `md`, `lg`.
+- The `card` utility in `global.css` is the shared content card used by About, Why BLOQ, Services and Articles.
+
+Site copy uses US spelling.
 
 ### Styling
 
 Tailwind CSS v4 is loaded via `@tailwindcss/vite` (no `tailwind.config.*` file). Custom brand tokens are defined in `src/styles/global.css` under `@theme`:
 
-| Token | Hex |
-|---|---|
+| Token       | Hex       |
+| ----------- | --------- |
 | `bloq-blue` | `#29ABE2` |
 | `bloq-navy` | `#1A3C8F` |
 | `bloq-dark` | `#0F2260` |
@@ -68,22 +82,22 @@ Tailwind CSS v4 is loaded via `@tailwindcss/vite` (no `tailwind.config.*` file).
 
 It also houses the UI enhancement utilities added for polish:
 
-| Class / selector | Purpose |
-|---|---|
-| `html.js-ready [data-animate]` | Initial hidden state for scroll-triggered elements (`opacity: 0; transform: translateY(16px)`) |
-| `html.js-ready [data-animate].is-visible` | Visible state applied by `IntersectionObserver` in `Layout.astro` |
-| `#site-header` | Smooth `box-shadow` transition for scroll-aware navbar |
-| `#site-header.header-scrolled` | Shadow applied after 10 px of scroll; toggled by `Navbar.astro` script |
-| `.field-shake` | `@keyframes field-shake` animation applied to invalid form fields on submit |
-| `.nav-active` | Applied by scroll-spy in `Navbar.astro` to highlight the link for the currently visible section. Sets the navy colour, `font-weight: 600`, and a 2 px `bloq-blue` underline (`text-underline-offset: 6px`) so the active section reads clearly beyond colour alone. Unlayered so it beats Tailwind utility colours without `!important` |
-| `.copy-icon-stack` / `.copy-icon-layer` | Stack the clipboard and check SVGs inside `#copy-email-btn` so they crossfade. The check icon (`#check-icon`) starts `opacity: 0; scale(0.5)`; adding `.is-copied` to the button fades/scales it in and the clipboard out over 200 ms. Disabled under `prefers-reduced-motion: reduce` |
-| `scrollbar-color` / `::-webkit-scrollbar*` | Themed scrollbars (bloq-navy thumb on a light-gray track) instead of the default OS gray, applied globally to `html` so it covers the page and any scrollable containers. A `prefers-color-scheme: dark` block swaps in a bloq-blue thumb on a bloq-dark track to match dark browser/OS chrome |
+| Class / selector                           | Purpose                                                                                                                                                                                                                                                                                                                              |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `html.js-ready [data-animate]`             | Initial hidden state for scroll-triggered elements (`opacity: 0; transform: translateY(16px)`)                                                                                                                                                                                                                                       |
+| `html.js-ready [data-animate].is-visible`  | Visible state applied by `IntersectionObserver` in `Layout.astro`                                                                                                                                                                                                                                                                    |
+| `#site-header`                             | Smooth `box-shadow` transition for scroll-aware navbar                                                                                                                                                                                                                                                                               |
+| `#site-header.header-scrolled`             | Shadow applied after 10 px of scroll; toggled by `Navbar.astro` script                                                                                                                                                                                                                                                               |
+| `.field-shake`                             | `@keyframes field-shake` animation applied to invalid form fields on submit                                                                                                                                                                                                                                                          |
+| `.nav-active`                              | Applied by scroll-spy in `Navbar.astro` to highlight the link for the currently visible section. Sets the navy color, `font-weight: 600`, and a 2 px `bloq-blue` underline (`text-underline-offset: 6px`) so the active section reads clearly beyond color alone. Unlayered so it beats Tailwind utility colors without `!important` |
+| `.copy-icon-stack` / `.copy-icon-layer`    | Stack the clipboard and check SVGs inside `#copy-email-btn` so they crossfade. The check icon (`#check-icon`) starts `opacity: 0; scale(0.5)`; adding `.is-copied` to the button fades/scales it in and the clipboard out over 200 ms. Disabled under `prefers-reduced-motion: reduce`                                               |
+| `scrollbar-color` / `::-webkit-scrollbar*` | Themed scrollbars (bloq-navy thumb on a light-gray track) instead of the default OS gray, applied globally to `html` so it covers the page and any scrollable containers. A `prefers-color-scheme: dark` block swaps in a bloq-blue thumb on a bloq-dark track to match dark browser/OS chrome                                       |
 
 ### Scroll-triggered entrance animations
 
 `Layout.astro` contains an `IntersectionObserver` (`<script>` before `</body>`) that adds `is-visible` to every `[data-animate]` element as it enters the viewport. A `js-ready` class on `<html>` (set by an `is:inline` script in `<head>`) gates the hidden state so content is always visible when JS is disabled. Stagger delays are set via inline `style="transition-delay: Nms"` on individual items inside loops; the observer clears each delay after 1 s so hover transitions on cards are not affected.
 
-### Navbar behaviour
+### Navbar behavior
 
 - **Scroll-aware shadow:** The `#site-header` starts borderless-shadow; the `header-scrolled` class adds a soft `box-shadow` after 10 px of scroll. Toggled by a passive `scroll` listener in `Navbar.astro`.
 - **Mobile menu animation:** The mobile menu uses a `max-height` + `opacity` CSS transition (set inline on the element) instead of `display:none` toggling, giving a smooth slide open/close on tap. Both properties share the same `0.3s` duration so the slide and fade finish together. Its links are `py-3 text-base` (48 px tap targets).
@@ -92,11 +106,11 @@ It also houses the UI enhancement utilities added for polish:
 
 ### Server routes
 
-| Route | Purpose |
-|---|---|
-| `POST /api/contact` | Checks honeypot, validates form data (object body, string fields, email format, max lengths 100/254/100/5000 for name/email/company/message, mirrored by `maxlength` in `ContactForm.astro`), then applies the per-IP rate limit (1 req/min via in-memory `Map`, only for valid submissions and released if Web3Forms fails) and proxies to Web3Forms |
+| Route               | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /api/contact` | Checks honeypot, validates form data (object body, string fields, email format, max lengths 100/254/100/5000 for name/email/company/message, mirrored by `maxlength` in `ContactForm.astro`), then applies the per-IP rate limit (1 req/min via in-memory `Map`, only for valid submissions and released if Web3Forms fails) and proxies to Web3Forms                                                                                           |
 | `GET /og-image.png` | **Prerendered.** Generates the 1200×630 OG image at build time using **satori** + **@resvg/resvg-js**; fonts are fetched from jsDelivr and checked against pinned SHA-256 hashes (`FONT_SHA256`), so update those if the font URL changes. It must stay prerendered: as a runtime route it crashed on Vercel because satori's `harfbuzzjs/hb.wasm` isn't traced into the function bundle. Stick to glyphs in the Inter latin subset (no arrows) |
-| `GET /hero-map.svg` | **Prerendered.** The hero map SVG, built from `src/lib/heroMap.ts` |
+| `GET /hero-map.svg` | **Prerendered.** The hero map SVG, built from `src/lib/heroMap.ts`                                                                                                                                                                                                                                                                                                                                                                              |
 
 ### Contact form flow
 

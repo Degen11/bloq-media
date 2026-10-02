@@ -1,0 +1,44 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// Eyebrow + heading (+ optional intro paragraph from the default slot) used at
+// the top of every section. `tone="dark"` is for navy backgrounds.
+interface Props extends HTMLAttributes<'div'> {
+  eyebrow: string;
+  title: string;
+  align?: 'left' | 'center';
+  tone?: 'light' | 'dark';
+  as?: 'h1' | 'h2';
+}
+
+const {
+  eyebrow,
+  title,
+  align = 'left',
+  tone = 'light',
+  as: Heading = 'h2',
+  class: className,
+  ...attrs
+} = Astro.props;
+const hasIntro = Astro.slots.has('default');
+---
+
+<div class:list={[align === 'center' && 'text-center mx-auto', className]} {...attrs}>
+  <p class="text-bloq-blue text-sm font-semibold uppercase tracking-widest mb-4">{eyebrow}</p>
+  <Heading
+    class:list={[
+      'text-4xl md:text-5xl font-bold leading-tight',
+      tone === 'dark' ? 'text-white' : 'text-gray-900',
+      hasIntro && 'mb-6',
+    ]}
+  >
+    {title}
+  </Heading>
+  {hasIntro && (
+    <p
+      class:list={['text-lg leading-relaxed', tone === 'dark' ? 'text-white/60' : 'text-gray-500']}
+    >
+      <slot />
+    </p>
+  )}
+</div>

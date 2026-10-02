@@ -1,30 +1,32 @@
 ---
 import { Image } from 'astro:assets';
-import logo from '../assets/logo.png';
+import Button from '@components/Button.astro';
+import logo from '@assets/logo.png';
+import { CONTACT_SECTION_ID, SITE_NAME, sectionHref, sections } from '@lib/site';
 
-// Section anchors live on the homepage, so prefix them with "/" on other pages
-// (privacy, terms, 404) or they'd point at sections that don't exist there.
-const home = Astro.url.pathname === '/' ? '' : '/';
+const { pathname } = Astro.url;
+const contactHref = sectionHref(CONTACT_SECTION_ID, pathname);
 ---
 
 <header id="site-header" class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
   <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="/" aria-label="BLOQ Media Home">
-      <Image src={logo} alt="BLOQ Media" height={72} loading="eager" class="h-9 w-auto" />
+      <Image src={logo} alt={SITE_NAME} height={72} loading="eager" class="h-9 w-auto" />
     </a>
 
     <nav class="hidden md:flex items-center gap-8">
-      <a href={`${home}#about`} data-section="about" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">About</a>
-      <a href={`${home}#why`} data-section="why" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Why BLOQ</a>
-      <a href={`${home}#services`} data-section="services" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Services</a>
-      <a href={`${home}#articles`} data-section="articles" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Articles</a>
-      <a href={`${home}#clients`} data-section="clients" class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200">Clients</a>
-      <a
-        href={`${home}#contact`}
-        class="bg-bloq-navy text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-bloq-dark transition-colors duration-200"
-      >
+      {sections.map((section) => (
+        <a
+          href={sectionHref(section.id, pathname)}
+          data-section={section.id}
+          class="text-gray-500 hover:text-gray-900 text-sm font-medium transition-colors duration-200"
+        >
+          {section.label}
+        </a>
+      ))}
+      <Button href={contactHref} size="sm">
         Contact Us
-      </a>
+      </Button>
     </nav>
 
     <button
@@ -34,9 +36,22 @@ const home = Astro.url.pathname === '/' ? '' : '/';
       aria-expanded="false"
       aria-controls="mobile-menu"
     >
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path id="icon-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        <path id="icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          id="icon-open"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+        <path
+          id="icon-close"
+          class="hidden"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
       </svg>
     </button>
   </div>
@@ -48,22 +63,25 @@ const home = Astro.url.pathname === '/' ? '' : '/';
     style="max-height: 0; opacity: 0; transition: max-height 0.3s ease, opacity 0.3s ease;"
   >
     <div class="px-6 py-4 flex flex-col gap-1">
-      <a href={`${home}#about`} data-section="about" class="block py-3 text-gray-600 hover:text-gray-900 text-base font-medium">About</a>
-      <a href={`${home}#why`} data-section="why" class="block py-3 text-gray-600 hover:text-gray-900 text-base font-medium">Why BLOQ</a>
-      <a href={`${home}#services`} data-section="services" class="block py-3 text-gray-600 hover:text-gray-900 text-base font-medium">Services</a>
-      <a href={`${home}#articles`} data-section="articles" class="block py-3 text-gray-600 hover:text-gray-900 text-base font-medium">Articles</a>
-      <a href={`${home}#clients`} data-section="clients" class="block py-3 text-gray-600 hover:text-gray-900 text-base font-medium">Clients</a>
-      <a
-        href={`${home}#contact`}
-        class="mt-2 bg-bloq-navy text-white px-5 py-3 rounded-lg text-base font-semibold text-center"
-      >
+      {sections.map((section) => (
+        <a
+          href={sectionHref(section.id, pathname)}
+          data-section={section.id}
+          class="block py-3 text-gray-600 hover:text-gray-900 text-base font-medium"
+        >
+          {section.label}
+        </a>
+      ))}
+      <Button href={contactHref} class="mt-2">
         Contact Us
-      </a>
+      </Button>
     </div>
   </div>
 </header>
 
 <script>
+  import { CONTACT_SECTION_ID, sections } from '@lib/site';
+
   // ── Mobile menu slide animation ──────────────────────────────────────────
   const toggle = document.getElementById('menu-toggle');
   const menu = document.getElementById('mobile-menu') as HTMLElement | null;
@@ -99,7 +117,8 @@ const home = Astro.url.pathname === '/' ? '' : '/';
   }
 
   toggle?.addEventListener('click', () => {
-    menuOpen ? closeMenu() : openMenu();
+    if (menuOpen) closeMenu();
+    else openMenu();
   });
 
   menu?.querySelectorAll('a').forEach((link) => {
@@ -125,7 +144,8 @@ const home = Astro.url.pathname === '/' ? '' : '/';
   const header = document.getElementById('site-header');
 
   // ── Scroll-spy: highlight the nav link for the current section ────────────
-  const spySectionIds = ['about', 'why', 'services', 'articles', 'clients', 'contact'];
+  // Contact is spied too, so no nav link stays highlighted over the form
+  const spySectionIds = [...sections.map((s) => s.id), CONTACT_SECTION_ID];
   const spyLinks = document.querySelectorAll<HTMLAnchorElement>('[data-section]');
 
   function getActiveSection(): string {

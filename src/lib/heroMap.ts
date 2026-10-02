@@ -21,7 +21,10 @@ const seaCollection: GeoJSON.FeatureCollection = {
 };
 
 const projection = geoMercator().fitExtent(
-  [[24, 24], [MAP_WIDTH - 24, MAP_HEIGHT - 24]],
+  [
+    [24, 24],
+    [MAP_WIDTH - 24, MAP_HEIGHT - 24],
+  ],
   seaCollection,
 );
 
@@ -31,13 +34,13 @@ const path = geoPath().projection(projection).digits(1);
 export const countryPaths: string[] = seaCollection.features.map((f) => path(f) ?? '');
 
 const CITIES: { name: string; coords: [number, number] }[] = [
-  { name: 'Singapore',    coords: [103.82, 1.35] },
-  { name: 'Bangkok',      coords: [100.52, 13.75] },
-  { name: 'Jakarta',      coords: [106.85, -6.21] },
-  { name: 'Manila',       coords: [120.98, 14.60] },
-  { name: 'Ho Chi Minh',  coords: [106.66, 10.78] },
+  { name: 'Singapore', coords: [103.82, 1.35] },
+  { name: 'Bangkok', coords: [100.52, 13.75] },
+  { name: 'Jakarta', coords: [106.85, -6.21] },
+  { name: 'Manila', coords: [120.98, 14.6] },
+  { name: 'Ho Chi Minh', coords: [106.66, 10.78] },
   { name: 'Kuala Lumpur', coords: [101.69, 3.14] },
-  { name: 'Yangon',       coords: [96.17, 16.87] },
+  { name: 'Yangon', coords: [96.17, 16.87] },
 ];
 
 export const cities = CITIES.map(({ name, coords }) => {

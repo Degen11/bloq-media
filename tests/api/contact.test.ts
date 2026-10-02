@@ -8,10 +8,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { POST } from '../../src/pages/api/contact';
 
 // Build a minimal Astro-compatible context
-function makeCtx(
-  body: Record<string, unknown>,
-  ip = `test-${Math.random()}`
-) {
+function makeCtx(body: Record<string, unknown>, ip = `test-${Math.random()}`) {
   const request = new Request('http://localhost/api/contact', {
     method: 'POST',
     headers: {
@@ -37,7 +34,7 @@ beforeEach(() => {
     'fetch',
     vi.fn().mockResolvedValue({
       json: async () => ({ success: true }),
-    })
+    }),
   );
 });
 
@@ -168,7 +165,7 @@ describe('field validation', () => {
       const res = await POST(makeCtx({ ...validBody, [key]: { trim: 1 } }));
       expect(res.status).toBe(400);
       expect(vi.mocked(fetch)).not.toHaveBeenCalled();
-    }
+    },
   );
 
   it('returns 400 for a malformed email', async () => {
@@ -196,14 +193,14 @@ describe('field validation', () => {
         email: `${'a'.repeat(242)}@example.com`,
         company: 'a'.repeat(100),
         message: 'a'.repeat(5000),
-      })
+      }),
     );
     expect(res.status).toBe(200);
   });
 
   it('collapses line breaks in single-line fields but keeps them in the message', async () => {
     await POST(
-      makeCtx({ ...validBody, name: 'Jane\r\nBcc: x@evil.test', message: 'Line 1\nLine 2' })
+      makeCtx({ ...validBody, name: 'Jane\r\nBcc: x@evil.test', message: 'Line 1\nLine 2' }),
     );
     const [, opts] = vi.mocked(fetch).mock.calls[0] as [string, RequestInit];
     const sent = JSON.parse(opts.body as string);

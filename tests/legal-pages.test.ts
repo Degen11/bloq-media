@@ -43,8 +43,16 @@ describe.each([
     expect(src).toContain('Singapore');
   });
 
-  it('links to the contact email', () => {
-    expect(src).toContain('mailto:degen@bloq.media');
+  it('links to the team email from the shared site constants', () => {
+    expect(src).toContain("import { TEAM_EMAIL } from '@lib/site'");
+    expect(src).toContain('href={`mailto:${TEAM_EMAIL}`}');
+    expect(read('src/lib/site.ts')).toContain("TEAM_EMAIL = 'degen@bloq.media'");
+  });
+
+  it('uses US spelling', () => {
+    expect(src).not.toMatch(
+      /specialis|authoris|organis|recognis|enquir|colour|behaviour|licence|centre/i,
+    );
   });
 
   it('renders inside the shared layout with navbar and footer', () => {
@@ -82,11 +90,17 @@ describe('Footer legal links', () => {
 });
 
 describe('Section anchors work from non-home pages', () => {
+  it('sectionHref prefixes anchors with "/" off the homepage', async () => {
+    const { sectionHref } = await import('../src/lib/site');
+    expect(sectionHref('about', '/')).toBe('#about');
+    expect(sectionHref('about', '/privacy')).toBe('/#about');
+  });
+
   it.each(['src/components/Navbar.astro', 'src/components/Footer.astro'])(
-    '%s prefixes section anchors with "/" off the homepage',
+    '%s builds section links with sectionHref',
     (file) => {
       const src = read(file);
-      expect(src).toContain("const home = Astro.url.pathname === '/' ? '' : '/';");
+      expect(src).toContain('sectionHref(');
       expect(src).not.toMatch(/href="#(about|why|services|articles|clients|contact)"/);
     },
   );

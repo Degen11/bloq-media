@@ -1,0 +1,18 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+// Standard homepage section: shared vertical rhythm and content width.
+// Anything in the "background" slot sits behind the content container.
+interface Props extends HTMLAttributes<'section'> {
+  containerClass?: string;
+}
+
+const { class: className, containerClass, ...attrs } = Astro.props;
+---
+
+<section class:list={['py-20 sm:py-24 lg:py-28', className]} {...attrs}>
+  <slot name="background" />
+  <div class:list={['max-w-7xl mx-auto px-6', containerClass]}>
+    <slot />
+  </div>
+</section>

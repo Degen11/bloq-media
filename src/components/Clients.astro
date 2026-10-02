@@ -1,10 +1,12 @@
 ---
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import blockchainSpaceLogo from '../assets/blockchainspace-logo.jpg';
-import cbrMediaLogo from '../assets/cbr-media.jpg';
-import meeOppLogo from '../assets/meeopp.png';
-import zCloakLogo from '../assets/zcloak-network-logo.png';
+import Section from '@components/Section.astro';
+import SectionHeading from '@components/SectionHeading.astro';
+import blockchainSpaceLogo from '@assets/blockchainspace-logo.jpg';
+import cbrMediaLogo from '@assets/cbr-media.jpg';
+import meeOppLogo from '@assets/meeopp.png';
+import zCloakLogo from '@assets/zcloak-network-logo.png';
 
 interface Client {
   name: string;
@@ -20,32 +22,31 @@ const clients: Client[] = [
 ];
 ---
 
-<section id="clients" class="py-20 lg:py-24 bg-gray-50">
-  <div class="max-w-7xl mx-auto px-6">
+<Section id="clients" class="bg-gray-50">
+  <SectionHeading
+    data-animate
+    align="center"
+    class="mb-14"
+    eyebrow="Our Partners"
+    title="Clients We've Worked With"
+  />
 
-    <div data-animate class="text-center mb-14">
-      <p class="text-bloq-blue text-sm font-semibold uppercase tracking-widest mb-4">Our Partners</p>
-      <h2 class="text-4xl md:text-5xl font-bold text-gray-900">Clients We've Worked With</h2>
-    </div>
-
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 items-center">
-      {clients.map((client, i) => (
-        <div
-          data-animate
-          style={i > 0 ? `transition-delay: ${i * 75}ms` : undefined}
-          class="bg-white rounded-2xl border border-gray-100 p-4 md:p-6 flex items-center justify-center h-28 hover:shadow-md hover:border-gray-200 transition-all duration-300"
-        >
-          <Image
-            src={client.logo}
-            alt={client.name}
-            height={128}
-            loading="lazy"
-            decoding="async"
-            class={`${client.logoClass ?? 'max-h-12'} w-auto max-w-full object-contain`}
-          />
-        </div>
-      ))}
-    </div>
-
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 items-center">
+    {clients.map((client, i) => (
+      <div
+        data-animate
+        style={i > 0 ? `transition-delay: ${i * 75}ms` : undefined}
+        class="bg-white rounded-2xl border border-gray-100 p-4 md:p-6 flex items-center justify-center h-28 hover:shadow-md hover:border-gray-200 transition-all duration-300"
+      >
+        <Image
+          src={client.logo}
+          alt={client.name}
+          height={128}
+          loading="lazy"
+          decoding="async"
+          class={`${client.logoClass ?? 'max-h-12'} w-auto max-w-full object-contain`}
+        />
+      </div>
+    ))}
   </div>
-</section>
+</Section>

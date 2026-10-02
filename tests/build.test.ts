@@ -5,7 +5,7 @@
  *
  * The nodejs18.x issue was the original bug that started this session.
  */
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, readdirSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import { describe, it, expect } from 'vitest';
 
@@ -44,12 +44,8 @@ describe.skipIf(!hasBuild)('client bundle', () => {
   });
 
   it('contact form script is bundled as external file (has npm import)', () => {
-    const files = existsSync(clientDir)
-      ? require('fs').readdirSync(clientDir)
-      : [];
-    const hasContactScript = files.some((f: string) =>
-      f.includes('ContactForm')
-    );
+    const files = existsSync(clientDir) ? readdirSync(clientDir) : [];
+    const hasContactScript = files.some((f: string) => f.includes('ContactForm'));
     expect(hasContactScript).toBe(true);
   });
 });

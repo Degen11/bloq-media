@@ -68,8 +68,7 @@ describe('vercel.json', () => {
   });
 
   const cfg = readJSON('vercel.json');
-  const headerEntries: { key: string; value: string }[] =
-    cfg.headers?.[0]?.headers ?? [];
+  const headerEntries: { key: string; value: string }[] = cfg.headers?.[0]?.headers ?? [];
   const headerMap = Object.fromEntries(headerEntries.map((h) => [h.key, h.value]));
 
   it('sets X-Frame-Options to DENY', () => {

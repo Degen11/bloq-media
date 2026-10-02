@@ -56,8 +56,7 @@ describe('Navbar touch targets', () => {
   });
 
   it('mobile menu links are block-level with 44px+ tap targets', () => {
-    const blockLinks = (src.match(/class="block py-3 text-gray-600[^"]*text-base/g) ?? []).length;
-    expect(blockLinks).toBeGreaterThanOrEqual(5);
+    expect(src).toMatch(/sections\.map[\s\S]*?class="block py-3 text-gray-600[^"]*text-base/);
   });
 });
 
@@ -84,12 +83,13 @@ describe('Responsive section spacing', () => {
     'src/components/ContactForm.astro',
   ];
 
-  it.each(sections)('%s uses responsive vertical padding (not a fixed py-28)', (rel) => {
-    const src = read(rel);
-    // The opening <section> tag should ramp padding by breakpoint.
-    const sectionTag = src.match(/<section[^>]*>/)?.[0] ?? '';
-    expect(sectionTag).toContain('py-20');
-    expect(sectionTag).toContain('lg:py-28');
+  it('the shared Section component ramps padding by breakpoint', () => {
+    const sectionTag = read('src/components/Section.astro').match(/<section[^>]*>/)?.[0] ?? '';
+    expect(sectionTag).toContain('py-20 sm:py-24 lg:py-28');
+  });
+
+  it.each([...sections, 'src/components/Clients.astro'])('%s is built on <Section>', (rel) => {
+    expect(read(rel)).toMatch(/<Section\b/);
   });
 });
 
@@ -115,7 +115,9 @@ describe('Mobile menu dismissal', () => {
   const src = read('src/components/Navbar.astro');
 
   it('closes on a tap outside the menu', () => {
-    expect(src).toMatch(/addEventListener\('click'[\s\S]*?menu\?\.contains\(target\)[\s\S]*?closeMenu\(\)/);
+    expect(src).toMatch(
+      /addEventListener\('click'[\s\S]*?menu\?\.contains\(target\)[\s\S]*?closeMenu\(\)/,
+    );
   });
 
   it('closes after scrolling away from where it opened', () => {

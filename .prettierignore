@@ -1,0 +1,7 @@
+dist
+.vercel
+.astro
+node_modules
+package-lock.json
+public
+coverage

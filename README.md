@@ -30,16 +30,16 @@ Actively maintained and deployed to production on Vercel. Dependency updates are
 
 The main page (`src/pages/index.astro`) is composed from section components (`Hero`, `About`, `WhyBloq`, `Services`, `Articles`, `Clients`, `ContactForm`, `Footer`). It, the `/privacy` and `/terms` pages, the custom 404 page, and two generated images are all prerendered at build time and served statically from Vercel's CDN:
 
-| Route | Purpose |
-|---|---|
-| `/`, `/privacy`, `/terms`, `404` | Static HTML pages |
-| `/og-image.png` | The 1200×630 social share image, rendered with satori at build time |
-| `/hero-map.svg` | The hero section's map, drawn with D3 at build time |
+| Route                            | Purpose                                                             |
+| -------------------------------- | ------------------------------------------------------------------- |
+| `/`, `/privacy`, `/terms`, `404` | Static HTML pages                                                   |
+| `/og-image.png`                  | The 1200×630 social share image, rendered with satori at build time |
+| `/hero-map.svg`                  | The hero section's map, drawn with D3 at build time                 |
 
 Only one route stays server-rendered per request:
 
-| Route | Purpose |
-|---|---|
+| Route               | Purpose                                                                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- |
 | `POST /api/contact` | Validates form input, checks a honeypot field and a per-IP rate limit, then forwards the message to Web3Forms |
 
 See [`CLAUDE.md`](CLAUDE.md) for a deeper architectural walkthrough (styling conventions, animation system, navbar behavior, etc.) — it's written for AI coding assistants but doubles as a solid internal dev doc.
@@ -64,8 +64,8 @@ npm run test:watch # watch mode
 
 ### Environment variables
 
-| Variable | Required | Notes |
-|---|---|---|
+| Variable               | Required                     | Notes                                                                                                                        |
+| ---------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `PUBLIC_WEB3FORMS_KEY` | For the contact form to work | Free access key from [web3forms.com](https://web3forms.com). Without it, `/api/contact` still serves but always returns 500. |
 
 ## License
