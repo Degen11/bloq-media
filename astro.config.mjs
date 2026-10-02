@@ -9,15 +9,15 @@ export default defineConfig({
   site: 'https://www.bloq.media',
   output: 'server',
   adapter: vercel(),
-  // Self-host Inter (downloaded at build time) instead of loading it from
-  // Google Fonts. Astro also generates a metric-matched fallback font so the
-  // swap to Inter doesn't shift the layout.
+  // Self-host Plus Jakarta Sans (downloaded at build time) instead of loading
+  // it from Google Fonts. Astro also generates a metric-matched fallback font
+  // so the swap doesn't shift the layout.
   fonts: [
     {
       provider: fontProviders.fontsource(),
-      name: 'Inter',
-      cssVariable: '--font-inter',
-      weights: [400, 500, 600, 700],
+      name: 'Plus Jakarta Sans',
+      cssVariable: '--font-jakarta',
+      weights: [400, 500, 600, 700, 800],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['system-ui', 'sans-serif'],

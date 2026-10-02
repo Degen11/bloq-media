@@ -2,31 +2,32 @@
 import type { HTMLAttributes } from 'astro/types';
 
 // Shared button styles. Renders an <a> when `href` is set, else a <button>.
-//   primary  navy, for light backgrounds
-//   accent   bloq-blue, the hero call to action
-//   outline  bordered, for light backgrounds
-//   ghost    bordered, for dark (navy) backgrounds
-type Variant = 'primary' | 'accent' | 'outline' | 'ghost';
+//   primary    navy, the main call to action on light backgrounds
+//   secondary  white with a border, on light backgrounds
+//   ghost      bordered, on navy backgrounds
+//   light      white, the main call to action on navy backgrounds
+type Variant = 'primary' | 'secondary' | 'ghost' | 'light';
 type Size = 'sm' | 'md' | 'lg';
 
-type Props = (HTMLAttributes<'a'> & HTMLAttributes<'button'>) & {
-  variant?: Variant;
-  size?: Size;
-};
+type Props = HTMLAttributes<'a'> &
+  HTMLAttributes<'button'> & {
+    variant?: Variant;
+    size?: Size;
+  };
 
 const { variant = 'primary', size = 'md', href, class: className, ...attrs } = Astro.props;
 
 const variants: Record<Variant, string> = {
   primary: 'bg-bloq-navy text-white hover:bg-bloq-dark',
-  accent: 'bg-bloq-blue text-white hover:bg-bloq-blue/90 shadow-lg shadow-bloq-blue/25',
-  outline: 'border border-gray-200 text-gray-900 hover:bg-gray-50',
+  secondary: 'border border-bloq-line-strong bg-white text-bloq-dark hover:bg-bloq-tint',
   ghost: 'border border-white/25 text-white hover:bg-white/10',
+  light: 'bg-white text-bloq-dark hover:bg-bloq-sky',
 };
 
 const sizes: Record<Size, string> = {
-  sm: 'px-5 py-2 rounded-lg text-sm',
-  md: 'px-6 py-3.5 rounded-xl text-base',
-  lg: 'px-8 py-4 rounded-xl text-base',
+  sm: 'px-5 py-2.5 rounded-[10px] text-[15px]',
+  md: 'px-5 py-3 rounded-xl text-[15px]',
+  lg: 'px-6 py-4 rounded-xl text-base',
 };
 
 const classes = [

@@ -106,14 +106,15 @@ describe('font loading (Layout.astro)', () => {
   const src = read('src/layouts/Layout.astro');
   const cfg = read('astro.config.mjs');
 
-  it('self-hosts Inter via the Astro Fonts API', () => {
+  it('self-hosts Plus Jakarta Sans via the Astro Fonts API', () => {
     expect(cfg).toContain('fontProviders.fontsource()');
-    expect(cfg).toContain("cssVariable: '--font-inter'");
-    expect(src).toContain('<Font cssVariable="--font-inter"');
+    expect(cfg).toContain("name: 'Plus Jakarta Sans'");
+    expect(cfg).toContain("cssVariable: '--font-jakarta'");
+    expect(src).toContain('<Font cssVariable="--font-jakarta"');
   });
 
   it('preloads the body and headline weights', () => {
-    expect(src).toContain('preload={[{ weight: 400 }, { weight: 700 }]}');
+    expect(src).toContain('preload={[{ weight: 400 }, { weight: 800 }]}');
   });
 
   it('no longer loads fonts from Google Fonts', () => {

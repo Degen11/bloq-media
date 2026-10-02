@@ -4,10 +4,15 @@ import Section from '@components/Section.astro';
 import SectionHeading from '@components/SectionHeading.astro';
 import type { IconName } from '@lib/icons';
 
+// Each pillar gets its own tile treatment in the grid:
+//   wide   white, spans two columns, icon beside the text
+//   plain  white
+//   navy   solid navy
 interface Pillar {
   title: string;
   description: string;
   icon: IconName;
+  tile: 'wide' | 'plain' | 'navy';
 }
 
 const pillars: Pillar[] = [
@@ -16,48 +21,87 @@ const pillars: Pillar[] = [
     description:
       "Authoritative reporting and in-depth analysis on the technologies shaping Southeast Asia's future.",
     icon: 'newspaper',
+    tile: 'wide',
   },
   {
     title: 'Inspire',
-    description:
-      "Share your brand's vision with impactful storytelling that resonates in the region.",
+    description: "Share your brand's vision with storytelling that resonates in the region.",
     icon: 'light-bulb',
+    tile: 'plain',
   },
   {
     title: 'Engage',
     description: 'Build a dedicated audience through strategic content that drives conversations.',
     icon: 'chat',
+    tile: 'navy',
   },
 ];
+
+const tileClass = {
+  wide: 'sm:col-span-2 flex gap-5 items-start bg-white border border-bloq-line',
+  plain: 'flex flex-col gap-3.5 bg-white border border-bloq-line',
+  navy: 'flex flex-col gap-3.5 bg-bloq-navy text-white',
+};
 ---
 
 <Section id="about" class="bg-white">
-  <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-    <SectionHeading
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div
       data-animate
-      eyebrow="About BLOQ Media"
-      title="The news org and content studio for Southeast Asia's tech scene."
+      class="sm:col-span-2 lg:row-span-2 relative overflow-hidden rounded-3xl bg-bloq-tint p-8 sm:p-10 flex flex-col justify-between gap-8"
     >
-      Southeast Asia's tech and blockchain sector moves fast and speaks in jargon. BLOQ Media cuts
-      through — with journalism that informs, stories that inspire, and content that engages.
-    </SectionHeading>
+      <div
+        class="absolute -right-[60px] -bottom-[60px] w-[260px] h-[260px] rounded-full border-[40px] border-bloq-blue/20"
+        aria-hidden="true"
+      ></div>
+      <SectionHeading
+        class="relative"
+        eyebrow="About BLOQ Media"
+        title="The news org and content studio for Southeast Asia's tech scene."
+      >
+        Southeast Asia's tech and blockchain sector moves fast and speaks in jargon. BLOQ Media cuts
+        through it, with journalism that informs, stories that inspire, and content that engages.
+      </SectionHeading>
+      <a
+        href="#services"
+        class="relative self-start inline-flex items-center gap-2 border-b-2 border-bloq-blue pb-1 font-semibold text-bloq-dark hover:text-bloq-navy"
+      >
+        See what we do
+        <Icon name="arrow-right" class="w-4 h-4" />
+      </a>
+    </div>
 
-    <div class="flex flex-col gap-5">
-      {pillars.map((pillar, i) => (
+    {pillars.map((pillar, i) => {
+      const navy = pillar.tile === 'navy';
+      return (
         <div
           data-animate
-          style={i > 0 ? `transition-delay: ${i * 100}ms` : undefined}
-          class="card group flex gap-5"
+          style={`transition-delay: ${(i + 1) * 100}ms`}
+          class:list={['rounded-3xl p-7', tileClass[pillar.tile]]}
         >
-          <div class="flex-shrink-0 w-11 h-11 bg-bloq-navy/8 group-hover:bg-bloq-navy rounded-xl flex items-center justify-center text-bloq-navy group-hover:text-white transition-all duration-300">
-            <Icon name={pillar.icon} class="w-5 h-5" />
+          <div
+            class:list={[
+              'shrink-0 w-[52px] h-[52px] rounded-[14px] flex items-center justify-center',
+              navy ? 'bg-white/12 text-white' : 'bg-bloq-tint text-bloq-navy',
+            ]}
+          >
+            <Icon name={pillar.icon} class="w-6 h-6" />
           </div>
           <div>
-            <h3 class="text-lg font-bold text-gray-900 mb-1">{pillar.title}</h3>
-            <p class="text-gray-500 leading-relaxed text-sm">{pillar.description}</p>
+            <h3 class:list={['text-2xl font-bold mb-1.5', navy ? 'text-white' : 'text-bloq-dark']}>
+              {pillar.title}
+            </h3>
+            <p
+              class:list={[
+                'text-[15px] leading-relaxed',
+                navy ? 'text-[#d3def2]' : 'text-bloq-slate',
+              ]}
+            >
+              {pillar.description}
+            </p>
           </div>
         </div>
-      ))}
-    </div>
+      );
+    })}
   </div>
 </Section>

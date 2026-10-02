@@ -1,4 +1,5 @@
 ---
+import Button from '@components/Button.astro';
 import Icon from '@components/Icon.astro';
 import Section from '@components/Section.astro';
 import SectionHeading from '@components/SectionHeading.astro';
@@ -12,60 +13,71 @@ interface Service {
 
 const services: Service[] = [
   {
-    title: 'Content Strategy',
+    title: 'Content strategy',
     description:
       "A clear editorial plan tailored to your audience, goals, and the platforms they use. We map out what to publish, where, and how to measure whether it's working.",
     icon: 'pencil',
   },
   {
-    title: 'Digital Marketing',
+    title: 'Digital marketing',
     description:
-      'SEO, social, and targeted campaigns designed for the tech and blockchain audience. We get your brand in front of founders, investors, and early adopters — where they actually spend time.',
+      'SEO, social, and targeted campaigns designed for the tech and blockchain audience. We get your brand in front of founders, investors, and early adopters, where they actually spend time.',
     icon: 'megaphone',
   },
   {
-    title: 'News & Thought Leadership',
+    title: 'News & thought leadership',
     description:
-      'Original articles, market reports, and op-eds that earn attention rather than fill column inches. We help you say something worth reading — and build the credibility that comes with it.',
+      'Original articles, market reports, and op-eds that earn attention rather than fill column inches. We help you say something worth reading and build the credibility that comes with it.',
     icon: 'newspaper',
   },
 ];
 ---
 
 <Section id="services" class="bg-white">
-  <SectionHeading
-    data-animate
-    align="center"
-    class="max-w-2xl mb-16"
-    eyebrow="What We Offer"
-    title="Our Services"
-  />
-
-  <div class="grid md:grid-cols-3 gap-8">
-    {services.map((service, i) => (
-      <div
-        data-animate
-        style={i > 0 ? `transition-delay: ${i * 100}ms` : undefined}
-        class="card group flex flex-col"
-      >
-        <div class="w-12 h-12 bg-bloq-blue/10 rounded-xl flex items-center justify-center text-bloq-navy group-hover:bg-bloq-navy group-hover:text-white transition-all duration-300 mb-6">
-          <Icon name={service.icon} class="w-6 h-6" />
-        </div>
-        <h3 class="text-xl font-bold text-gray-900 mb-4">{service.title}</h3>
-        <p class="text-gray-500 leading-relaxed text-sm flex-1">{service.description}</p>
-        <a
-          href="#contact"
-          class="group/cta mt-6 inline-flex items-center text-bloq-navy font-semibold text-sm hover:text-bloq-blue transition-colors"
-        >
-          <span class="group-hover/cta:underline underline-offset-4 decoration-2">
-            Get in touch
-          </span>
-          <Icon
-            name="arrow-right"
-            class="ml-1.5 w-4 h-4 transition-transform duration-200 group-hover/cta:translate-x-1"
-          />
-        </a>
+  <div class="grid lg:grid-cols-[0.8fr_1.2fr] gap-10 lg:gap-14 items-start">
+    <div data-animate class="flex flex-col gap-6">
+      <SectionHeading eyebrow="What we offer" title="Three ways we get your story told.">
+        Pick one, or combine them into a full campaign.
+      </SectionHeading>
+      <div class="rounded-[20px] bg-bloq-sky p-6 flex flex-col gap-3">
+        <p class="text-xl font-bold text-bloq-dark">Not sure where to start?</p>
+        <p class="text-[15px] leading-relaxed text-[#3a4763]">
+          Tell us what you're launching and we'll suggest a mix.
+        </p>
+        <Button href="#contact" size="sm" class="self-start">
+          Talk to us
+          <Icon name="arrow-right" class="w-4 h-4" />
+        </Button>
       </div>
-    ))}
+    </div>
+
+    <ol class="border-t border-bloq-line">
+      {services.map((service, i) => (
+        <li data-animate style={i > 0 ? `transition-delay: ${i * 100}ms` : undefined}>
+          <a
+            href="#contact"
+            class="group flex gap-4 sm:gap-[22px] items-start px-2 sm:px-4 py-7 border-b border-bloq-line rounded hover:bg-bloq-tint/50 transition-colors"
+          >
+            <span
+              class="hidden sm:block w-7 pt-1.5 text-[15px] font-bold text-bloq-link"
+              aria-hidden="true"
+            >
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span class="shrink-0 w-[52px] h-[52px] rounded-[14px] bg-bloq-tint text-bloq-navy flex items-center justify-center">
+              <Icon name={service.icon} class="w-6 h-6" />
+            </span>
+            <div class="grow">
+              <h3 class="text-2xl font-bold text-bloq-dark mb-2">{service.title}</h3>
+              <p class="text-[15px] leading-relaxed text-bloq-slate">{service.description}</p>
+            </div>
+            <Icon
+              name="arrow-up-right"
+              class="shrink-0 mt-1.5 w-[22px] h-[22px] text-bloq-navy transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5"
+            />
+          </a>
+        </li>
+      ))}
+    </ol>
   </div>
 </Section>

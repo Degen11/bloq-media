@@ -97,8 +97,8 @@ describe('global CSS theme', () => {
     expect(css).toContain('--color-bloq-dark');
   });
 
-  it('defines custom font-sans from the self-hosted Inter variable', () => {
-    expect(css).toContain('--font-sans: var(--font-inter)');
+  it('defines custom font-sans from the self-hosted Plus Jakarta Sans variable', () => {
+    expect(css).toContain('--font-sans: var(--font-jakarta)');
   });
 
   it('defines honeypot utility class', () => {

@@ -123,11 +123,11 @@ const websiteSchema = {
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Fonts: Inter is self-hosted via Astro's Fonts API (see astro.config.mjs).
-         Preload the body (400) and headline (700) weights; the others load on
-         demand. The generated fallback font is metric-matched to Inter so the
-         swap doesn't cause layout shift. -->
-    <Font cssVariable="--font-inter" preload={[{ weight: 400 }, { weight: 700 }]} />
+    <!-- Fonts: Plus Jakarta Sans is self-hosted via Astro's Fonts API (see
+         astro.config.mjs). Preload the body (400) and headline (800) weights;
+         the others load on demand. The generated fallback font is
+         metric-matched so the swap doesn't cause layout shift. -->
+    <Font cssVariable="--font-jakarta" preload={[{ weight: 400 }, { weight: 800 }]} />
 
     <!-- Structured data -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
@@ -137,7 +137,7 @@ const websiteSchema = {
       document.documentElement.classList.add('js-ready');
     </script>
   </head>
-  <body class="font-sans antialiased text-gray-900 bg-white">
+  <body class="font-sans antialiased text-bloq-ink bg-white">
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:bg-bloq-navy focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-semibold"

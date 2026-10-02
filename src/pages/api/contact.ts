@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { EMAIL_RE, MAX_LENGTH } from '@lib/contact';
+import { EMAIL_RE, INTERESTS, MAX_LENGTH } from '@lib/contact';
 import { CONTACT_EMAIL, SITE_NAME, TEAM_EMAIL } from '@lib/site';
 
 // Per-IP rate limiting — survives within a warm serverless instance
@@ -58,7 +58,14 @@ export const POST: APIRoute = async ({ request }) => {
   const email = field(body.email);
   const company = field(body.company);
   const message = field(body.message, false);
-  if (name === null || email === null || company === null || message === null) {
+  const interest = field(body.interest);
+  if (
+    name === null ||
+    email === null ||
+    company === null ||
+    message === null ||
+    interest === null
+  ) {
     return fail('Invalid request.', 400);
   }
   if (!name || !email || !message) {
@@ -69,7 +76,9 @@ export const POST: APIRoute = async ({ request }) => {
     email.length > MAX_LENGTH.email ||
     company.length > MAX_LENGTH.company ||
     message.length > MAX_LENGTH.message ||
-    !EMAIL_RE.test(email)
+    !EMAIL_RE.test(email) ||
+    // Optional picker: empty, or one of the listed options
+    (interest !== '' && !(INTERESTS as readonly string[]).includes(interest))
   ) {
     return fail('Invalid request.', 400);
   }
@@ -92,6 +101,7 @@ export const POST: APIRoute = async ({ request }) => {
         name,
         email,
         company,
+        interest: interest || 'Not specified',
         message,
       }),
     });

@@ -5,3 +5,11 @@
 export const MAX_LENGTH = { name: 100, email: 254, company: 100, message: 5000 } as const;
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Options for the form's optional "What do you need?" picker. */
+export const INTERESTS = [
+  'Content strategy',
+  'Digital marketing',
+  'Thought leadership',
+  'Full campaign',
+] as const;

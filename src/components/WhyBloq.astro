@@ -12,51 +12,66 @@ interface Reason {
 
 const reasons: Reason[] = [
   {
-    title: 'Regional Expertise',
+    title: 'Regional expertise',
     description:
       'We know the markets, the key players, and the cultural context across Thailand, Singapore, Vietnam, the Philippines, and beyond.',
     icon: 'globe',
   },
   {
-    title: 'Blockchain Focus',
+    title: 'Blockchain focus',
     description:
-      'From DeFi protocols to Web3 infrastructure, we make blockchain legible — for founders, investors, and the broader public alike.',
+      'From DeFi protocols to Web3 infrastructure, we make blockchain legible for founders, investors, and the broader public alike.',
     icon: 'link',
   },
   {
-    title: 'Results-Driven',
+    title: 'Results-driven',
     description:
       'Measurable lifts in brand awareness, organic reach, and inbound leads. We focus on outcomes, not outputs.',
     icon: 'trending-up',
   },
 ];
+
+const markets = ['Thailand', 'Singapore', 'Vietnam', 'The Philippines', 'Malaysia', 'Indonesia'];
 ---
 
-<Section id="why" class="bg-gray-50">
-  <SectionHeading
-    data-animate
-    align="center"
-    class="max-w-3xl mb-16"
-    eyebrow="Why Choose Us"
-    title="Why BLOQ Media?"
-  >
-    We've spent years embedded in Southeast Asia's tech and blockchain ecosystem — covering the
-    stories others miss, reaching the audiences others can't, and making complex ideas legible for
-    the people who need to understand them.
-  </SectionHeading>
+<Section id="why" class="bg-bloq-dark bg-dots-light">
+  <div class="flex flex-wrap items-end justify-between gap-6 mb-10">
+    <SectionHeading
+      data-animate
+      tone="dark"
+      class="max-w-[640px]"
+      eyebrow="Why choose us"
+      title="Embedded in the ecosystem, not watching from outside."
+    >
+      We've spent years in Southeast Asia's tech and blockchain scene, covering the stories others
+      miss and making complex ideas legible for the people who need them.
+    </SectionHeading>
+    <ul data-animate class="flex flex-wrap gap-2 max-w-[420px]" aria-label="Markets we cover">
+      {markets.map((market) => (
+        <li class="rounded-full border border-white/20 bg-white/8 px-3.5 py-1.5 text-[13px] font-semibold text-white">
+          {market}
+        </li>
+      ))}
+    </ul>
+  </div>
 
-  <div class="grid md:grid-cols-3 gap-8">
+  <div class="grid md:grid-cols-3 gap-4">
     {reasons.map((reason, i) => (
       <div
         data-animate
         style={i > 0 ? `transition-delay: ${i * 100}ms` : undefined}
-        class="card group"
+        class="card border-white p-7 flex flex-col gap-4"
       >
-        <div class="w-14 h-14 bg-bloq-navy rounded-xl flex items-center justify-center text-white mb-6 group-hover:bg-bloq-blue transition-colors duration-300">
-          <Icon name={reason.icon} class="w-6 h-6" />
+        <div class="flex items-center justify-between">
+          <div class="w-12 h-12 rounded-xl bg-bloq-navy text-white flex items-center justify-center">
+            <Icon name={reason.icon} class="w-[22px] h-[22px]" />
+          </div>
+          <span class="text-[40px] font-extrabold leading-none text-[#d5e2f2]" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
         </div>
-        <h3 class="text-xl font-bold text-gray-900 mb-3">{reason.title}</h3>
-        <p class="text-gray-500 leading-relaxed">{reason.description}</p>
+        <h3 class="text-[22px] font-bold text-bloq-dark">{reason.title}</h3>
+        <p class="text-[15px] leading-relaxed text-bloq-slate">{reason.description}</p>
       </div>
     ))}
   </div>
