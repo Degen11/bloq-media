@@ -54,7 +54,19 @@ Display images (BLOQ logo, client logos) live in `src/assets/` and are rendered 
 
 ### Path aliases
 
-`tsconfig.json` maps `@components/*` → `src/components/*` and `@layouts/*` → `src/layouts/*`. Use these everywhere instead of relative paths.
+`tsconfig.json` maps `@components/*`, `@layouts/*`, `@assets/*`, `@lib/*` and `@styles/*` to the matching `src/` folders, and `vitest.config.ts` mirrors them. Use these everywhere instead of relative paths.
+
+### Shared data and building blocks
+
+- `src/lib/site.ts` is the single source for `SITE_NAME`, `CONTACT_EMAIL` (public), `TEAM_EMAIL` (legal pages and the API's CC), `socials`, the homepage `sections` list, `BRAND` colors (for places that can't read the Tailwind theme, like the OG image), and `sectionHref(id, pathname)`. Navbar, Footer, scroll-spy, ContactForm, the legal pages, JSON-LD and the API all read from it, so never hardcode an email, social URL or section id.
+- `src/lib/contact.ts` holds `EMAIL_RE` and `MAX_LENGTH`, shared by the form and the API.
+- `src/lib/icons.ts` holds every inline SVG icon; render them with `<Icon name="..." class="w-5 h-5" />` (always `aria-hidden`).
+- `<Section id class containerClass>` wraps homepage sections with the standard `py-20 sm:py-24 lg:py-28` padding and `max-w-7xl` container (a `background` slot sits behind the content).
+- `<SectionHeading eyebrow title align tone as>` renders the eyebrow, heading and optional intro (default slot). `tone="dark"` is for navy backgrounds.
+- `<Button href? variant size>` renders an `<a>` or `<button>`. Variants: `primary` (navy), `accent` (bloq-blue), `outline` (light bg), `ghost` (dark bg). Sizes: `sm`, `md`, `lg`.
+- The `card` utility in `global.css` is the shared content card used by About, Why BLOQ, Services and Articles.
+
+Site copy uses US spelling.
 
 ### Styling
 
