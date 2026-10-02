@@ -34,8 +34,16 @@ describe('structured data (Layout.astro)', () => {
   });
 
   it('schema email matches the address shown on the page', () => {
-    expect(src).toContain("email: 'hello@bloq.media'");
-    expect(src).not.toContain('degen@bloq.media');
+    const site = read('src/lib/site.ts');
+    const form = read('src/components/ContactForm.astro');
+    expect(site).toContain("CONTACT_EMAIL = 'hello@bloq.media'");
+    expect(src).toContain('email: CONTACT_EMAIL');
+    expect(src).not.toContain('TEAM_EMAIL');
+    expect(form).toContain('{CONTACT_EMAIL}');
+  });
+
+  it('sameAs is built from the shared social profiles', () => {
+    expect(src).toContain('sameAs: socials.map((s) => s.href)');
   });
 
   it('has a ContactPoint', () => {

@@ -1,5 +1,7 @@
 ---
-import { MAP_WIDTH, MAP_HEIGHT, cities } from '../lib/heroMap';
+import Button from '@components/Button.astro';
+import Icon from '@components/Icon.astro';
+import { MAP_WIDTH, MAP_HEIGHT, cities } from '@lib/heroMap';
 ---
 
 <section data-hero class="relative min-h-[100svh] bg-gradient-to-br from-bloq-dark via-bloq-navy to-bloq-navy flex items-center pt-20 overflow-hidden">
@@ -21,21 +23,13 @@ import { MAP_WIDTH, MAP_HEIGHT, cities } from '../lib/heroMap';
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4">
-          <a
-            href="#contact"
-            class="inline-flex items-center justify-center bg-bloq-blue text-white px-8 py-4 rounded-xl font-semibold text-base hover:bg-bloq-blue/90 active:scale-[0.97] transition-all duration-200 shadow-lg shadow-bloq-blue/25"
-          >
+          <Button href="#contact" variant="accent" size="lg">
             Get in Touch
-            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </a>
-          <a
-            href="#about"
-            class="inline-flex items-center justify-center border border-white/25 text-white px-8 py-4 rounded-xl font-semibold text-base hover:bg-white/10 active:scale-[0.97] transition-all duration-200"
-          >
+            <Icon name="arrow-right" class="w-4 h-4" />
+          </Button>
+          <Button href="#about" variant="ghost" size="lg">
             Learn More
-          </a>
+          </Button>
         </div>
       </div>
 

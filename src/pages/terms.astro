@@ -4,6 +4,7 @@ export const prerender = true;
 import Layout from '@layouts/Layout.astro';
 import Navbar from '@components/Navbar.astro';
 import Footer from '@components/Footer.astro';
+import { TEAM_EMAIL } from '@lib/site';
 ---
 
 <Layout
@@ -20,7 +21,7 @@ import Footer from '@components/Footer.astro';
         <p>By accessing and using bloq.media, you accept and agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our website.</p>
 
         <h2>Services</h2>
-        <p>BLOQ Media provides news reporting, content creation, and digital marketing services specialising in tech and blockchain in Southeast Asia. The information on this website is provided for general informational purposes only.</p>
+        <p>BLOQ Media provides news reporting, content creation, and digital marketing services specializing in tech and blockchain in Southeast Asia. The information on this website is provided for general informational purposes only.</p>
 
         <h2>Intellectual Property</h2>
         <p>All content on this website — including text, graphics, logos, and images — is the property of BLOQ Media and is protected by applicable copyright and intellectual property laws. You may not reproduce, distribute, or create derivative works from our content without prior written permission.</p>
@@ -29,7 +30,7 @@ import Footer from '@components/Footer.astro';
         <p>You agree not to use our website to:</p>
         <ul>
           <li>Transmit any unlawful, harmful, or objectionable content</li>
-          <li>Attempt to gain unauthorised access to any part of our systems</li>
+          <li>Attempt to gain unauthorized access to any part of our systems</li>
           <li>Engage in any conduct that could damage, disable, or impair our services</li>
         </ul>
 
@@ -49,7 +50,7 @@ import Footer from '@components/Footer.astro';
         <p>These Terms of Service are governed by the laws of Singapore. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts of Singapore.</p>
 
         <h2>Contact</h2>
-        <p>For any questions about these terms, please contact us at <a href="mailto:degen@bloq.media">degen@bloq.media</a>.</p>
+        <p>For any questions about these terms, please contact us at <a href={`mailto:${TEAM_EMAIL}`}>{TEAM_EMAIL}</a>.</p>
       </div>
     </article>
   </main>

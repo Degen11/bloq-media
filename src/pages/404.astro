@@ -6,6 +6,8 @@ export const prerender = true;
 import Layout from '@layouts/Layout.astro';
 import Navbar from '@components/Navbar.astro';
 import Footer from '@components/Footer.astro';
+import Button from '@components/Button.astro';
+import SectionHeading from '@components/SectionHeading.astro';
 ---
 
 <Layout
@@ -16,24 +18,12 @@ import Footer from '@components/Footer.astro';
   <Navbar />
   <main id="main" class="min-h-[70svh] flex items-center pt-32 pb-20 bg-white">
     <div class="max-w-3xl mx-auto px-6 text-center">
-      <p class="text-bloq-blue text-sm font-semibold uppercase tracking-widest mb-4">404</p>
-      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Page not found</h1>
-      <p class="text-lg text-gray-500 leading-relaxed mb-10">
+      <SectionHeading as="h1" align="center" class="mb-10" eyebrow="404" title="Page not found">
         The page you were looking for doesn't exist or has moved.
-      </p>
+      </SectionHeading>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a
-          href="/"
-          class="inline-flex items-center justify-center bg-bloq-navy text-white px-8 py-4 rounded-xl font-semibold text-base hover:bg-bloq-dark transition-colors duration-200"
-        >
-          Back to homepage
-        </a>
-        <a
-          href="/#contact"
-          class="inline-flex items-center justify-center border border-gray-200 text-gray-900 px-8 py-4 rounded-xl font-semibold text-base hover:bg-gray-50 transition-colors duration-200"
-        >
-          Contact us
-        </a>
+        <Button href="/" size="lg">Back to homepage</Button>
+        <Button href="/#contact" variant="outline" size="lg">Contact us</Button>
       </div>
     </div>
   </main>

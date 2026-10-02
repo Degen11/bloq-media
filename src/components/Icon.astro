@@ -1,0 +1,24 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { icons, type IconName } from '@lib/icons';
+
+// Decorative inline icon. Always aria-hidden: give the surrounding link or
+// button an accessible name instead.
+interface Props extends HTMLAttributes<'svg'> {
+  name: IconName;
+}
+
+const { name, ...attrs } = Astro.props;
+const icon: { body: string; fill?: boolean } = icons[name];
+const paint: HTMLAttributes<'svg'> = icon.fill
+  ? { fill: 'currentColor' }
+  : {
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': 2,
+      'stroke-linecap': 'round',
+      'stroke-linejoin': 'round',
+    };
+---
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" {...paint} {...attrs} set:html={icon.body} />

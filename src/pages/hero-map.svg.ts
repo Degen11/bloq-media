@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { MAP_WIDTH, MAP_HEIGHT, countryPaths, cities } from '../lib/heroMap';
+import { MAP_WIDTH, MAP_HEIGHT, countryPaths, cities } from '@lib/heroMap';
 
 // Rendered once at build time. The hero used to download d3, topojson-client,
 // and the 50m world-atlas data (~1 MB of JS) on every desktop visit just to

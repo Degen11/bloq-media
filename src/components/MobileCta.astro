@@ -1,3 +1,7 @@
+---
+import Button from '@components/Button.astro';
+---
+
 <!-- Sticky "Get in Touch" bar for phones. Hidden until the hero is scrolled
      past, and again once the contact section (or the footer below it) is on
      screen, so it never covers the form it points to. -->
@@ -7,12 +11,9 @@
   class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-t border-gray-100 px-6 pt-3 translate-y-full motion-safe:transition-transform motion-safe:duration-300"
   style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom));"
 >
-  <a
-    href="#contact"
-    class="flex items-center justify-center w-full bg-bloq-navy text-white py-3 rounded-xl font-semibold text-base active:scale-[0.97] transition-transform duration-200"
-  >
+  <Button href="#contact" class="w-full">
     Get in Touch
-  </a>
+  </Button>
 </div>
 
 <script>

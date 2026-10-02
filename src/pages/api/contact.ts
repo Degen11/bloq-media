@@ -1,14 +1,10 @@
 import type { APIRoute } from 'astro';
+import { EMAIL_RE, MAX_LENGTH } from '@lib/contact';
+import { CONTACT_EMAIL, SITE_NAME, TEAM_EMAIL } from '@lib/site';
 
 // Per-IP rate limiting — survives within a warm serverless instance
 const rateLimitMap = new Map<string, number>();
 const RATE_LIMIT_MS = 60_000;
-
-// Upper bounds for each field; anything longer is rejected, not truncated.
-// Mirrored by the maxlength attributes in ContactForm.astro.
-const MAX_LENGTH = { name: 100, email: 254, company: 100, message: 5000 };
-// Same pattern the client-side form uses
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
@@ -22,6 +18,15 @@ function checkRateLimit(ip: string): boolean {
   }
   return true;
 }
+
+function json(body: Record<string, unknown>, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+const fail = (message: string, status: number) => json({ success: false, message }, status);
 
 // Trimmed string, '' when absent, or null when the value isn't a string.
 // Single-line fields also have line breaks collapsed to spaces.
@@ -42,18 +47,12 @@ export const POST: APIRoute = async ({ request }) => {
     body = null;
   }
   if (typeof body !== 'object' || body === null || Array.isArray(body)) {
-    return new Response(
-      JSON.stringify({ success: false, message: 'Invalid request.' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
-    );
+    return fail('Invalid request.', 400);
   }
 
   // Honeypot — bots fill this in, humans don't
   if (body.website) {
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ success: true });
   }
 
   const name = field(body.name);
@@ -61,16 +60,10 @@ export const POST: APIRoute = async ({ request }) => {
   const company = field(body.company);
   const message = field(body.message, false);
   if (name === null || email === null || company === null || message === null) {
-    return new Response(
-      JSON.stringify({ success: false, message: 'Invalid request.' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
-    );
+    return fail('Invalid request.', 400);
   }
   if (!name || !email || !message) {
-    return new Response(
-      JSON.stringify({ success: false, message: 'Missing required fields.' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
-    );
+    return fail('Missing required fields.', 400);
   }
   if (
     name.length > MAX_LENGTH.name ||
@@ -79,18 +72,12 @@ export const POST: APIRoute = async ({ request }) => {
     message.length > MAX_LENGTH.message ||
     !EMAIL_RE.test(email)
   ) {
-    return new Response(
-      JSON.stringify({ success: false, message: 'Invalid request.' }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } }
-    );
+    return fail('Invalid request.', 400);
   }
 
   // Checked after validation so only well-formed submissions use up the slot
   if (!checkRateLimit(ip)) {
-    return new Response(
-      JSON.stringify({ success: false, message: 'Too many requests. Please wait a minute and try again.' }),
-      { status: 429, headers: { 'Content-Type': 'application/json' } }
-    );
+    return fail('Too many requests. Please wait a minute and try again.', 429);
   }
 
   const w3Key = import.meta.env.PUBLIC_WEB3FORMS_KEY;
@@ -100,9 +87,9 @@ export const POST: APIRoute = async ({ request }) => {
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
         access_key: w3Key,
-        subject: 'New enquiry — BLOQ Media website',
-        from_name: 'BLOQ Media Website',
-        cc: 'degen@bloq.media',
+        subject: `New inquiry — ${SITE_NAME} website`,
+        from_name: `${SITE_NAME} Website`,
+        cc: TEAM_EMAIL,
         name,
         email,
         company,
@@ -111,10 +98,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
     const data = await res.json();
     if (data.success) {
-      return new Response(JSON.stringify({ success: true }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return json({ success: true });
     }
   } catch {
     // fall through
@@ -123,11 +107,5 @@ export const POST: APIRoute = async ({ request }) => {
   // Nothing was sent, so let the visitor retry straight away
   rateLimitMap.delete(ip);
 
-  return new Response(
-    JSON.stringify({
-      success: false,
-      message: 'Unable to send your message right now. Please email us at hello@bloq.media.',
-    }),
-    { status: 500, headers: { 'Content-Type': 'application/json' } }
-  );
+  return fail(`Unable to send your message right now. Please email us at ${CONTACT_EMAIL}.`, 500);
 };

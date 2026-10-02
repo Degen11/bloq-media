@@ -4,6 +4,8 @@
   --color-bloq-blue: #29ABE2;
   --color-bloq-navy: #1A3C8F;
   --color-bloq-dark: #0F2260;
+  /* Lighter blue for hover states on dark backgrounds */
+  --color-bloq-blue-light: #7FCBEE;
 
   /* Inter via Astro's Fonts API, which appends metric-matched fallbacks */
   --font-sans: var(--font-inter);
@@ -17,7 +19,7 @@ html {
 
 /* ─── Themed scrollbars ──────────────────────────────────────────────────── */
 /*
-  Replaces the default gray OS scrollbar with brand colours so it never looks
+  Replaces the default gray OS scrollbar with brand colors so it never looks
   out of place against the navy/white palette. `scrollbar-color` covers
   Firefox; the `::-webkit-scrollbar*` pseudo-elements cover Chrome/Safari/Edge.
   The dark-mode block only re-themes the scrollbar itself (not the rest of
@@ -26,7 +28,7 @@ html {
 */
 html {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-bloq-navy) #E5E7EB;
+  scrollbar-color: var(--color-bloq-navy) var(--color-gray-200);
 }
 
 ::-webkit-scrollbar {
@@ -35,13 +37,13 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: #E5E7EB;
+  background: var(--color-gray-200);
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: var(--color-bloq-navy);
   border-radius: 999px;
-  border: 3px solid #E5E7EB;
+  border: 3px solid var(--color-gray-200);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -63,8 +65,15 @@ html {
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background-color: #7FCBEE;
+    background-color: var(--color-bloq-blue-light);
   }
+}
+
+/* ─── Content card ───────────────────────────────────────────────────────── */
+/* Shared card used by the About, Why BLOQ, Services and Articles sections. */
+@utility card {
+  @apply rounded-2xl border border-gray-100 bg-white p-6 sm:p-8 transition-all duration-300;
+  @apply hover:border-bloq-blue/30 hover:shadow-xl hover:shadow-bloq-navy/8;
 }
 
 /* Honeypot field — visually hidden but not display:none (bots detect that) */
@@ -80,13 +89,13 @@ html {
 .legal-content {
   font-size: 0.9375rem;
   line-height: 1.7;
-  color: #374151;
+  color: var(--color-gray-700);
 }
 
 .legal-content h2 {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-gray-900);
   margin-top: 2rem;
   margin-bottom: 0.5rem;
 }
@@ -110,13 +119,13 @@ html {
 }
 
 .legal-content a {
-  color: #1A3C8F;
+  color: var(--color-bloq-navy);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .legal-content a:hover {
-  color: #29ABE2;
+  color: var(--color-bloq-blue);
 }
 
 /* ─── Scroll-triggered entrance animations ──────────────────────────────── */

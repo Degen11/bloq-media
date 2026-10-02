@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { createHash } from 'node:crypto';
+import { BRAND } from '@lib/site';
 
 // Render once at build time and serve the PNG as a static file. As a runtime
 // route it crashed on Vercel: satori's harfbuzz WASM file isn't traced into the
@@ -48,7 +49,7 @@ export const GET: APIRoute = async () => {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          backgroundColor: '#1A3C8F',
+          backgroundColor: BRAND.navy,
           padding: '72px 80px',
           fontFamily: 'Inter',
         },
@@ -65,7 +66,7 @@ export const GET: APIRoute = async () => {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 10,
-                      color: '#29ABE2',
+                      color: BRAND.blue,
                       fontSize: 20,
                       fontWeight: 700,
                       letterSpacing: '0.1em',
@@ -130,7 +131,7 @@ export const GET: APIRoute = async () => {
                     style: {
                       display: 'flex',
                       alignItems: 'center',
-                      backgroundColor: '#29ABE2',
+                      backgroundColor: BRAND.blue,
                       color: 'white',
                       padding: '14px 30px',
                       borderRadius: 12,

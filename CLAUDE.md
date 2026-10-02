@@ -75,7 +75,7 @@ It also houses the UI enhancement utilities added for polish:
 | `#site-header` | Smooth `box-shadow` transition for scroll-aware navbar |
 | `#site-header.header-scrolled` | Shadow applied after 10 px of scroll; toggled by `Navbar.astro` script |
 | `.field-shake` | `@keyframes field-shake` animation applied to invalid form fields on submit |
-| `.nav-active` | Applied by scroll-spy in `Navbar.astro` to highlight the link for the currently visible section. Sets the navy colour, `font-weight: 600`, and a 2 px `bloq-blue` underline (`text-underline-offset: 6px`) so the active section reads clearly beyond colour alone. Unlayered so it beats Tailwind utility colours without `!important` |
+| `.nav-active` | Applied by scroll-spy in `Navbar.astro` to highlight the link for the currently visible section. Sets the navy color, `font-weight: 600`, and a 2 px `bloq-blue` underline (`text-underline-offset: 6px`) so the active section reads clearly beyond color alone. Unlayered so it beats Tailwind utility colors without `!important` |
 | `.copy-icon-stack` / `.copy-icon-layer` | Stack the clipboard and check SVGs inside `#copy-email-btn` so they crossfade. The check icon (`#check-icon`) starts `opacity: 0; scale(0.5)`; adding `.is-copied` to the button fades/scales it in and the clipboard out over 200 ms. Disabled under `prefers-reduced-motion: reduce` |
 | `scrollbar-color` / `::-webkit-scrollbar*` | Themed scrollbars (bloq-navy thumb on a light-gray track) instead of the default OS gray, applied globally to `html` so it covers the page and any scrollable containers. A `prefers-color-scheme: dark` block swaps in a bloq-blue thumb on a bloq-dark track to match dark browser/OS chrome |
 
@@ -83,7 +83,7 @@ It also houses the UI enhancement utilities added for polish:
 
 `Layout.astro` contains an `IntersectionObserver` (`<script>` before `</body>`) that adds `is-visible` to every `[data-animate]` element as it enters the viewport. A `js-ready` class on `<html>` (set by an `is:inline` script in `<head>`) gates the hidden state so content is always visible when JS is disabled. Stagger delays are set via inline `style="transition-delay: Nms"` on individual items inside loops; the observer clears each delay after 1 s so hover transitions on cards are not affected.
 
-### Navbar behaviour
+### Navbar behavior
 
 - **Scroll-aware shadow:** The `#site-header` starts borderless-shadow; the `header-scrolled` class adds a soft `box-shadow` after 10 px of scroll. Toggled by a passive `scroll` listener in `Navbar.astro`.
 - **Mobile menu animation:** The mobile menu uses a `max-height` + `opacity` CSS transition (set inline on the element) instead of `display:none` toggling, giving a smooth slide open/close on tap. Both properties share the same `0.3s` duration so the slide and fade finish together. Its links are `py-3 text-base` (48 px tap targets).

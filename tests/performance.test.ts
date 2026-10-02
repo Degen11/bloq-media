@@ -1,5 +1,5 @@
 /**
- * Performance optimisation tests.
+ * Performance optimization tests.
  * Issues covered: client logos missing loading=lazy, OG image crashing at
  * runtime on Vercel (now prerendered), hero map shipping ~1 MB of JS.
  */
