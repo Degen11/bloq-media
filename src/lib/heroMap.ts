@@ -36,7 +36,6 @@ export const countryPaths: string[] = seaCollection.features.map((f) => path(f) 
 const CITIES: { name: string; coords: [number, number] }[] = [
   { name: 'Singapore', coords: [103.82, 1.35] },
   { name: 'Bangkok', coords: [100.52, 13.75] },
-  { name: 'Jakarta', coords: [106.85, -6.21] },
   { name: 'Manila', coords: [120.98, 14.6] },
   { name: 'Ho Chi Minh', coords: [106.66, 10.78] },
   { name: 'Kuala Lumpur', coords: [101.69, 3.14] },

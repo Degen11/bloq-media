@@ -21,7 +21,7 @@ describe('hero map data', () => {
   });
 
   it('projects every city inside the map box', () => {
-    expect(cities).toHaveLength(7);
+    expect(cities).toHaveLength(6);
     for (const c of cities) {
       expect(c.x).toBeGreaterThan(0);
       expect(c.x).toBeLessThan(MAP_WIDTH);
