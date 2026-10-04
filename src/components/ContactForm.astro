@@ -41,10 +41,10 @@ const labelClass = 'block text-sm font-semibold text-bloq-ink mb-1.5';
 
       <div class="mt-auto rounded-[14px] border border-[#d7e2f2] bg-white px-4 py-3.5 flex items-center justify-between gap-3">
         <div>
-          <p class="text-xs text-bloq-muted">Prefer email?</p>
+          <p class="text-[13px] text-bloq-muted">Prefer email?</p>
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            class="font-bold text-bloq-dark hover:text-bloq-navy transition-colors"
+            class="relative inline-block font-bold text-bloq-dark hover:text-bloq-navy transition-colors after:absolute after:-inset-y-3 after:inset-x-0"
           >
             {CONTACT_EMAIL}
           </a>
@@ -93,6 +93,7 @@ const labelClass = 'block text-sm font-semibold text-bloq-ink mb-1.5';
               name="name"
               required
               autocomplete="name"
+              enterkeyhint="next"
               maxlength={MAX_LENGTH.name}
               placeholder="Jane Smith"
               aria-required="true"
@@ -114,6 +115,7 @@ const labelClass = 'block text-sm font-semibold text-bloq-ink mb-1.5';
               name="email"
               required
               autocomplete="email"
+              enterkeyhint="next"
               maxlength={MAX_LENGTH.email}
               placeholder="jane@company.com"
               aria-required="true"
@@ -133,6 +135,7 @@ const labelClass = 'block text-sm font-semibold text-bloq-ink mb-1.5';
             id="company"
             name="company"
             autocomplete="organization"
+            enterkeyhint="next"
             maxlength={MAX_LENGTH.company}
             placeholder="Your company"
             class={inputClass}
@@ -143,11 +146,11 @@ const labelClass = 'block text-sm font-semibold text-bloq-ink mb-1.5';
           <legend class={labelClass}>
             What do you need? <span class="font-normal text-bloq-muted">(optional)</span>
           </legend>
-          <div class="flex flex-wrap gap-2">
+          <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
             {INTERESTS.map((interest) => (
-              <label class="cursor-pointer">
+              <label class="flex cursor-pointer">
                 <input type="radio" name="interest" value={interest} class="peer sr-only" />
-                <span class="inline-flex items-center min-h-11 rounded-full border border-bloq-line-strong bg-white px-4 text-sm font-semibold text-bloq-navy transition-colors hover:bg-bloq-tint peer-checked:border-bloq-navy peer-checked:bg-bloq-navy peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-bloq-blue">
+                <span class="inline-flex grow sm:grow-0 items-center justify-center min-h-11 rounded-full border border-bloq-line-strong bg-white px-3 sm:px-4 py-1.5 text-center text-[13px] sm:text-sm leading-tight font-semibold text-bloq-navy transition-colors hover:bg-bloq-tint peer-checked:border-bloq-navy peer-checked:bg-bloq-navy peer-checked:text-white peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-bloq-blue">
                   {interest}
                 </span>
               </label>

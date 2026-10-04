@@ -169,3 +169,58 @@ describe('Client logo grid on phones', () => {
     expect(src).toContain('p-4 md:p-6');
   });
 });
+
+describe('Touch targets outside the menu', () => {
+  it('footer links are 44px tall on phones', () => {
+    const src = read('src/components/Footer.astro');
+    expect(src).toContain('min-h-11 md:min-h-0');
+    expect(src).toContain('min-h-11 sm:min-h-0');
+  });
+
+  it('the small button size still meets 44px', () => {
+    expect(read('src/components/Button.astro')).toMatch(/sm: '[^']*min-h-11/);
+  });
+
+  it('the utility bar "Read it" link fills the bar height', () => {
+    expect(read('src/components/Navbar.astro')).toMatch(
+      /self-stretch flex items-center px-2 -mx-2/,
+    );
+  });
+
+  it('short text links extend their hit area with a pseudo-element', () => {
+    expect(read('src/components/About.astro')).toContain('after:absolute after:-inset-2');
+    expect(read('src/components/ContactForm.astro')).toContain(
+      'after:absolute after:-inset-y-3 after:inset-x-0',
+    );
+  });
+});
+
+describe('Compact mobile layouts', () => {
+  it('uses a shorter sticky header below md', () => {
+    expect(read('src/components/Navbar.astro')).toContain('h-[60px] md:h-[72px]');
+  });
+
+  it('service rows put the description full width below sm', () => {
+    const src = read('src/components/Services.astro');
+    expect(src).toContain('flex-wrap sm:flex-nowrap');
+    expect(src).toContain('contents sm:block');
+    expect(src).toContain('basis-full order-last sm:order-none');
+  });
+
+  it('interest chips form a two-column grid on phones', () => {
+    expect(read('src/components/ContactForm.astro')).toContain(
+      'grid grid-cols-2 sm:flex sm:flex-wrap',
+    );
+  });
+
+  it('footer link columns sit side by side on phones', () => {
+    expect(read('src/components/Footer.astro')).toContain('grid grid-cols-3 sm:grid-cols-2');
+  });
+});
+
+describe('Mobile keyboard hints', () => {
+  it('single-line contact fields advance with a "next" key', () => {
+    const src = read('src/components/ContactForm.astro');
+    expect(src.match(/enterkeyhint="next"/g)).toHaveLength(3);
+  });
+});

@@ -56,7 +56,7 @@ const services: Service[] = [
         <li data-animate style={i > 0 ? `transition-delay: ${i * 100}ms` : undefined}>
           <a
             href="#contact"
-            class="group flex gap-4 sm:gap-[22px] items-start px-2 sm:px-4 py-7 border-b border-bloq-line rounded hover:bg-bloq-tint/50 transition-colors"
+            class="group flex flex-wrap sm:flex-nowrap gap-4 sm:gap-[22px] items-start px-2 sm:px-4 py-7 border-b border-bloq-line rounded hover:bg-bloq-tint/50 transition-colors"
           >
             <span
               class="hidden sm:block w-7 pt-1.5 text-[15px] font-bold text-bloq-link"
@@ -67,9 +67,13 @@ const services: Service[] = [
             <span class="shrink-0 w-[52px] h-[52px] rounded-[14px] bg-bloq-tint text-bloq-navy flex items-center justify-center">
               <Icon name={service.icon} class="w-6 h-6" />
             </span>
-            <div class="grow">
-              <h3 class="text-2xl font-bold text-bloq-dark mb-2">{service.title}</h3>
-              <p class="text-[15px] leading-relaxed text-bloq-slate">{service.description}</p>
+            <div class="contents sm:block sm:grow">
+              <h3 class="flex-1 self-center sm:self-auto text-2xl font-bold text-bloq-dark sm:mb-2">
+                {service.title}
+              </h3>
+              <p class="basis-full order-last sm:order-none text-[15px] leading-relaxed text-bloq-slate">
+                {service.description}
+              </p>
             </div>
             <Icon
               name="arrow-up-right"

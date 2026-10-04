@@ -63,7 +63,8 @@ Display images (BLOQ logo, client logos) live in `src/assets/` and are rendered 
 - `src/lib/icons.ts` holds every inline SVG icon; render them with `<Icon name="..." class="w-5 h-5" />` (always `aria-hidden`).
 - `<Section id class containerClass>` wraps homepage sections with the standard `py-20 sm:py-24 lg:py-28` padding and `max-w-7xl` container (a `background` slot sits behind the content).
 - `<SectionHeading eyebrow title align tone as>` renders the eyebrow, heading and optional intro (default slot). `tone="dark"` is for navy backgrounds.
-- `<Button href? variant size>` renders an `<a>` or `<button>`. Variants: `primary` (navy), `accent` (bloq-blue), `outline` (light bg), `ghost` (dark bg). Sizes: `sm`, `md`, `lg`.
+- `<Button href? variant size>` renders an `<a>` or `<button>`. Variants: `primary` (navy), `accent` (bloq-blue), `outline` (light bg), `ghost` (dark bg). Sizes: `sm`, `md`, `lg` (`sm` has `min-h-11` so it stays a 44 px tap target).
+- Touch targets are 44 px or more on phones. Footer links get `min-h-11` below `md`; short inline text links ("See what we do", the contact email) extend their hit area with an `after:absolute` pseudo-element instead of extra padding, so the visible underline doesn't move.
 - The `card` utility in `global.css` is the shared content card used by Why BLOQ, Articles and the hero story card. It rests on the `shadow-card` theme shadow and lifts to `shadow-card-hover` on hover; reuse those tokens for other white tiles (the hero stat tiles use `shadow-card`).
 
 Site copy uses US spelling.
@@ -111,7 +112,7 @@ It also houses the UI enhancement utilities added for polish:
 
 ### Navbar behavior
 
-- **Utility bar + sticky header:** `Navbar.astro` renders a thin navy utility bar (latest article from `src/lib/articles.ts`, email, socials) that scrolls away, then the `sticky top-0` header. Because the header is sticky rather than fixed, pages don't need top padding to clear it.
+- **Utility bar + sticky header:** `Navbar.astro` renders a thin navy utility bar (latest article from `src/lib/articles.ts`, email, socials) that scrolls away, then the `sticky top-0` header (60 px tall below `md`, 72 px above). Because the header is sticky rather than fixed, pages don't need top padding to clear it.
 - **Scroll-aware shadow:** The `#site-header` starts borderless-shadow; the `header-scrolled` class adds a soft `box-shadow` after 10 px of scroll. Toggled by a passive `scroll` listener in `Navbar.astro`.
 - **Mobile menu animation:** The mobile menu uses a `max-height` + `opacity` CSS transition (set inline on the element) instead of `display:none` toggling, giving a smooth slide open/close on tap. Both properties share the same `0.3s` duration so the slide and fade finish together. Its links are `py-3 text-base` (48 px tap targets).
 - **Mobile menu dismissal:** Besides link taps, the toggle and Escape, the menu closes on a tap outside it (document `click` listener) and once the page scrolls more than 40 px from where it was opened (the threshold ignores mobile address-bar jitter).
