@@ -34,7 +34,7 @@ import { MEDIUM_URL } from '@lib/site';
           >
             <div class="absolute inset-0 bg-[radial-gradient(rgb(255_255_255/0.18)_1.5px,transparent_1.5px)] bg-[length:18px_18px]" />
             <div class="absolute -right-10 -top-10 w-[200px] h-[200px] rounded-full bg-bloq-blue/85" />
-            <span class="relative text-[44px] font-extrabold tracking-tight text-white">
+            <span class="relative text-[44px] font-extrabold leading-none tracking-tight text-white">
               {article.cover.label}
             </span>
           </div>
@@ -43,16 +43,16 @@ import { MEDIUM_URL } from '@lib/site';
             class="relative h-[200px] overflow-hidden bg-bloq-sky flex items-end justify-end p-5"
             aria-hidden="true"
           >
-            <div class="absolute left-6 top-6 w-16 h-16 rounded-[14px] border-[3px] border-bloq-navy" />
-            <div class="absolute left-[70px] top-14 w-16 h-16 rounded-[14px] border-[3px] border-bloq-blue" />
-            <div class="absolute left-[116px] top-[88px] w-16 h-16 rounded-[14px] bg-bloq-navy" />
-            <span class="relative text-[44px] font-extrabold tracking-tight text-bloq-dark">
+            <div class="absolute left-6 top-6 w-12 h-12 rounded-xl border-[3px] border-bloq-navy" />
+            <div class="absolute left-[60px] top-12 w-12 h-12 rounded-xl border-[3px] border-bloq-blue" />
+            <div class="absolute left-24 top-[72px] w-12 h-12 rounded-xl bg-bloq-navy" />
+            <span class="relative text-[44px] font-extrabold leading-none tracking-tight text-bloq-dark">
               {article.cover.label}
             </span>
           </div>
         )}
         <div class="p-6 flex flex-col gap-3 grow">
-          <span class="self-start rounded-full bg-bloq-sky px-3 py-1 text-xs font-bold uppercase tracking-[0.06em] text-bloq-dark">
+          <span class="self-start rounded-full bg-bloq-sky px-3 py-1 text-[13px] font-bold uppercase tracking-[0.06em] text-bloq-dark">
             {article.tag}
           </span>
           <h3 class="text-[22px] font-bold leading-tight text-bloq-dark">{article.title}</h3>

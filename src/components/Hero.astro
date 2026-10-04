@@ -5,7 +5,7 @@ import { latestArticle } from '@lib/articles';
 import { MAP_WIDTH, MAP_HEIGHT, cities } from '@lib/heroMap';
 
 const facts = [
-  { value: String(cities.length), label: 'regional hubs covered' },
+  { value: String(cities.length), label: 'regional hubs' },
   { value: '3', label: 'core services' },
   { value: '4', label: 'partner brands' },
 ];
@@ -24,7 +24,7 @@ const facts = [
   <div class="relative max-w-7xl mx-auto px-6 py-12 sm:py-16 lg:py-[72px] grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-14 items-center">
     <div>
       <p class="inline-flex items-center gap-2.5 rounded-full border border-[#d7e2f2] bg-white py-1.5 pl-1.5 pr-3.5 text-[13px] font-semibold text-bloq-navy">
-        <span class="whitespace-nowrap rounded-full bg-bloq-navy px-2.5 py-0.5 text-[11px] uppercase tracking-[0.08em] text-white">
+        <span class="whitespace-nowrap rounded-full bg-bloq-navy px-2.5 py-0.5 text-xs uppercase tracking-[0.08em] text-white">
           News &amp; Media
         </span>
         <span class="whitespace-nowrap">
