@@ -22,6 +22,10 @@
 
   /* Plus Jakarta Sans via Astro's Fonts API, which appends metric-matched fallbacks */
   --font-sans: var(--font-jakarta);
+
+  /* Card depth: a tight contact shadow plus a soft navy-tinted ambient one */
+  --shadow-card: 0 1px 2px rgb(15 34 96 / 0.06), 0 8px 24px -12px rgb(15 34 96 / 0.18);
+  --shadow-card-hover: 0 2px 4px rgb(15 34 96 / 0.06), 0 20px 40px -16px rgb(15 34 96 / 0.3);
 }
 
 /* Offset in-page anchor scrolling so section headings clear the sticky navbar
@@ -83,10 +87,10 @@ html {
 }
 
 /* ─── Content card ───────────────────────────────────────────────────────── */
-/* Shared white card (Why BLOQ, Articles). Lifts slightly on hover. */
+/* Shared white card (Why BLOQ, Articles). Rests on a soft shadow and lifts on hover. */
 @utility card {
-  @apply rounded-[20px] border border-bloq-line bg-white transition duration-200;
-  @apply hover:shadow-[0_16px_40px_-16px_rgb(15_34_96/0.25)] motion-safe:hover:-translate-y-[3px];
+  @apply rounded-[20px] border border-bloq-line bg-white shadow-card transition duration-200;
+  @apply hover:shadow-card-hover motion-safe:hover:-translate-y-[3px];
 }
 
 /* ─── Dot-grid backgrounds ──────────────────────────────────────────────── */

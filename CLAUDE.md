@@ -64,7 +64,7 @@ Display images (BLOQ logo, client logos) live in `src/assets/` and are rendered 
 - `<Section id class containerClass>` wraps homepage sections with the standard `py-20 sm:py-24 lg:py-28` padding and `max-w-7xl` container (a `background` slot sits behind the content).
 - `<SectionHeading eyebrow title align tone as>` renders the eyebrow, heading and optional intro (default slot). `tone="dark"` is for navy backgrounds.
 - `<Button href? variant size>` renders an `<a>` or `<button>`. Variants: `primary` (navy), `accent` (bloq-blue), `outline` (light bg), `ghost` (dark bg). Sizes: `sm`, `md`, `lg`.
-- The `card` utility in `global.css` is the shared content card used by About, Why BLOQ, Services and Articles.
+- The `card` utility in `global.css` is the shared content card used by Why BLOQ, Articles and the hero story card. It rests on the `shadow-card` theme shadow and lifts to `shadow-card-hover` on hover; reuse those tokens for other white tiles (the hero stat tiles use `shadow-card`).
 
 Site copy uses US spelling.
 
@@ -133,7 +133,7 @@ The form sits in a split card: the left panel has the heading, a three-step "wha
 
 ### Hero map
 
-The hero's D3 Mercator map of Southeast Asia is drawn entirely at build time; no map JavaScript ships to the browser. `src/lib/heroMap.ts` projects the 50m world-atlas countries (paths rounded to 1 decimal) and the city markers (Singapore, Bangkok, Jakarta, Manila, Ho Chi Minh, Kuala Lumpur, Yangon) into a fixed 600×520 box. `src/pages/hero-map.svg.ts` turns that into a static SVG styled for the light hero (navy country outlines on a pale fill, navy city dots ringed in blue). `Hero.astro` shows it as `<img src="/hero-map.svg" loading="lazy">` inside an `aspect-ratio: 600 / 520` container in a white "coverage map" card, in the `hidden lg:block` column. The lazy loading matters: browsers never fetch lazy images inside a `display:none` container, so phones and tablets skip the file. Each city gets an always-visible label pill placed with percentage `left`/`top` values from `heroMap.ts`. The map card is `aria-hidden="true"`; a "Latest story" link card (the first entry in `src/lib/articles.ts`) overlaps its lower-left corner.
+The hero's D3 Mercator map of Southeast Asia is drawn entirely at build time; no map JavaScript ships to the browser. `src/lib/heroMap.ts` projects the 50m world-atlas countries (paths rounded to 1 decimal) and the city markers (Singapore, Bangkok, Manila, Ho Chi Minh, Kuala Lumpur, Yangon) into a fixed 600×520 box. `src/pages/hero-map.svg.ts` turns that into a static SVG styled for the light hero (navy country outlines on a pale fill, navy city dots ringed in blue). `Hero.astro` shows it as `<img src="/hero-map.svg" loading="lazy">` inside an `aspect-ratio: 600 / 520` container in a white "coverage map" card, in the `hidden lg:block` column. The lazy loading matters: browsers never fetch lazy images inside a `display:none` container, so phones and tablets skip the file. Each city gets an always-visible label pill placed with percentage `left`/`top` values from `heroMap.ts`. The map card is `aria-hidden="true"`; a "Latest story" link card (the first entry in `src/lib/articles.ts`) overlaps its lower-left corner, which is why there is no Jakarta marker (it would sit under the card).
 
 ### Sticky mobile CTA
 
