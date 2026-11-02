@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pothole scoreboard: bloq-media</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #fbfaf7;
+  --panel: #ffffff;
+  --ink: #1c1b19;
+  --ink-soft: #55524d;
+  --rule: #ddd8cf;
+  --bar: #7a6a4f;
+  --bar-track: #ece7dd;
+  --warn-bg: #fdf3d8;
+  --warn-ink: #5a4409;
+  --warn-rule: #d8ae3a;
+  --ok-bg: #e6f4e8;
+  --ok-ink: #1f4d2a;
+  --ok-rule: #6aa878;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17181a;
+    --panel: #1f2124;
+    --ink: #f0eee9;
+    --ink-soft: #b3aea5;
+    --rule: #3a3d42;
+    --bar: #c9b184;
+    --bar-track: #2b2e33;
+    --warn-bg: #3a2f11;
+    --warn-ink: #f3dc9b;
+    --warn-rule: #a8862c;
+    --ok-bg: #16301d;
+    --ok-ink: #b6e3c0;
+    --ok-rule: #4c8a5c;
+  }
+}
+body {
+  margin: 0;
+  padding: 2rem 1.25rem 4rem;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+main { max-width: 62rem; margin: 0 auto; }
+h1 { font-size: 1.6rem; margin: 0 0 .35rem; }
+h2 { font-size: 1.15rem; margin: 2.2rem 0 .6rem; border-bottom: 1px solid var(--rule); padding-bottom: .3rem; }
+h3 { font-size: 1rem; margin: 1.4rem 0 .4rem; }
+p { margin: .6rem 0; }
+.sub { color: var(--ink-soft); margin: 0 0 1.2rem; }
+.fine { color: var(--ink-soft); font-size: .85rem; }
+.banner { border: 1px solid var(--warn-rule); border-left-width: .35rem; background: var(--warn-bg); color: var(--warn-ink); padding: .9rem 1.1rem; border-radius: .3rem; }
+.banner.ok { border-color: var(--ok-rule); background: var(--ok-bg); color: var(--ok-ink); }
+.banner ul { margin: .6rem 0 0; padding-left: 1.2rem; }
+.banner li { margin: .2rem 0; }
+details { background: var(--panel); border: 1px solid var(--rule); border-radius: .3rem; padding: .6rem .9rem; margin: 1rem 0; }
+.card { background: var(--panel); border: 1px solid var(--rule); border-radius: .3rem; padding: .9rem 1.1rem; margin: 1rem 0; }
+.card h3 { margin: 0 0 .5rem; }
+.card p { margin: .35rem 0; }
+summary { cursor: default; color: var(--ink-soft); }
+details ul { margin: .6rem 0 .2rem; padding-left: 1.2rem; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9em; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; background: var(--panel); font-size: .9rem; }
+caption { text-align: left; color: var(--ink-soft); font-size: .85rem; padding: .3rem 0; }
+th, td { border: 1px solid var(--rule); padding: .35rem .55rem; text-align: left; vertical-align: top; }
+th { background: var(--bar-track); font-weight: 600; }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+td.z { color: var(--ink-soft); }
+td.u { background: var(--warn-bg); color: var(--warn-ink); font-weight: 600; }
+.track { background: var(--bar-track); border-radius: .15rem; height: .7rem; min-width: 3rem; }
+.fill { background: var(--bar); height: .7rem; border-radius: .15rem; }
+footer { margin-top: 3rem; border-top: 1px solid var(--rule); padding-top: .8rem; color: var(--ink-soft); font-size: .85rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>Pothole scoreboard: bloq-media</h1>
+<p class="sub">Verified: 21 confirmed, 1 refuted, 0 not verified — 22 finding(s) across 10 category file(s).</p>
+<div class="banner">
+<p><strong>Every RQI below is an upper bound on quality, not a score.</strong> Unmeasured debt cannot lower an RQI, so a good number here means &ldquo;nothing worse was found&rdquo;, never &ldquo;nothing worse is there&rdquo;. What was not measured:</p>
+<ul>
+<li>at least one finding came from a partial detector run, so its slice is a floor rather than a total</li>
+<li>3 category/ies were only partly measured (dependency, security, test), so their slices are floors rather than totals</li>
+<li>deterministic tools were skipped, so the slices they own are unmeasured</li>
+</ul>
+</div>
+<details>
+<summary>What the register itself said it covered</summary>
+<ul>
+<li><code>Verified: 21 confirmed, 1 refuted, 0 not verified — 22 finding(s) across 10 category file(s).</code></li>
+<li><code>Detector coverage: Detector: detect-api. Coverage: full enumeration of the file-based route surface in src/pages. Only one JSON contract exists, POST /api/contact (src/pages/api/contact.ts). Every path returns the same shape: success is {success:true}, and every failure (400 invalid or missing, 429 rate limit, 500 upstream) goes through one fail() helper as {success:false,message}. GET /og-image.png and GET /hero-map.svg are prerendered static image files with no JSON contract to compare. The only consumer is src/components/ContactForm.astro:299-316, a single in-repo caller from the same team. It reads data.success and data.message the same way on every status and has no per-status or per-endpoint branch. With only one JSON endpoint there are no two endpoints to compare, so no inconsistency is possible. No tool covers api debt in this phase (no OpenAPI or spectral linting is wired), so this slice is entirely AI-only. Seen but not mine, left for security: the in-memory per-IP rate limit keyed on the first x-forwarded-for value (contact.ts:6-20, 40) does not survive across Vercel instances. [coverage=full]</code></li>
+<li><code>Detector coverage: Detector: detect-architecture. Coverage: madge ran (JS/TS) and reported 0 cycles; hand-traced imports across src/pages, src/layouts, src/components and src/lib agree: no cycles, src/lib imports no components or pages (site.ts takes only a type from icons.ts), so the dependency direction is intact. Drift checked against the CLAUDE.md declarations the survey records: prerender on every page and both image endpoints (honoured), host derived from Astro.site (honoured), single-source emails/socials (honoured), section ids from site.ts (violated, 1 finding), Image vs public img (only the declared lazy /hero-map.svg img), aliases everywhere (src honours it; tests/hero-map.test.ts:7 and tests/api/contact.test.ts:8 use relative imports, a convention nit left to code). No god module (site.ts is a leaf library, fan-out 0 features) and no zombie twins found; zombie and god-module coverage is AI-only. Seen but not mine: CLAUDE.md lists Button variants primary/accent/outline/ghost while Button.astro defines primary/secondary/ghost/light, and CLAUDE.md/README still say Astro v6 vs package.json ^7 (knowledge/signage); BLOQ Media literal repeated in Footer.astro:64 and Navbar.astro:60 instead of SITE_NAME (code). [coverage=full]</code></li>
+<li><code>Detector coverage: Detector: detect-build. Coverage: .github/workflows/ci.yml, .github/dependabot.yml, package.json scripts, astro.config.mjs, vercel.json, .gitignore, .env.example and the README setup section read end to end; every env read in src/ (one: import.meta.env.PUBLIC_WEB3FORMS_KEY in src/pages/api/contact.ts) cross-checked against .env.example, which lists it, so no env drift. No scripts/, Makefile, Dockerfile or release doc exists; deploys are Vercel git integration, so release steps are not documented in-repo (not scored as a finding: nothing in the repo claims a manual step). Commit subjects grepped for retry/re-run/flaky/again: no retry loops or retry history in CI. Build-time network fetches noted: og-image.png.ts pulls Inter from jsDelivr pinned by version and SHA-256 (a declared contract, not debt). No tool in this phase reads build inputs, so build coverage is AI-only. For knowledge: .env.example comments name recipient addresses that differ from the CC/TO addresses CLAUDE.md attributes to src/lib/site.ts; worth a knowledge/signage check. No runtime CI flake could be assessed (CI logs out of scope). [coverage=full]</code></li>
+<li><code>Detector coverage: Detector: detect-code. Coverage: all of src/ read against hotspots; marker grep (zero TODO/FIXME/HACK/XXX in src or root config); copy-admission grep (none); twin review of ContactForm vs api/contact validation (both import EMAIL_RE/MAX_LENGTH/INTERESTS from lib/contact, no drift), site.ts BRAND vs global.css @theme (in sync), privacy vs terms (jscpd PH-011, not restated). No feature flags exist, so no dead-path candidates; no god file (coupling table only pairs components with tests/mobile.test.ts). Not restated: PH-002/003 heroMap ts-comment/any, PH-016/017/018 ContactForm and POST complexity, jscpd PH-011..015. Test-file duplication (PH-012..015 in tests/) belongs to test. Sonar and semgrep not measured; complexity is eslint-sonarjs/repowise only. Seen, not filed (other categories): CLAUDE.md lists Button variants primary/accent/outline/ghost but Button.astro defines primary/secondary/ghost/light, and says Astro v6 vs package.json ^7 (signage); privacy.astro lists collected fields without the new interest picker field (content/legal, not code). [coverage=full]</code></li>
+<li><code>Detector coverage: Detector: detect-dependency. Coverage: package.json, package-lock.json, .prettierrc.json, eslint/vitest/astro configs read; every runtime and dev dependency traced to an import or config use (all are used). osv-scanner ran with 0 findings, so there is no advisory reachability to judge. The path-to-regexp 6.3.0 override is not filed: commit a64615c records why (GHSA-9wv6-86v2-598j via @vercel/routing-utils, which still pins 6.1.0 at its latest release), so it is a recorded decision, though the reason lives only in git history. Unused-dependency and abandonment coverage is AI-only (knip, npm-check-updates and libyear are not run in this phase). Partial: the npm registry was reachable (topojson-client and world-atlas last published in 2022, which is quiet, not abandoned), but GitHub repo pages and API returned 403, so archived status could not be checked. No credentials seen in the manifests. [coverage=partial]</code></li>
+<li><code>Detector coverage: Detector: detect-knowledge. Coverage: no ADR directory exists; CLAUDE.md, README.md and .env.example (the declared-decision record per survey) checked claim-by-claim against code; the single env read (import.meta.env.PUBLIC_WEB3FORMS_KEY, contact.ts:91) is documented with its meaning in README, CLAUDE.md and .env.example, so no undocumented required value. Bus-factor-1 list (tests/mobile.test.ts) not reported: it is a static source-assertion test file with a self-describing header, and its author split (degen11/Degen/Degen11) is one owner under several git identities, so the whole repo is effectively single-maintainer rather than this file being a concentration. In-memory rate limiter has a read-site comment (contact.ts:5) so rationale is recorded; whether it is acceptable on Vercel is left to security per survey. Survey treats code as truth and docs as possibly stale, so drift was judged doc-at-fault; architecture should recheck if intent changes. AI-only category, no tool corroborates any of it. [coverage=full]</code></li>
+<li><code>Detector coverage: Detector: detect-security. Coverage: traced the single mutating entry point (POST /api/contact); every other route is prerendered and read-only, and there is no auth/role surface to check. No middleware file; Astro checkOrigin default left on; JSON body needs a CORS preflight the route does not grant. gitleaks ran (0 findings) and only .env.example appears in env-file history, so secret coverage is tool-backed. semgrep FAILED (exit 2), so known-insecure-pattern coverage is eslint-sonar only. No database, schema or migrations exist, so Cases 3 and 4 do not apply. Judged and not filed: PUBLIC_WEB3FORMS_KEY is used only server-side and Web3Forms keys are designed to be form-public; CSP script-src unsafe-inline is a defence-in-depth nit with no user-generated HTML rendered; x-forwarded-for spoofing is not exploitable on Vercel, which overwrites the header. Did not restate PH-001/004/005/007 (test-file hotspots, unreachable in production; slow-regex on EMAIL_RE runs only after a 254-char length cap). Left to other detectors: Dependabot auto-merge job in ci.yml (build/dependency); api error-shape consistency (api). [coverage=partial]</code></li>
+<li><code>Detector coverage: Detector: detect-signage. Coverage: 4 simulated newcomer tasks (set up env and contact form recipients; change the contact email or add a homepage section; work on fonts or the hero map; upgrade or debug against the framework version) plus a name/doc contradiction sweep of CLAUDE.md, README.md, .env.example and code comments in api/contact.ts, Navbar.astro, Layout.astro, site.ts, contact.ts, astro.config.mjs. No lying function names found; code comments match their bodies. Dead-export sweep: src has no index/barrel files, so Case 4 cannot apply; every site.ts/contact.ts export checked has call sites. Left out as noise: README.md:31 lists components out of page order (Clients is second on the page, not after Articles) and counts Footer as a section. knip/ts-prune are not run in this phase, so dead-export coverage is AI-only. No ADRs exist, so there is no drifted ADR to hand to knowledge/architecture. [coverage=full]</code></li>
+<li><code>Detector coverage: Detector: detect-swerve. Coverage: full history (unshallowed, first commit 2026-04-22, all 158 commits, inside the 24-month window). Walked every non-Dependabot subject and body for workaround/hack/temporary/revert/band-aid/downgrade/guard, grepped src, tests and root config for folklore, TODO/FIXME, ts-ignore, eslint-disable and catch blocks, and read hotspot comments (api/contact.ts, Navbar, ContactForm, og-image, Layout, heroMap). No detour survived. The early history holds only resolved one-off thrash: contact delivery went Web3Forms, Resend, revert, Resend removed (7a04d24, d69fb21, same day); TypeScript went 6 to 5.9.3 and back (6a8180f, adda083); src/scripts import wrappers were reverted (8bf5813). heroMap.ts ts-ignores and the og-image prerender document external constraints (third-party typings, Vercel wasm tracing). The catch blocks are single intentional fallbacks, not a swallow cluster. No feature flags exist. Seen, owned elsewhere: the path-to-regexp 6.3.0 override (a64615c, after repeated skipped audit fixes) is dependency, already noted there; the CSP unsafe-inline added in 8bf5813 is security; tests/build.test.ts skipping in CI because ci.yml runs tests before build is test, already filed there. No architecture-level observations. [coverage=full]</code></li>
+<li><code>Detector coverage: Detector: detect-test. Coverage: NOT MEASURED. There is no coverage/lcov.info, so lcov did not run and no percentage is claimed. All nine test files under tests/ were read in full. Assertion, skip, coupling and nondeterminism review is AI-only: no mutation testing, no flake detection, no run history. No nondeterminism tells found: no timing waits, no retry setting in vitest.config.ts, and contact.test.ts isolates the module-level rate-limit Map with random IPs. Other categories: (build) .github/workflows/ci.yml runs npm test before npm run build, which is why tests/build.test.ts always skips in CI. (docs) CLAUDE.md says Section uses py-20 sm:py-24 lg:py-28 but src/components/Section.astro:13 and tests/mobile.test.ts:88 say py-16 sm:py-20. CLAUDE.md and the config.test.ts CSP comment still say Astro 6 while package.json pins astro ^7.4.4. legal-pages.test.ts:66 says Inter is self-hosted when the site font is Plus Jakarta Sans. (code) og-image.png.ts:12-13 says fontCache persists per build, but the old serverless-cache rationale lives on only in performance.test.ts:35. [coverage=partial]</code></li>
+<li><code>Tool coverage: Tools run: eslint-sonar (10 findings), jscpd (5 findings), gitleaks (0 findings), osv-scanner (0 findings), madge (0 findings), repowise-dead-code (0 findings), repowise-health (3 findings). Skipped (not measured): sonar — set SONAR_HOST_URL, SONAR_TOKEN, SONAR_PROJECT_KEY (or sonar-project.properties); semgrep — failed (exit 2; message withheld — tool output can echo repo contents); lcov — no coverage/lcov.info in the repo (Pothole never runs the target&#39;s tests, so it cannot produce one): coverage is not measured. Coverage notes: none.</code></li>
+<li><code>Coverage flags: unverified=0 partial-findings=10 missing-verdicts=0 never-scanned=0 stale-verdicts=0 unparseable=0 tool-coverage=partial</code></li>
+<li><code>Category status: code=verified+full architecture=verified+full test=verified+partial dependency=verified+partial knowledge=verified+full build=verified+full api=verified+full security=verified+partial swerve=verified+full signage=verified+full</code></li>
+<li><code>A category with 0 confirmed findings is &quot;nothing confirmed&quot;, never &quot;no debt&quot;. Read the coverage clauses above before drawing any conclusion from a count.</code></li>
+</ul>
+</details>
+<h2>What is wrong</h2>
+<p class="fine">The 10 most costly of 21 confirmed problem(s), biggest ongoing cost first. Every confirmed finding has its own file under <code>.pothole/issues/</code>, and the ranked repair plan is <code>.pothole/roadwork.md</code>.</p>
+<section class="card">
+<h3>1. Section anchor ids are hardcoded in every section component instead of read from the declared single source in site.ts</h3>
+<p><strong>Where:</strong> <code>src/lib/site.ts:42</code>, <code>src/lib/site.ts:50</code>, <code>src/components/About.astro:47</code>, <code>src/components/WhyBloq.astro:37</code>, <code>src/components/Services.astro:36</code>, <code>src/components/Articles.astro:10</code>, <code>src/components/Clients.astro:24</code>, <code>src/components/ContactForm.astro:17</code>, <code>src/components/Hero.astro:45</code>, <code>src/components/MobileCta.astro:22</code>, <code>src/components/Navbar.astro:215</code></p>
+<p><strong>Why it matters:</strong> It is a serious problem that taxes every change to this code, in regularly-edited code. The verifier confirmed it: &ldquo;All 11 refs resolve: site.ts:42/50 declare sections and CONTACT_SECTION_ID; About/WhyBloq/Services/Articles/Clients/ContactForm each hardcode their id literal; Hero.astro:45 (plus Services:47/58, MobileCta:14, 404.astro:28, Layout.astro:45) hardcode #contact; Navbar.astro:215 silently skips a missing element. No trap matches: CLAUDE.md, which the survey records as still-intended, says never hardcode a section id, so this is Case 2 drift with the code at fault, not the doc. No comment or ADR exempts the targets, and every target is reachable on /. Major holds on the hot-file clause (Hero.astro/Navbar.astro at 0.58). git history shows no shipped bug from id drift (d2d9fc3 changed mailto links to #contact), so major rests on traffic alone. CLAUDE.md also claims ContactForm reads from site.ts, which is inaccurate (knowledge, next scan).&rdquo;.</p>
+<p><strong>How to fix:</strong> No one-line fix is recorded — the detector&rsquo;s full reasoning is in <code>.pothole/findings/architecture.md</code> under <code>architecture:src/components:section-ids-bypass-site-single-source</code>.</p>
+<p><strong>Effort:</strong> a large refactor (L). <span class="fine">PH-519 &middot; architecture</span></p>
+</section>
+<section class="card">
+<h3>2. Navbar scroll-spy, header shadow and menu-dismissal logic are only checked by regex over the source text</h3>
+<p><strong>Where:</strong> <code>src/components/Navbar.astro:208-247</code>, <code>tests/mobile.test.ts:117-125</code></p>
+<p><strong>Why it matters:</strong> It is a serious problem that taxes every change to this code, in regularly-edited code. The verifier confirmed it: &ldquo;evidence holds: Navbar.astro:208-247 holds getActiveSection position logic, 10px header toggle and 40px close; only tests are source regexes (mobile.test.ts:117-125) and aria-label string checks in accessibility.test.ts; no test computes the active link for any scroll position. No trap, not documented as intentionally untested, reachable on every page.&rdquo;.</p>
+<p><strong>How to fix:</strong> Move getActiveSection into src/lib as a pure function of (section tops, scrollY, navHeight) and unit test it, including the Clients-out-of-order case and the contact section.</p>
+<p><strong>Effort:</strong> a large refactor (L). <span class="fine">PH-620 &middot; test</span></p>
+</section>
+<section class="card">
+<h3>3. ContactForm client script (validation, server-error display, success swap, analytics, copy button) has no behavioral test</h3>
+<p><strong>Where:</strong> <code>src/components/ContactForm.astro:266-330</code>, <code>tests/accessibility.test.ts:45-74</code></p>
+<p><strong>Why it matters:</strong> It is a serious problem that taxes every change to this code, in regularly-edited code. The verifier confirmed it: &ldquo;evidence holds: ContactForm.astro:266-330 is the submit handler (validation, fetch, server-message display, success swap, track) plus clipboard fallback; accessibility.test.ts:45-74 only asserts substrings exist; no jsdom/happy-dom or other test exercises the script. Not a trap, reachable.&rdquo;.</p>
+<p><strong>How to fix:</strong> Extract the validation and response-handling logic into a module under src/lib and test it, or add a jsdom/happy-dom test that submits the form against a stubbed fetch and asserts on the visible error, success and analytics calls.</p>
+<p><strong>Effort:</strong> a large refactor (L). <span class="fine">PH-621 &middot; test</span></p>
+</section>
+<section class="card">
+<h3>4. Hero map pulls in the whole d3 umbrella for two d3-geo functions, with types suppressed by @ts-ignore</h3>
+<p><strong>Where:</strong> <code>package.json:26</code>, <code>src/lib/heroMap.ts:5</code>, <code>src/lib/heroMap.ts:6</code></p>
+<p><strong>Why it matters:</strong> It is a minor problem that adds a little cost to every change, in some of the most-edited code in this repo, so people trip over it constantly. The verifier confirmed it: &ldquo;All three refs resolve: package.json:26 is d3 ^7.9.0 in dependencies, heroMap.ts:5-6 is the @ts-ignore over the only d3 import in src (geoMercator, geoPath). node_modules/d3/package.json has no types field and node_modules/@types has no d3, so the import is really untyped under astro strict; 30 d3-* packages installed. No study-case trap matches (not an advisory, abandonment, duplicate pair or pin), the ts-ignore comment misstates the cause rather than documenting the choice, and build-time-only use does not refute an install-graph/typing claim. Severity minor stands.&rdquo;.</p>
+<p><strong>How to fix:</strong> No one-line fix is recorded — the detector&rsquo;s full reasoning is in <code>.pothole/findings/dependency.md</code> under <code>dependency:src/lib/heroMap.ts:d3-umbrella-for-geo-only</code>.</p>
+<p><strong>Effort:</strong> a small, contained fix (S). <span class="fine">PH-419 &middot; dependency</span></p>
+</section>
+<section class="card">
+<h3>5. CLAUDE.md and README still declare Astro v6 after the upgrade to Astro 7</h3>
+<p><strong>Where:</strong> <code>CLAUDE.md:39</code>, <code>README.md:22</code>, <code>package.json:25</code>, <code>499815f</code></p>
+<p><strong>Why it matters:</strong> It is a minor problem that adds a little cost to every change, in some of the most-edited code in this repo, so people trip over it constantly. The verifier confirmed it: &ldquo;Checked all four routes, none kills it. evidence: CLAUDE.md:39 and README.md:22 both say Astro v6, package.json:25 pins astro ^7.4.4, and commit 499815f is titled &#39;upgrade astro 6-&gt;7&#39;. trap: not a superseded doc that says so. documented: nothing records v6 as still intended. reachable: CLAUDE.md is the declared architecture doc and a top hotspot.&rdquo;.</p>
+<p><strong>How to fix:</strong> No one-line fix is recorded — the detector&rsquo;s full reasoning is in <code>.pothole/findings/knowledge.md</code> under <code>knowledge:CLAUDE.md:stale-astro-major-version</code>.</p>
+<p><strong>Effort:</strong> a small, contained fix (S). <span class="fine">PH-719 &middot; knowledge</span></p>
+</section>
+<section class="card">
+<h3>6. Node runtime version is declared only in CI; no engines field or .nvmrc for local builds or the Vercel deploy</h3>
+<p><strong>Where:</strong> <code>.github/workflows/ci.yml:19</code>, <code>package.json:5</code>, <code>package-lock.json:3700</code></p>
+<p><strong>Why it matters:</strong> It is a minor problem that adds a little cost to every change, in some of the most-edited code in this repo, so people trip over it constantly. The verifier confirmed it: &ldquo;Survived evidence/trap/documented/unreachable: ci.yml:19 is the only Node pin (&#39;22&#39;); package.json has no engines field (line 5 cites the file, the absence is the argument); no .nvmrc/.node-version at root; README/CLAUDE.md state no Node version; package-lock.json:3700 is astro&#39;s engines node &gt;=22.23.4. Vercel runtime comes from dashboard. Commit a536585 (&#39;fix nodejs18.x runtime error&#39;) shows runtime drift has bitten before.&rdquo;.</p>
+<p><strong>How to fix:</strong> No one-line fix is recorded — the detector&rsquo;s full reasoning is in <code>.pothole/findings/build.md</code> under <code>build:package.json:node-version-undeclared-outside-ci</code>.</p>
+<p><strong>Effort:</strong> a small, contained fix (S). <span class="fine">PH-819 &middot; build</span></p>
+</section>
+<section class="card">
+<h3>7. contact form abuse control is a per-instance in-memory map, so the documented 1 req/min per-IP limit does not hold on Vercel</h3>
+<p><strong>Where:</strong> <code>src/pages/api/contact.ts:5</code>, <code>src/pages/api/contact.ts:40</code>, <code>src/pages/api/contact.ts:87</code>, <code>CLAUDE.md:125</code></p>
+<p><strong>Why it matters:</strong> It is a minor problem that adds a little cost to every change, in some of the most-edited code in this repo, so people trip over it constantly. The verifier confirmed it: &ldquo;Survived all routes. evidence: contact.ts:5-6 module-level Map (comment itself scopes it to a warm instance), :40 keys on x-forwarded-for, :87 is the only server-side throttle; CLAUDE.md:125 states a plain 1 req/min per IP. trap: Case 1 not-this n/a - no middleware file and vercel.json holds only headers, no firewall/rate-limit rule; no shared store (KV/Upstash) anywhere in src. documented: the code comment admits the scope but no ADR/README accepts it as a limitation (survey open question 4 is unanswered), and documentation would not refute the cost claim anyway. unreachable: POST /api/contact is the one live server route. Category correct (abuse control). Minor stands: spam/quota exhaustion of a contact form, honeypot only stops naive bots.&rdquo;.</p>
+<p><strong>How to fix:</strong> No one-line fix is recorded — the detector&rsquo;s full reasoning is in <code>.pothole/findings/security.md</code> under <code>security:src/pages/api/contact.ts:contact-rate-limit-per-instance</code>.</p>
+<p><strong>Effort:</strong> a medium refactor (M). <span class="fine">PH-319 &middot; security</span></p>
+</section>
+<section class="card">
+<h3>8. mobile.test.ts asserts exact Tailwind class strings, so it changes with every restyle instead of guarding behavior</h3>
+<p><strong>Where:</strong> <code>tests/mobile.test.ts:43</code>, <code>tests/mobile.test.ts:88</code>, <code>tests/mobile.test.ts:132</code>, <code>tests/mobile.test.ts:168-169</code>, <code>tests/mobile.test.ts:205-207</code></p>
+<p><strong>Why it matters:</strong> It is a serious problem that taxes every change to this code, in occasionally-edited code. The verifier confirmed it: &ldquo;evidence holds at all five lines (literal class lists). git log -L confirms commit 871e646 changed line 88 from py-20 sm:py-24 lg:py-28 to py-16 sm:py-20 alongside the restyle, i.e. the test was edited green to follow code, which is the Case 4 cost on the record; single author (Degen/degen11, same email). Not the snapshot trap: these are hand-picked class assertions named as behavior contracts.&rdquo;.</p>
+<p><strong>How to fix:</strong> Keep the few assertions that encode a real contract (44px tap targets, no viewport-height units, lazy map) and check them against rendered output or a named token, and drop the ones that just copy the current class list.</p>
+<p><strong>Effort:</strong> a medium refactor (M). <span class="fine">PH-622 &middot; test</span></p>
+</section>
+<section class="card">
+<h3>9. README describes an interactive hero map that includes Jakarta, but the map is a static aria-hidden SVG with no Jakarta marker</h3>
+<p><strong>Where:</strong> <code>README.md:11</code>, <code>src/lib/heroMap.ts:36</code>, <code>src/components/Hero.astro:70</code>, <code>CLAUDE.md:137</code></p>
+<p><strong>Why it matters:</strong> It is a minor problem that adds a little cost to every change, in regularly-edited code. The verifier confirmed it: &ldquo;Checked: README.md:11 claims an interactive map incl. Jakarta; heroMap.ts:36 CITIES has six cities without Jakarta, Hero.astro:70 marks the map card aria-hidden and it ships as a static img with no script; CLAUDE.md:137 records Jakarta was dropped on purpose, which documents the code, not the README. No trap applies.&rdquo;.</p>
+<p><strong>How to fix:</strong> No one-line fix is recorded — the detector&rsquo;s full reasoning is in <code>.pothole/findings/signage.md</code> under <code>signage:repo-docs:readme-hero-map-interactive-with-jakarta</code>.</p>
+<p><strong>Effort:</strong> a small, contained fix (S). <span class="fine">PH-221 &middot; signage</span></p>
+</section>
+<section class="card">
+<h3>10. CLAUDE.md shows a hardcoded hello@bloq.media in the clipboard handler and a home-variable link builder, but the code uses CONTACT_EMAIL and sectionHref()</h3>
+<p><strong>Where:</strong> <code>CLAUDE.md:133</code>, <code>CLAUDE.md:45</code>, <code>src/components/ContactForm.astro:333</code>, <code>src/components/ContactForm.astro:343</code>, <code>src/lib/site.ts:56</code>, <code>src/components/Navbar.astro:73</code></p>
+<p><strong>Why it matters:</strong> It is a minor problem that adds a little cost to every change, in regularly-edited code. The verifier confirmed it: &ldquo;Checked: CLAUDE.md:133 quotes writeText(&#39;hello@bloq.media&#39;) and a hardcoded mailto fallback, but ContactForm.astro:333/343 use CONTACT_EMAIL; CLAUDE.md:45 describes a home variable, but Navbar.astro:73 and Footer.astro:15 call sectionHref() (site.ts:56) and no home identifier exists. The only hello@bloq.media literal in src is site.ts:9. No trap applies.&rdquo;.</p>
+<p><strong>How to fix:</strong> No one-line fix is recorded — the detector&rsquo;s full reasoning is in <code>.pothole/findings/signage.md</code> under <code>signage:CLAUDE.md:claude-md-describes-pre-refactor-literals</code>.</p>
+<p><strong>Effort:</strong> a small, contained fix (S). <span class="fine">PH-223 &middot; signage</span></p>
+</section>
+<h2>What kind of debt</h2>
+<p class="fine">Grouped by the shape of the problem. <strong>Confirmed</strong> counts survived an adversarial verifier; <strong>tool-reported</strong> counts were measured by the deterministic tools this run and never judged — real measurements, weaker claims, and the two are never added together. A 0 in the confirmed column means none <em>confirmed</em> — the categories table below carries what was found but never judged.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>kind of debt</th><th class="n">confirmed findings</th><th class="n">interest</th><th class="n">tool-reported (unjudged)</th><th>what it covers</th></tr></thead>
+<tbody>
+<tr><td class="z">Dead code</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="fine">code that still reads as live but nothing runs it — it misleads every reader until deleted</td></tr>
+<tr><td>Duplicated code</td><td class="n">1</td><td class="n">0.17</td><td class="n">5</td><td class="fine">the same logic in more than one place, identical or near-identical — a fix lands in one copy and misses the other</td></tr>
+<tr><td>Flaky or fragile behaviour</td><td class="n">1</td><td class="n">0.0914</td><td class="n">0</td><td class="fine">IO on hot paths or in loops, timing-dependent code, tests that fail on rerun</td></tr>
+<tr><td>Hard-to-work-in code</td><td class="n">0</td><td class="n">0</td><td class="n">3</td><td class="fine">functions too complex, nested, or overgrown to change safely</td></tr>
+<tr><td>Everything else</td><td class="n">19</td><td class="n">3.8025</td><td class="n">&mdash;</td><td class="fine">debt with none of the four shapes above — API drift, missing knowledge, security exposure, build fragility, …</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine">Tool-reported counts come from <code>.pothole/tool-findings/</code> — deterministic measurements the AI detectors deliberately do not restate. They are not confirmed findings and carry no interest; read them as &ldquo;the tools saw this much of that shape&rdquo;, with the tool coverage caveats above.</p>
+<h2>Details for engineers and AI agents</h2>
+<p class="fine">Everything above is the summary; everything below is the measurement layer it was computed from — per-module scores, per-category coverage, ranked work zones, and run-over-run deltas. The numbers and caveats here are authoritative: the summary never says more than they do.</p>
+<h2>Modules</h2>
+<p>Repo total: <strong>21 confirmed finding(s), 4.064 interest</strong> across 6 module(s) and 55 file(s) in the traffic model.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>module</th><th class="n">findings</th><th class="n">interest</th><th>burden</th><th class="n">RQI</th><th class="n">files</th></tr></thead>
+<tbody>
+<tr><td>. <span class="fine">(unattributed: repo-root files and git-ref evidence &mdash; not a module)</span></td><td class="n">9</td><td class="n">1.5074</td><td><div class="track"><div class="fill" style="width: 100%"></div></div></td><td class="n">89</td><td class="n">13</td></tr>
+<tr><td>src/components</td><td class="n">2</td><td class="n">0.7861</td><td><div class="track"><div class="fill" style="width: 52%"></div></div></td><td class="n">95</td><td class="n">14</td></tr>
+<tr><td>tests</td><td class="n">5</td><td class="n">0.5852</td><td><div class="track"><div class="fill" style="width: 39%"></div></div></td><td class="n">93</td><td class="n">8</td></tr>
+<tr><td>src/lib</td><td class="n">2</td><td class="n">0.5668</td><td><div class="track"><div class="fill" style="width: 38%"></div></div></td><td class="n">89</td><td class="n">5</td></tr>
+<tr><td>src/pages</td><td class="n">2</td><td class="n">0.3185</td><td><div class="track"><div class="fill" style="width: 21%"></div></div></td><td class="n">96</td><td class="n">7</td></tr>
+<tr><td>.github/workflows</td><td class="n">1</td><td class="n">0.3</td><td><div class="track"><div class="fill" style="width: 20%"></div></div></td><td class="n">74</td><td class="n">1</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine"><em>No repo-wide RQI is reported. Density across a whole repo is dominated by its clean files &mdash; every real repo lands at 95 to 100 whatever it carries &mdash; so the number could not move and would read as a clean bill of health. RQI is meaningful per module, where the denominator is the module&rsquo;s own size.</em></p>
+<p class="fine"><em>Ordered by accumulated interest &mdash; the burden &mdash; not by RQI. RQI is a density, so ranking on it puts the smallest directory on top: a two-file deploy directory with one finding outranks a seven-finding module carrying five times the interest. Anchors: one hot major finding per file &asymp; 50, one hot structural per file &asymp; 37.</em></p>
+<h2>Categories</h2>
+<p class="fine">All ten categories, including the ones with nothing in them. Read the columns together: 0 confirmed beside a non-zero <code>found, unjudged</code> is an unfinished inspection, and 0 in both is either a clean slice or an unscanned one, which only the clauses above can tell you.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>category</th><th class="n">confirmed findings</th><th class="n">interest</th><th class="n">found, unjudged</th></tr></thead>
+<tbody>
+<tr><td>code</td><td class="n">1</td><td class="n">0.17</td><td class="n">0</td></tr>
+<tr><td>architecture</td><td class="n">1</td><td class="n">0.3968</td><td class="n">0</td></tr>
+<tr><td>test</td><td class="n">8</td><td class="n">1.4613</td><td class="n">0</td></tr>
+<tr><td>dependency</td><td class="n">1</td><td class="n">0.3</td><td class="n">0</td></tr>
+<tr><td>knowledge</td><td class="n">3</td><td class="n">0.5836</td><td class="n">0</td></tr>
+<tr><td>build</td><td class="n">2</td><td class="n">0.3494</td><td class="n">0</td></tr>
+<tr><td class="z">api</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+<tr><td>security</td><td class="n">1</td><td class="n">0.2284</td><td class="n">0</td></tr>
+<tr><td class="z">swerve</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr>
+<tr><td>signage</td><td class="n">4</td><td class="n">0.5745</td><td class="n">0</td></tr>
+</tbody>
+</table>
+</div>
+<h2>Work zones</h2>
+<p>Findings are grouped by module, and across modules when git history says their files change together (coupling &ge; 0.5). Close the road once.</p>
+<p><strong>Read the order with its bias in mind.</strong> Zones rank by <em>summed priority</em>, and priority divides interest by repair cost, so this order favours many cheap repairs over one large one: eight hot cosmetic S findings outrank one hot major S, and because <code>XL</code> divides by 20 while <code>S</code> divides by 1, the largest structural work will always appear near the bottom however severe it is. That is the intended reading &mdash; cheap wins first &mdash; but it means <strong>the interest column, not the position, is what says how much a zone actually costs the team.</strong> Where the two disagree, the disagreement is the information.</p>
+<p class="fine">Top 10 of 12 zones. The rest are in <code>roadwork.md</code>.</p>
+<h3>Zone 1: .github/workflows + tests &mdash; priority 0.7377, cost M, 6 finding(s)</h3>
+<p class="fine">Why together: coupled &mdash; package.json &harr; tests/build.test.ts (co 3, strength 0.75).</p>
+<div class="scroll">
+<table>
+<thead><tr><th>id</th><th>category</th><th>severity</th><th class="n">traffic</th><th class="n">interest</th><th class="n">priority</th><th>cost</th><th>title</th></tr></thead>
+<tbody>
+<tr><td>PH-819</td><td>build</td><td>minor</td><td class="n">1.00</td><td class="n">0.3</td><td class="n">0.3</td><td>S</td><td>Node runtime version is declared only in CI; no engines field or .nvmrc for local builds or the Vercel deploy</td></tr>
+<tr><td>PH-623</td><td>test</td><td>minor</td><td class="n">0.56</td><td class="n">0.1668</td><td class="n">0.1668</td><td>S</td><td>Accessibility tests check aria-hidden and aria-required anywhere in the file, so the specific elements they name are not checked</td></tr>
+<tr><td>PH-619</td><td>test</td><td>major</td><td class="n">0.13</td><td class="n">0.0914</td><td class="n">0.0914</td><td>S</td><td>Build-output suite (the guard for the original nodejs18 runtime bug) silently skips in every CI run</td></tr>
+<tr><td>PH-622</td><td>test</td><td>major</td><td class="n">0.32</td><td class="n">0.2213</td><td class="n">0.0738</td><td>M</td><td>mobile.test.ts asserts exact Tailwind class strings, so it changes with every restyle instead of guarding behavior</td></tr>
+<tr><td>PH-626</td><td>test</td><td>minor</td><td class="n">0.22</td><td class="n">0.0666</td><td class="n">0.0666</td><td>S</td><td>OG-image tests pin a font-cache implementation whose stated reason (warm serverless instances) no longer applies</td></tr>
+<tr><td>PH-624</td><td>test</td><td>minor</td><td class="n">0.13</td><td class="n">0.039</td><td class="n">0.039</td><td>S</td><td>config.test.ts CSP and header-scope assertions are too loose to catch the regressions they name</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine">Files this zone opens: <code>.github/workflows/ci.yml:19</code>, <code>.github/workflows/ci.yml:34-38</code>, <code>package-lock.json:3700</code>, <code>package.json:5</code>, <code>src/components/ContactForm.astro:33</code>, <code>src/components/ContactForm.astro:77</code>, <code>src/pages/og-image.png.ts:10-38</code>, <code>tests/accessibility.test.ts:19-21</code>, <code>tests/accessibility.test.ts:53-55</code>, <code>tests/accessibility.test.ts:62-65</code>, <code>tests/build.test.ts:13-16</code>, <code>tests/build.test.ts:39</code>, <code>tests/config.test.ts:113-115</code>, <code>tests/config.test.ts:98-102</code>, <code>tests/mobile.test.ts:132</code>, <code>tests/mobile.test.ts:168-169</code>, <code>tests/mobile.test.ts:205-207</code>, <code>tests/mobile.test.ts:43</code>, <code>tests/mobile.test.ts:88</code>, <code>tests/performance.test.ts:34-49</code>, <code>vercel.json:19-20</code></p>
+<h3>Zone 2: src/components + src/lib &mdash; priority 0.3179, cost L, 4 finding(s)</h3>
+<p class="fine">Why together: coupled &mdash; src/components/Hero.astro &harr; tests/mobile.test.ts (co 4, strength 0.57); src/components/Navbar.astro &harr; tests/mobile.test.ts (co 4, strength 0.57).</p>
+<div class="scroll">
+<table>
+<thead><tr><th>id</th><th>category</th><th>severity</th><th class="n">traffic</th><th class="n">interest</th><th class="n">priority</th><th>cost</th><th>title</th></tr></thead>
+<tbody>
+<tr><td>PH-019</td><td>code</td><td>minor</td><td class="n">0.57</td><td class="n">0.17</td><td class="n">0.17</td><td>S</td><td>Homepage section ids are re-declared as string literals beside the site.ts single source, and scroll-spy skips mismatches silently</td></tr>
+<tr><td>PH-519</td><td>architecture</td><td>major</td><td class="n">0.57</td><td class="n">0.3968</td><td class="n">0.0496</td><td>L</td><td>Section anchor ids are hardcoded in every section component instead of read from the declared single source in site.ts</td></tr>
+<tr><td>PH-620</td><td>test</td><td>major</td><td class="n">0.57</td><td class="n">0.3968</td><td class="n">0.0496</td><td>L</td><td>Navbar scroll-spy, header shadow and menu-dismissal logic are only checked by regex over the source text</td></tr>
+<tr><td>PH-621</td><td>test</td><td>major</td><td class="n">0.56</td><td class="n">0.3893</td><td class="n">0.0487</td><td>L</td><td>ContactForm client script (validation, server-error display, success swap, analytics, copy button) has no behavioral test</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine">Files this zone opens: <code>commit 6e06492 Standardize shared site data, UI components, and US spelling</code>, <code>src/components/About.astro:47</code>, <code>src/components/About.astro:66</code>, <code>src/components/Articles.astro:10</code>, <code>src/components/Clients.astro:24</code>, <code>src/components/ContactForm.astro:17</code>, <code>src/components/ContactForm.astro:266-330</code>, <code>src/components/Hero.astro:45</code>, <code>src/components/MobileCta.astro:14</code>, <code>src/components/MobileCta.astro:22</code>, <code>src/components/Navbar.astro:208-247</code>, <code>src/components/Navbar.astro:215</code>, <code>src/components/Services.astro:36</code>, <code>src/components/Services.astro:47</code>, <code>src/components/WhyBloq.astro:37</code>, <code>src/lib/site.ts:42</code>, <code>src/lib/site.ts:50</code>, <code>src/pages/404.astro:28</code>, <code>tests/accessibility.test.ts:45-74</code>, <code>tests/mobile.test.ts:117-125</code></p>
+<h3>Zone 3: . &mdash; priority 0.3, cost S, 1 finding(s)</h3>
+<p class="fine">Why together: same module.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>id</th><th>category</th><th>severity</th><th class="n">traffic</th><th class="n">interest</th><th class="n">priority</th><th>cost</th><th>title</th></tr></thead>
+<tbody>
+<tr><td>PH-419</td><td>dependency</td><td>minor</td><td class="n">1.00</td><td class="n">0.3</td><td class="n">0.3</td><td>S</td><td>Hero map pulls in the whole d3 umbrella for two d3-geo functions, with types suppressed by @ts-ignore</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine">Files this zone opens: <code>package.json:26</code>, <code>src/lib/heroMap.ts:5</code>, <code>src/lib/heroMap.ts:6</code></p>
+<h3>Zone 4: . &mdash; priority 0.3, cost S, 1 finding(s)</h3>
+<p class="fine">Why together: same module.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>id</th><th>category</th><th>severity</th><th class="n">traffic</th><th class="n">interest</th><th class="n">priority</th><th>cost</th><th>title</th></tr></thead>
+<tbody>
+<tr><td>PH-719</td><td>knowledge</td><td>minor</td><td class="n">1.00</td><td class="n">0.3</td><td class="n">0.3</td><td>S</td><td>CLAUDE.md and README still declare Astro v6 after the upgrade to Astro 7</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine">Files this zone opens: <code>499815f</code>, <code>CLAUDE.md:39</code>, <code>README.md:22</code>, <code>package.json:25</code></p>
+<h3>Zone 5: . &mdash; priority 0.1936, cost S, 1 finding(s)</h3>
+<p class="fine">Why together: same module.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>id</th><th>category</th><th>severity</th><th class="n">traffic</th><th class="n">interest</th><th class="n">priority</th><th>cost</th><th>title</th></tr></thead>
+<tbody>
+<tr><td>PH-720</td><td>knowledge</td><td>minor</td><td class="n">0.65</td><td class="n">0.1936</td><td class="n">0.1936</td><td>S</td><td>README describes an Inter-font, interactive, Jakarta-inclusive site the code no longer builds</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine">Files this zone opens: <code>CLAUDE.md:137</code>, <code>README.md:11</code>, <code>README.md:26</code>, <code>astro.config.mjs:18</code>, <code>src/lib/heroMap.ts:36</code></p>
+<h3>Zone 6: . &mdash; priority 0.1936, cost S, 1 finding(s)</h3>
+<p class="fine">Why together: same module.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>id</th><th>category</th><th>severity</th><th class="n">traffic</th><th class="n">interest</th><th class="n">priority</th><th>cost</th><th>title</th></tr></thead>
+<tbody>
+<tr><td>PH-221</td><td>signage</td><td>minor</td><td class="n">0.65</td><td class="n">0.1936</td><td class="n">0.1936</td><td>S</td><td>README describes an interactive hero map that includes Jakarta, but the map is a static aria-hidden SVG with no Jakarta marker</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine">Files this zone opens: <code>CLAUDE.md:137</code>, <code>README.md:11</code>, <code>src/components/Hero.astro:70</code>, <code>src/lib/heroMap.ts:36</code></p>
+<h3>Zone 7: . &mdash; priority 0.1936, cost S, 1 finding(s)</h3>
+<p class="fine">Why together: same module.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>id</th><th>category</th><th>severity</th><th class="n">traffic</th><th class="n">interest</th><th class="n">priority</th><th>cost</th><th>title</th></tr></thead>
+<tbody>
+<tr><td>PH-223</td><td>signage</td><td>minor</td><td class="n">0.65</td><td class="n">0.1936</td><td class="n">0.1936</td><td>S</td><td>CLAUDE.md shows a hardcoded hello@bloq.media in the clipboard handler and a home-variable link builder, but the code uses CONTACT_EMAIL and sectionHref()</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine">Files this zone opens: <code>CLAUDE.md:133</code>, <code>CLAUDE.md:45</code>, <code>src/components/ContactForm.astro:333</code>, <code>src/components/ContactForm.astro:343</code>, <code>src/components/Navbar.astro:73</code>, <code>src/lib/site.ts:56</code></p>
+<h3>Zone 8: src/pages &mdash; priority 0.1662, cost M, 2 finding(s)</h3>
+<p class="fine">Why together: same module.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>id</th><th>category</th><th>severity</th><th class="n">traffic</th><th class="n">interest</th><th class="n">priority</th><th>cost</th><th>title</th></tr></thead>
+<tbody>
+<tr><td>PH-625</td><td>test</td><td>minor</td><td class="n">0.30</td><td class="n">0.09</td><td class="n">0.09</td><td>S</td><td>Contact API rate-limit expiry, eviction sweep and forwarded-for parsing are untested</td></tr>
+<tr><td>PH-319</td><td>security</td><td>minor</td><td class="n">0.76</td><td class="n">0.2284</td><td class="n">0.0761</td><td>M</td><td>contact form abuse control is a per-instance in-memory map, so the documented 1 req/min per-IP limit does not hold on Vercel</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine">Files this zone opens: <code>CLAUDE.md:125</code>, <code>src/pages/api/contact.ts:40</code>, <code>src/pages/api/contact.ts:5</code>, <code>src/pages/api/contact.ts:87</code>, <code>src/pages/api/contact.ts:9-20</code>, <code>tests/api/contact.test.ts:247-250</code>, <code>tests/api/contact.test.ts:71-115</code></p>
+<h3>Zone 9: . &mdash; priority 0.0972, cost S, 1 finding(s)</h3>
+<p class="fine">Why together: same module.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>id</th><th>category</th><th>severity</th><th class="n">traffic</th><th class="n">interest</th><th class="n">priority</th><th>cost</th><th>title</th></tr></thead>
+<tbody>
+<tr><td>PH-220</td><td>signage</td><td>minor</td><td class="n">0.32</td><td class="n">0.0972</td><td class="n">0.0972</td><td>S</td><td>README says the Astro Fonts API self-hosts Inter, but the site font is Plus Jakarta Sans</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine">Files this zone opens: <code>README.md:26</code>, <code>astro.config.mjs:18</code>, <code>src/layouts/Layout.astro:130</code></p>
+<h3>Zone 10: . &mdash; priority 0.09, cost S, 1 finding(s)</h3>
+<p class="fine">Why together: same module.</p>
+<div class="scroll">
+<table>
+<thead><tr><th>id</th><th>category</th><th>severity</th><th class="n">traffic</th><th class="n">interest</th><th class="n">priority</th><th>cost</th><th>title</th></tr></thead>
+<tbody>
+<tr><td>PH-721</td><td>knowledge</td><td>minor</td><td class="n">0.30</td><td class="n">0.09</td><td class="n">0.09</td><td>S</td><td>.env.example says the team CC comes from a hidden form field, but the API adds it server-side</td></tr>
+</tbody>
+</table>
+</div>
+<p class="fine">Files this zone opens: <code>.env.example:3</code>, <code>src/lib/site.ts:11</code>, <code>src/pages/api/contact.ts:100</code></p>
+<p class="fine">No baseline comparison on this page: run <code>/pothole:resurvey</code> to produce one.</p>
+<h2>Not scored</h2>
+<ul>
+<li><strong>1 refuted</strong> &mdash; judged false positives; kept in the register with their reasons so the same false positive does not return.</li>
+<li><strong>0 unverified</strong> &mdash; never judged. Not absent, not confirmed. Re-run <code>/pothole:verify</code> for those categories before reading any number above as complete.</li>
+</ul>
+<footer>
+<p>Model (<code>lib/scoring.mjs</code>): interest = severity weight &times; traffic &times; amplifier, priority = interest &divide; repair cost, RQI = 100 &times; exp(&minus;interest &divide; files). Severity weights {&quot;cosmetic&quot;:0.1,&quot;minor&quot;:0.3,&quot;major&quot;:0.7,&quot;structural&quot;:1}; cost weights {&quot;S&quot;:1,&quot;M&quot;:3,&quot;L&quot;:8,&quot;XL&quot;:20}; a confirmed swerve or signage finding amplifies its module&rsquo;s other findings &times;1.5, once, never compounded.</p>
+<p>Generated by <code>scripts/build-scoreboard.mjs</code> from <code>.pothole/register.md</code> and <code>.pothole/traffic.json</code> &mdash; never from <code>roadwork.md</code>, so the two cannot drift apart. Regenerated in full on every <code>/pothole:report</code> run: edit the register, not this page.</p>
+</footer>
+</main>
+</body>
+</html>
