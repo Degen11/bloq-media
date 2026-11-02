@@ -1,0 +1,4 @@
+# Findings: swerve
+
+Detector: detect-swerve. Coverage: clone is shallow (history starts 2026-05-25, about 5 months of the 24-month window); walked all commits in that window (no workaround/hack/temporary/revert/band-aid subjects, almost all are Dependabot bumps or feature/polish merges), grepped src, tests and root config for folklore, TODO/FIXME, ts-ignore, eslint-disable and catch blocks, and read hotspot comments (api/contact.ts, Navbar, og-image, Layout, heroMap). No detour survived: heroMap.ts ts-ignores and the og-image prerender comment document external constraints (third-party typings, Vercel wasm tracing); the catch blocks are single, intentional fallbacks, not a swallow cluster; no feature flags exist. Pre-2026-05-25 history unmeasured. No architecture-level observations. [coverage=partial]
+
