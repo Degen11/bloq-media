@@ -208,7 +208,7 @@ const labelClass = 'block text-sm font-semibold text-bloq-ink mb-1.5';
 
 <script>
   import { track } from '@vercel/analytics';
-  import { EMAIL_RE } from '@lib/contact';
+  import { copyText, submitContactForm, validateContactForm } from '@lib/contact';
   import { CONTACT_EMAIL } from '@lib/site';
 
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
@@ -278,44 +278,20 @@ const labelClass = 'block text-sm font-semibold text-bloq-ink mb-1.5';
     const website = (form.elements.namedItem('website') as HTMLInputElement).value;
     const interest = (form.elements.namedItem('interest') as RadioNodeList | null)?.value ?? '';
 
-    let hasErrors = false;
-    if (!name) {
-      setFieldError('name', 'Name is required.');
-      hasErrors = true;
-    }
-    if (!email || !EMAIL_RE.test(email)) {
-      setFieldError('email', 'A valid email address is required.');
-      hasErrors = true;
-    }
-    if (!message) {
-      setFieldError('message', 'Message is required.');
-      hasErrors = true;
-    }
-    if (hasErrors) return;
+    const errors = validateContactForm({ name, email, message });
+    for (const [field, text] of Object.entries(errors)) setFieldError(field, text);
+    if (Object.keys(errors).length > 0) return;
 
     setLoading(true);
 
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name, email, company, interest, message, website }),
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        form.classList.add('hidden');
-        formSuccess?.classList.remove('hidden');
-        track('contact_form_submitted');
-      } else {
-        // Show the server's reason (e.g. the rate-limit notice) instead of the generic text
-        if (formError && typeof data.message === 'string') formError.textContent = data.message;
-        formError?.classList.remove('hidden');
-        setLoading(false);
-      }
-    } catch {
-      if (formError) formError.textContent = genericError;
+    const result = await submitContactForm({ name, email, company, interest, message, website });
+    if (result.ok) {
+      form.classList.add('hidden');
+      formSuccess?.classList.remove('hidden');
+      track('contact_form_submitted');
+    } else {
+      // Show the server's reason (e.g. the rate-limit notice) instead of the generic text
+      if (formError) formError.textContent = result.message ?? genericError;
       formError?.classList.remove('hidden');
       setLoading(false);
     }
@@ -329,19 +305,18 @@ const labelClass = 'block text-sm font-semibold text-bloq-ink mb-1.5';
     let copyResetTimer: ReturnType<typeof setTimeout> | undefined;
 
     copyBtn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(CONTACT_EMAIL);
-        copyBtn.classList.add('is-copied');
-        if (copyStatus) copyStatus.textContent = 'Email address copied to clipboard';
-        clearTimeout(copyResetTimer);
-        copyResetTimer = setTimeout(() => {
-          copyBtn.classList.remove('is-copied');
-          if (copyStatus) copyStatus.textContent = '';
-        }, 2000);
-      } catch {
+      if (!(await copyText(CONTACT_EMAIL))) {
         // Clipboard unavailable — open email client as fallback
         window.location.href = `mailto:${CONTACT_EMAIL}`;
+        return;
       }
+      copyBtn.classList.add('is-copied');
+      if (copyStatus) copyStatus.textContent = 'Email address copied to clipboard';
+      clearTimeout(copyResetTimer);
+      copyResetTimer = setTimeout(() => {
+        copyBtn.classList.remove('is-copied');
+        if (copyStatus) copyStatus.textContent = '';
+      }, 2000);
     });
   }
 </script>

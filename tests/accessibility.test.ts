@@ -75,9 +75,9 @@ describe('ContactForm accessibility', () => {
     expect(src).toContain("track('contact_form_submitted')");
   });
 
-  it('submits to /api/contact not directly to Web3Forms', () => {
-    expect(src).toContain("fetch('/api/contact'");
-    expect(src).not.toContain("fetch('https://api.web3forms.com");
+  it('submits through submitContactForm (which posts to /api/contact), not to Web3Forms', () => {
+    expect(src).toContain('submitContactForm(');
+    expect(src).not.toContain('api.web3forms.com');
   });
 });
 

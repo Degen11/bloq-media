@@ -76,3 +76,18 @@ describe.skipIf(!hasBuild)('homepage section anchors', () => {
     for (const target of targets) expect(ids, `#${target}`).toContain(target);
   });
 });
+
+describe.skipIf(!hasBuild)('rendered buttons', () => {
+  const html = hasBuild ? readFileSync(resolve(root, 'dist/client/index.html'), 'utf8') : '';
+  const buttons = html.match(/<button\b[^>]*>/g) ?? [];
+
+  it('no button renders a duplicate type attribute (the first one wins in browsers)', () => {
+    expect(buttons.length).toBeGreaterThan(0);
+    for (const tag of buttons) expect(tag.match(/\stype="/g)?.length ?? 0).toBeLessThanOrEqual(1);
+  });
+
+  it('the contact form button is a submit button', () => {
+    const submit = buttons.find((tag) => tag.includes('id="submit-btn"'));
+    expect(submit).toMatch(/\stype="submit"/);
+  });
+});
