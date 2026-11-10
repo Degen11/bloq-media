@@ -104,6 +104,27 @@ describe('rate limiting', () => {
     expect(retry.status).toBe(200);
   });
 
+  it('limits by the first x-forwarded-for hop, not the whole header', async () => {
+    const client = `client-${Math.random()}`;
+    const first = await POST(makeCtx(validBody, `${client}, 10.0.0.1`));
+    expect(first.status).toBe(200);
+    // Same client behind a different proxy chain is still the same client
+    const second = await POST(makeCtx(validBody, `${client}, 10.0.0.2`));
+    expect(second.status).toBe(429);
+  });
+
+  it('lets the same IP submit again after the 60 s window', async () => {
+    vi.useFakeTimers();
+    try {
+      const ip = `rate-limit-window-${Math.random()}`;
+      expect((await POST(makeCtx(validBody, ip))).status).toBe(200);
+      vi.advanceTimersByTime(60_000);
+      expect((await POST(makeCtx(validBody, ip))).status).toBe(200);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('allows different IPs to submit independently', async () => {
     const ip1 = `ip-a-${Math.random()}`;
     const ip2 = `ip-b-${Math.random()}`;
