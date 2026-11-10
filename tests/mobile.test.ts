@@ -3,9 +3,10 @@
  * Covers: build-time hero map, touch-target sizing, anchor scroll offset,
  * responsive section spacing, mobile-safe viewport units, and self-hosted fonts.
  */
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 import { describe, it, expect } from 'vitest';
+import astroConfig from '../astro.config.mjs';
 
 const root = resolve(__dirname, '..');
 const read = (rel: string) => readFileSync(resolve(root, rel), 'utf8');
@@ -97,14 +98,32 @@ describe('Responsive section spacing', () => {
 // Fonts — trimmed weights, self-hosted
 // ---------------------------------------------------------------------------
 describe('Font loading', () => {
-  const cfg = read('astro.config.mjs');
+  const pkg = JSON.parse(read('package.json'));
+  const family = astroConfig.fonts?.[0] as unknown as {
+    provider: { name: string };
+    options: { variants: { weight: number; src: string[] }[] };
+  };
+  const variants = family.options.variants;
 
   it('requests only the weights in use (no 900)', () => {
-    expect(cfg).toContain('weights: [400, 500, 600, 700, 800]');
+    expect(variants.map((v) => v.weight)).toEqual([400, 500, 600, 700, 800]);
   });
 
-  it('only downloads the latin subset', () => {
-    expect(cfg).toContain("subsets: ['latin']");
+  it('only ships the latin subset', () => {
+    for (const v of variants) {
+      expect(v.src).toHaveLength(1);
+      expect(v.src[0]).toMatch(/plus-jakarta-sans-latin-\d{3}-normal\.woff2$/);
+    }
+  });
+
+  it('reads the font files from disk, not from the network at build time', () => {
+    expect(family.provider.name).toBe('local');
+    for (const v of variants) expect(existsSync(resolve(root, v.src[0]))).toBe(true);
+  });
+
+  it('pins the @fontsource package to an exact version', () => {
+    const version = pkg.dependencies['@fontsource/plus-jakarta-sans'];
+    expect(version).toMatch(/^\d+\.\d+\.\d+$/);
   });
 });
 

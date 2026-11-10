@@ -1,7 +1,9 @@
 /**
  * Build output validation.
  * Verifies the Vercel deployment artifact is configured correctly.
- * Requires `npm run build` to have been executed first — tests are skipped otherwise.
+ * Requires `npm run build` to have been executed first. Locally the suites skip
+ * without a build; in CI (where `CI` is set) a missing build is a failure, so the
+ * guard can't silently turn into a no-op.
  *
  * The nodejs18.x issue was the original bug that started this session.
  */
@@ -12,6 +14,12 @@ import { describe, it, expect } from 'vitest';
 const root = resolve(__dirname, '..');
 const vcConfig = resolve(root, '.vercel/output/functions/_render.func/.vc-config.json');
 const hasBuild = existsSync(vcConfig);
+
+describe.runIf(process.env.CI)('build output in CI', () => {
+  it('exists, so the suites below actually run', () => {
+    expect(hasBuild, 'run `npm run build` before `npm test` in CI').toBe(true);
+  });
+});
 
 describe.skipIf(!hasBuild)('Vercel build output', () => {
   // Lazy read so the describe callback doesn't throw when hasBuild is false.

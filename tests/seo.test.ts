@@ -107,7 +107,7 @@ describe('font loading (Layout.astro)', () => {
   const cfg = read('astro.config.mjs');
 
   it('self-hosts Plus Jakarta Sans via the Astro Fonts API', () => {
-    expect(cfg).toContain('fontProviders.fontsource()');
+    expect(cfg).toContain('fontProviders.local()');
     expect(cfg).toContain("name: 'Plus Jakarta Sans'");
     expect(cfg).toContain("cssVariable: '--font-jakarta'");
     expect(src).toContain('<Font cssVariable="--font-jakarta"');
