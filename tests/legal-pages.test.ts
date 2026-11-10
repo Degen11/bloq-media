@@ -63,7 +63,7 @@ describe.each([
 });
 
 describe('privacy policy accuracy', () => {
-  it('no longer mentions Google Fonts (Inter is self-hosted)', () => {
+  it('no longer mentions Google Fonts (Plus Jakarta Sans is self-hosted)', () => {
     expect(read('src/pages/privacy.astro')).not.toContain('Google Fonts');
   });
 });

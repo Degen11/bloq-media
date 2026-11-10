@@ -36,17 +36,17 @@ git config user.email "hill.degen@gmail.com"
 
 ## Architecture
 
-This is a single-page **Astro v6** site running in **SSR mode** (`output: 'server'`) deployed to Vercel. The main page (`src/pages/index.astro`) is composed from section components; `src/pages/privacy.astro`, `src/pages/terms.astro`, and `src/pages/404.astro` are standalone pages sharing `Layout`, `Navbar`, and `Footer`. Every page and the two image endpoints (`og-image.png.ts`, `hero-map.svg.ts`) set `export const prerender = true` so they are built statically and served from the CDN — this is also required for `@astrojs/sitemap` to include pages (the integration only emits prerendered routes in server mode). Only `/api/contact` stays server-rendered.
+This is a single-page **Astro v7** site running in **SSR mode** (`output: 'server'`) deployed to Vercel. The main page (`src/pages/index.astro`) is composed from section components; `src/pages/privacy.astro`, `src/pages/terms.astro`, and `src/pages/404.astro` are standalone pages sharing `Layout`, `Navbar`, and `Footer`. Every page and the two image endpoints (`og-image.png.ts`, `hero-map.svg.ts`) set `export const prerender = true` so they are built statically and served from the CDN — this is also required for `@astrojs/sitemap` to include pages (the integration only emits prerendered routes in server mode). Only `/api/contact` stays server-rendered.
 
 ### SEO / metadata
 
 `site` in `astro.config.mjs` is `https://www.bloq.media`, matching the primary Vercel domain (the apex 308-redirects to `www`). `Layout.astro` derives every absolute URL (canonical, `og:url`, OG image, JSON-LD `url`/`@id`) from `Astro.site`, so never hardcode the host. Pass `title` and `description` (≤ 160 chars) props per page; pass `noindex` to emit `noindex, follow` and skip canonical/`og:url` (used by the 404 page). The Organization JSON-LD has an `@id` that the WebSite `publisher` references. The sitemap filter excludes `.png`/`.svg` endpoints and `/404/`.
 
-Section links in `Navbar.astro` and `Footer.astro` are built as `${home}#section`, where `home` is `''` on `/` and `'/'` elsewhere, so they work from the legal and 404 pages.
+Every `#section` link is built with `sectionHref(id, Astro.url.pathname)` from `src/lib/site.ts`, which returns `#id` on `/` and `/#id` elsewhere, so links work from the legal and 404 pages.
 
 ### Fonts
 
-Plus Jakarta Sans is self-hosted through Astro's Fonts API (`fonts` in `astro.config.mjs`, `fontsource` provider, weights 400/500/600/700/800, latin subset) and rendered with `<Font cssVariable="--font-jakarta" preload=...>` in `Layout.astro`, preloading 400 (body) and 800 (headings). `--font-sans` in `global.css` is `var(--font-jakarta)`, which includes Astro's generated metric-matched fallback so the font swap doesn't shift layout. No third-party font requests are made, and the CSP `font-src` is `'self'`.
+Plus Jakarta Sans is self-hosted through Astro's Fonts API (`fonts` in `astro.config.mjs`, `local` provider reading the latin-subset woff2 files for weights 400/500/600/700/800 from the `@fontsource/plus-jakarta-sans` package, which is pinned to an exact version so builds are reproducible and need no network for fonts) and rendered with `<Font cssVariable="--font-jakarta" preload=...>` in `Layout.astro`, preloading 400 (body) and 800 (headings). `--font-sans` in `global.css` is `var(--font-jakarta)`, which includes Astro's generated metric-matched fallback so the font swap doesn't shift layout. No third-party font requests are made, and the CSP `font-src` is `'self'`.
 
 ### Images & favicons
 
@@ -58,12 +58,13 @@ Display images (BLOQ logo, client logos) live in `src/assets/` and are rendered 
 
 ### Shared data and building blocks
 
-- `src/lib/site.ts` is the single source for `SITE_NAME`, `CONTACT_EMAIL` (public), `TEAM_EMAIL` (legal pages and the API's CC), `socials`, the homepage `sections` list, `BRAND` colors (for places that can't read the Tailwind theme, like the OG image), and `sectionHref(id, pathname)`. Navbar, Footer, scroll-spy, ContactForm, the legal pages, JSON-LD and the API all read from it, so never hardcode an email, social URL or section id.
-- `src/lib/contact.ts` holds `EMAIL_RE` and `MAX_LENGTH`, shared by the form and the API.
+- `src/lib/site.ts` is the single source for `SITE_NAME`, `CONTACT_EMAIL` (public), `TEAM_EMAIL` (legal pages and the API's CC), `socials`, every section anchor id (`SECTION_IDS`, plus `CONTACT_SECTION_ID`), the homepage `sections` list, `BRAND` colors (for places that can't read the Tailwind theme, like the OG image), and `sectionHref(id, pathname)`. Section components set their `id` from `SECTION_IDS`, and Navbar, Footer, scroll-spy, ContactForm, MobileCta, the legal and 404 pages, JSON-LD and the API all read from it, so never hardcode an email, social URL or section id. A build-output test checks every id exists on `/`.
+- `src/lib/contact.ts` holds `EMAIL_RE`, `MAX_LENGTH` and `INTERESTS`, shared by the form and the API, plus the form's client logic (`validateContactForm`, `submitContactForm`, `copyText`) so it can be unit-tested.
+- `src/lib/scrollSpy.ts` holds the navbar's pure scroll logic (`getActiveSection`, `isHeaderScrolled`, `shouldCloseMenuOnScroll`); `src/lib/rateLimit.ts` holds the API's in-memory limiter and `clientIp()`.
 - `src/lib/icons.ts` holds every inline SVG icon; render them with `<Icon name="..." class="w-5 h-5" />` (always `aria-hidden`).
-- `<Section id class containerClass>` wraps homepage sections with the standard `py-20 sm:py-24 lg:py-28` padding and `max-w-7xl` container (a `background` slot sits behind the content).
+- `<Section id class containerClass>` wraps homepage sections with the standard `py-16 sm:py-20` padding and `max-w-7xl` container (a `background` slot sits behind the content).
 - `<SectionHeading eyebrow title align tone as>` renders the eyebrow, heading and optional intro (default slot). `tone="dark"` is for navy backgrounds.
-- `<Button href? variant size>` renders an `<a>` or `<button>`. Variants: `primary` (navy), `accent` (bloq-blue), `outline` (light bg), `ghost` (dark bg). Sizes: `sm`, `md`, `lg` (`sm` has `min-h-11` so it stays a 44 px tap target).
+- `<Button href? variant size>` renders an `<a>` or `<button>`. Variants: `primary` (navy, on light bg), `secondary` (white with a border, on light bg), `ghost` (bordered, on navy), `light` (white, the main CTA on navy). A `type` prop replaces the default `type="button"` (pass `type="submit"` for form buttons). Sizes: `sm`, `md`, `lg` (`sm` has `min-h-11` so it stays a 44 px tap target).
 - Touch targets are 44 px or more on phones. Footer links get `min-h-11` below `md`; short inline text links ("See what we do", the contact email) extend their hit area with an `after:absolute` pseudo-element instead of extra padding, so the visible underline doesn't move.
 - The `card` utility in `global.css` is the shared content card used by Why BLOQ, Articles and the hero story card. It rests on the `shadow-card` theme shadow and lifts to `shadow-card-hover` on hover; reuse those tokens for other white tiles (the hero stat tiles use `shadow-card`).
 
@@ -116,7 +117,7 @@ It also houses the UI enhancement utilities added for polish:
 - **Scroll-aware shadow:** The `#site-header` starts borderless-shadow; the `header-scrolled` class adds a soft `box-shadow` after 10 px of scroll. Toggled by a passive `scroll` listener in `Navbar.astro`.
 - **Mobile menu animation:** The mobile menu uses a `max-height` + `opacity` CSS transition (set inline on the element) instead of `display:none` toggling, giving a smooth slide open/close on tap. Both properties share the same `0.3s` duration so the slide and fade finish together. Its links are `py-3 text-base` (48 px tap targets).
 - **Mobile menu dismissal:** Besides link taps, the toggle and Escape, the menu closes on a tap outside it (document `click` listener) and once the page scrolls more than 40 px from where it was opened (the threshold ignores mobile address-bar jitter).
-- **Scroll-spy:** The same passive `scroll` listener also runs `updateScrollSpy()`, which checks every nav section plus `contact` and applies `.nav-active` to the `[data-section]` link for the lowest section whose top edge has crossed the navbar bottom (plus a 32 px buffer). It compares page positions rather than list order, because the client logo strip (`#clients`) sits right under the hero while its nav link comes last. The "Contact Us" CTA button intentionally has no `data-section` attribute so it is excluded. `updateScrollSpy()` also fires once on page load to handle deep-links.
+- **Scroll-spy:** The same passive `scroll` listener also runs `updateScrollSpy()`, which measures every nav section plus `contact`, asks `getActiveSection()` in `src/lib/scrollSpy.ts`, and applies `.nav-active` to the `[data-section]` link for the lowest section whose top edge has crossed the navbar bottom (plus a 32 px buffer). It compares page positions rather than list order, because the client logo strip (`#clients`) sits right under the hero while its nav link comes last. The "Contact Us" CTA button intentionally has no `data-section` attribute so it is excluded. `updateScrollSpy()` also fires once on page load to handle deep-links.
 
 ### Server routes
 
@@ -130,7 +131,7 @@ It also houses the UI enhancement utilities added for polish:
 
 `ContactForm.astro` handles client-side validation and submission entirely in its own `<script>` block. It posts JSON to `/api/contact`, shows a spinner during submission, and swaps the form out for a success state on `{ success: true }`. It also fires a Vercel Analytics `track('contact_form_submitted')` event on success. The honeypot field (`name="website"`) is CSS-hidden (`.honeypot` class) rather than `display:none` so bots still fill it; the API silently returns 200 when it's non-empty.
 
-The form sits in a split card: the left panel has the heading, a three-step "what happens next" list and the email box; the right has the fields plus an optional "What do you need?" picker (radio inputs styled as chips with `peer-checked`, options from `INTERESTS`). The email box shows `hello@bloq.media` as a `mailto:` link alongside a **click-to-copy** button (`#copy-email-btn`). Clicking it calls `navigator.clipboard.writeText('hello@bloq.media')`, then toggles `.is-copied` on the button to crossfade the clipboard icon into a green checkmark (via `.copy-icon-stack`/`.copy-icon-layer`) for 2 s before reverting. If the Clipboard API is unavailable the handler falls back to `window.location.href = 'mailto:hello@bloq.media'`.
+The form sits in a split card: the left panel has the heading, a three-step "what happens next" list and the email box; the right has the fields plus an optional "What do you need?" picker (radio inputs styled as chips with `peer-checked`, options from `INTERESTS`). The email box shows `CONTACT_EMAIL` as a `mailto:` link alongside a **click-to-copy** button (`#copy-email-btn`). Clicking it calls `copyText(CONTACT_EMAIL)` (the Clipboard API), then toggles `.is-copied` on the button to crossfade the clipboard icon into a green checkmark (via `.copy-icon-stack`/`.copy-icon-layer`) for 2 s before reverting. If the Clipboard API is unavailable or refuses, the handler falls back to opening a `mailto:` link for `CONTACT_EMAIL`.
 
 ### Hero map
 
@@ -142,4 +143,8 @@ The hero's D3 Mercator map of Southeast Asia is drawn entirely at build time; no
 
 ### Tests
 
-Vitest runs in Node environment against `tests/**/*.test.ts`. The API test (`tests/api/contact.test.ts`) imports the `POST` handler directly and stubs `globalThis.fetch`—no server needed. Other test files cover SEO meta, build output, accessibility, performance, the legal pages, the hero map, and Astro config.
+Vitest runs in Node environment against `tests/**/*.test.ts`. The API test (`tests/api/contact.test.ts`) imports the `POST` handler directly and stubs `globalThis.fetch`, so no server is needed. `tests/lib/` unit-tests the extracted scroll-spy, contact form and rate-limit logic. Other test files cover SEO meta, accessibility, performance, mobile contracts, the legal pages, the hero map, and Astro config.
+
+`tests/build.test.ts` checks the real build output (`.vercel/output`, `dist/client`), so it needs `npm run build` first. Locally it skips without a build; in CI (`CI` set) a missing build fails the run, and the workflow builds before testing.
+
+Node is pinned in `.nvmrc` (CI reads it) and `engines` in `package.json` (Vercel reads it).
