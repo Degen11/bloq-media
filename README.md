@@ -8,7 +8,7 @@ The public marketing site for **BLOQ Media** — a news organization and content
 
 A single-page site that explains what BLOQ Media does (informs, inspires, and engages audiences across Southeast Asia's tech scene), who it's for, and how to get in touch. It includes:
 
-- An interactive map of the region's key markets (Singapore, Bangkok, Jakarta, Manila, Ho Chi Minh City, Kuala Lumpur, Yangon)
+- A map of the region's key markets (Singapore, Bangkok, Manila, Ho Chi Minh City, Kuala Lumpur, Yangon), drawn at build time as a static SVG
 - Service and "why us" sections aimed at prospective clients/partners
 - A client-logo strip
 - A contact form that emails the team directly
@@ -19,11 +19,11 @@ Actively maintained and deployed to production on Vercel. Dependency updates are
 
 ## Stack
 
-- **[Astro v6](https://astro.build)** running in SSR mode (`output: 'server'`), deployed on **Vercel**
+- **[Astro v7](https://astro.build)** running in SSR mode (`output: 'server'`), deployed on **Vercel**
 - **Tailwind CSS v4** via `@tailwindcss/vite` — brand tokens defined in `src/styles/global.css`
-- **D3** to draw the hero section's Mercator map at build time (no map JavaScript ships to the browser)
+- **d3-geo** to draw the hero section's Mercator map at build time (no map JavaScript ships to the browser)
 - **[Satori](https://github.com/vercel/satori) + [resvg](https://github.com/RazrFalcon/resvg)** to generate the Open Graph share image at build time
-- **Astro Fonts API** to self-host Inter with metric-matched fallbacks
+- **Astro Fonts API** to self-host Plus Jakarta Sans (from a pinned `@fontsource` package) with metric-matched fallbacks; the OG image uses Inter
 - **Vitest** for the test suite; **[Web3Forms](https://web3forms.com)** to deliver contact-form submissions without running a mail server
 
 ## Architecture
@@ -34,7 +34,7 @@ The main page (`src/pages/index.astro`) is composed from section components (`He
 | -------------------------------- | ------------------------------------------------------------------- |
 | `/`, `/privacy`, `/terms`, `404` | Static HTML pages                                                   |
 | `/og-image.png`                  | The 1200×630 social share image, rendered with satori at build time |
-| `/hero-map.svg`                  | The hero section's map, drawn with D3 at build time                 |
+| `/hero-map.svg`                  | The hero section's map, drawn with d3-geo at build time             |
 
 Only one route stays server-rendered per request:
 

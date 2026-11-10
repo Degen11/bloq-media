@@ -1,23 +1,11 @@
 import type { APIRoute } from 'astro';
 import { EMAIL_RE, INTERESTS, MAX_LENGTH } from '@lib/contact';
 import { CONTACT_EMAIL, SITE_NAME, TEAM_EMAIL } from '@lib/site';
+import { clientIp, createRateLimiter } from '@lib/rateLimit';
 
-// Per-IP rate limiting — survives within a warm serverless instance
-const rateLimitMap = new Map<string, number>();
-const RATE_LIMIT_MS = 60_000;
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const last = rateLimitMap.get(ip);
-  if (last && now - last < RATE_LIMIT_MS) return false;
-  rateLimitMap.set(ip, now);
-  if (rateLimitMap.size > 500) {
-    for (const [key, time] of rateLimitMap) {
-      if (now - time > RATE_LIMIT_MS) rateLimitMap.delete(key);
-    }
-  }
-  return true;
-}
+// Per-IP courtesy limit: one valid submission a minute per warm instance.
+// See src/lib/rateLimit.ts for why the real guard is the Vercel Firewall rule.
+const limiter = createRateLimiter({ windowMs: 60_000, maxEntries: 500 });
 
 function json(body: Record<string, unknown>, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -37,7 +25,7 @@ function field(value: unknown, singleLine = true): string | null {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
+  const ip = clientIp(request.headers);
 
   let body: Record<string, unknown> | null;
   try {
@@ -84,7 +72,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // Checked after validation so only well-formed submissions use up the slot
-  if (!checkRateLimit(ip)) {
+  if (!limiter.check(ip)) {
     return fail('Too many requests. Please wait a minute and try again.', 429);
   }
 
@@ -114,7 +102,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // Nothing was sent, so let the visitor retry straight away
-  rateLimitMap.delete(ip);
+  limiter.release(ip);
 
   return fail(`Unable to send your message right now. Please email us at ${CONTACT_EMAIL}.`, 500);
 };

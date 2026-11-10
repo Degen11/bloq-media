@@ -1,11 +1,16 @@
 /**
- * Mobile-optimization checks via static source analysis.
- * Covers: build-time hero map, touch-target sizing, anchor scroll offset,
- * responsive section spacing, mobile-safe viewport units, and self-hosted fonts.
+ * Mobile contracts: no map download on phones, no viewport-height units,
+ * 44 px tap targets, anchor offset, sticky CTA and self-hosted fonts.
+ *
+ * Only assertions that encode a real contract live here. Exact Tailwind class
+ * strings for spacing and type sizes are deliberately not pinned, so a restyle
+ * doesn't mean rewriting this file. Scroll and form behavior is unit-tested in
+ * tests/lib.
  */
-import { readFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 import { describe, it, expect } from 'vitest';
+import astroConfig from '../astro.config.mjs';
 
 const root = resolve(__dirname, '..');
 const read = (rel: string) => readFileSync(resolve(root, rel), 'utf8');
@@ -33,30 +38,21 @@ describe('Hero mobile optimization', () => {
     expect(src).toContain('width={MAP_WIDTH}');
     expect(src).toContain('height={MAP_HEIGHT}');
   });
-
-  it('sizes to its content instead of a viewport-height unit (no address-bar jumps)', () => {
-    expect(src).not.toContain('min-h-screen');
-    expect(src).not.toContain('100vh');
-  });
-
-  it('scales the headline down on the smallest screens', () => {
-    expect(src).toContain('text-[44px] sm:text-6xl lg:text-[68px]');
-  });
 });
 
 // ---------------------------------------------------------------------------
-// Navbar — touch targets
+// No viewport-height units (mobile address bars make them jump)
 // ---------------------------------------------------------------------------
-describe('Navbar touch targets', () => {
-  const src = read('src/components/Navbar.astro');
+describe('Viewport-height units', () => {
+  const files = [
+    ...readdirSync(resolve(root, 'src/components')).map((f) => `src/components/${f}`),
+    'src/layouts/Layout.astro',
+    'src/styles/global.css',
+  ];
 
-  it('hamburger button has a comfortable tap area', () => {
-    expect(src).toContain('id="menu-toggle"');
-    expect(src).toMatch(/id="menu-toggle"[\s\S]*?class="[^"]*p-2\.5/);
-  });
-
-  it('mobile menu links are block-level with 44px+ tap targets', () => {
-    expect(src).toMatch(/sections\.map[\s\S]*?class="block py-3 text-gray-600[^"]*text-base/);
+  it.each(files)('%s avoids 100vh / h-screen', (rel) => {
+    const src = read(rel);
+    expect(src).not.toMatch(/\b100vh\b|\b(min-)?h-screen\b/);
   });
 });
 
@@ -97,46 +93,38 @@ describe('Responsive section spacing', () => {
 // Fonts — trimmed weights, self-hosted
 // ---------------------------------------------------------------------------
 describe('Font loading', () => {
-  const cfg = read('astro.config.mjs');
+  const pkg = JSON.parse(read('package.json'));
+  const family = astroConfig.fonts?.[0] as unknown as {
+    provider: { name: string };
+    options: { variants: { weight: number; src: string[] }[] };
+  };
+  const variants = family.options.variants;
 
   it('requests only the weights in use (no 900)', () => {
-    expect(cfg).toContain('weights: [400, 500, 600, 700, 800]');
+    expect(variants.map((v) => v.weight)).toEqual([400, 500, 600, 700, 800]);
   });
 
-  it('only downloads the latin subset', () => {
-    expect(cfg).toContain("subsets: ['latin']");
+  it('only ships the latin subset', () => {
+    for (const v of variants) {
+      expect(v.src).toHaveLength(1);
+      expect(v.src[0]).toMatch(/plus-jakarta-sans-latin-\d{3}-normal\.woff2$/);
+    }
+  });
+
+  it('reads the font files from disk, not from the network at build time', () => {
+    expect(family.provider.name).toBe('local');
+    for (const v of variants) expect(existsSync(resolve(root, v.src[0]))).toBe(true);
+  });
+
+  it('pins the @fontsource package to an exact version', () => {
+    const version = pkg.dependencies['@fontsource/plus-jakarta-sans'];
+    expect(version).toMatch(/^\d+\.\d+\.\d+$/);
   });
 });
 
 // ---------------------------------------------------------------------------
-// Mobile polish — menu dismissal, hero fold, sticky CTA, client grid
+// Sticky mobile CTA
 // ---------------------------------------------------------------------------
-describe('Mobile menu dismissal', () => {
-  const src = read('src/components/Navbar.astro');
-
-  it('closes on a tap outside the menu', () => {
-    expect(src).toMatch(
-      /addEventListener\('click'[\s\S]*?menu\?\.contains\(target\)[\s\S]*?closeMenu\(\)/,
-    );
-  });
-
-  it('closes after scrolling away from where it opened', () => {
-    expect(src).toMatch(/window\.scrollY - openedAtY/);
-  });
-});
-
-describe('Hero fits the first screen on small phones', () => {
-  const src = read('src/components/Hero.astro');
-
-  it('uses tighter vertical padding below sm', () => {
-    expect(src).toContain('py-12 sm:py-16 lg:py-[72px]');
-  });
-
-  it('scales the intro paragraph down below sm', () => {
-    expect(src).toContain('text-lg sm:text-[19px]');
-  });
-});
-
 describe('Sticky mobile CTA', () => {
   const src = read('src/components/MobileCta.astro');
   const index = read('src/pages/index.astro');
@@ -145,14 +133,13 @@ describe('Sticky mobile CTA', () => {
     expect(index).toContain('<MobileCta />');
   });
 
-  it('only shows on small screens and links to the contact section', () => {
-    expect(src).toContain('md:hidden fixed bottom-0');
-    expect(src).toContain('href="#contact"');
+  it('only shows below md and links to the contact section', () => {
+    expect(src).toMatch(/id="mobile-cta"[^>]*class="[^"]*\bmd:hidden\b/s);
+    expect(src).toContain('href={sectionHref(CONTACT_SECTION_ID');
   });
 
-  it('starts hidden and inert until the hero is scrolled past', () => {
+  it('starts inert until the hero is scrolled past', () => {
     expect(src).toMatch(/id="mobile-cta"\s+inert/);
-    expect(src).toContain('translate-y-full');
     expect(src).toContain('[data-hero]');
   });
 
@@ -161,60 +148,19 @@ describe('Sticky mobile CTA', () => {
   });
 });
 
-describe('Client logo grid on phones', () => {
-  const src = read('src/components/Clients.astro');
-
-  it('uses tighter gap and padding below md so logos get more width', () => {
-    expect(src).toContain('gap-3 md:gap-6');
-    expect(src).toContain('p-4 md:p-6');
+// ---------------------------------------------------------------------------
+// 44 px tap targets (min-h-11 is Tailwind's 2.75rem = 44 px)
+// ---------------------------------------------------------------------------
+describe('Tap targets', () => {
+  it('the small button size still meets 44 px', () => {
+    expect(read('src/components/Button.astro')).toMatch(/sm: '[^']*\bmin-h-11\b/);
   });
-});
 
-describe('Touch targets outside the menu', () => {
-  it('footer links are 44px tall on phones', () => {
+  it('every footer link is at least 44 px tall on phones', () => {
     const src = read('src/components/Footer.astro');
-    expect(src).toContain('min-h-11 md:min-h-0');
-    expect(src).toContain('min-h-11 sm:min-h-0');
-  });
-
-  it('the small button size still meets 44px', () => {
-    expect(read('src/components/Button.astro')).toMatch(/sm: '[^']*min-h-11/);
-  });
-
-  it('the utility bar "Read it" link fills the bar height', () => {
-    expect(read('src/components/Navbar.astro')).toMatch(
-      /self-stretch flex items-center px-2 -mx-2/,
-    );
-  });
-
-  it('short text links extend their hit area with a pseudo-element', () => {
-    expect(read('src/components/About.astro')).toContain('after:absolute after:-inset-2');
-    expect(read('src/components/ContactForm.astro')).toContain(
-      'after:absolute after:-inset-y-3 after:inset-x-0',
-    );
-  });
-});
-
-describe('Compact mobile layouts', () => {
-  it('uses a shorter sticky header below md', () => {
-    expect(read('src/components/Navbar.astro')).toContain('h-[60px] md:h-[72px]');
-  });
-
-  it('service rows put the description full width below sm', () => {
-    const src = read('src/components/Services.astro');
-    expect(src).toContain('flex-wrap sm:flex-nowrap');
-    expect(src).toContain('contents sm:block');
-    expect(src).toContain('basis-full order-last sm:order-none');
-  });
-
-  it('interest chips form a two-column grid on phones', () => {
-    expect(read('src/components/ContactForm.astro')).toContain(
-      'grid grid-cols-2 sm:flex sm:flex-wrap',
-    );
-  });
-
-  it('footer link columns sit side by side on phones', () => {
-    expect(read('src/components/Footer.astro')).toContain('grid grid-cols-3 sm:grid-cols-2');
+    const links = src.match(/<a\b[^>]*>/gs) ?? [];
+    expect(links.length).toBeGreaterThan(0);
+    for (const a of links) expect(a).toMatch(/\bmin-h-11\b/);
   });
 });
 

@@ -2,9 +2,9 @@
 // Hero.astro, which positions the city hover labels over the rendered image.
 // Everything here runs at build time only; none of it ships to the browser.
 
-// @ts-ignore — d3 v7 exports lack a `types` condition; resolved at runtime fine
-import { geoMercator, geoPath } from 'd3';
+import { geoMercator, geoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
+import type { GeometryCollection, Topology } from 'topojson-specification';
 // @ts-ignore — world-atlas ships plain JSON, no type declarations needed
 import worldData from 'world-atlas/countries-50m.json';
 
@@ -14,10 +14,12 @@ export const MAP_HEIGHT = 520;
 // ISO 3166-1 numeric codes for Southeast Asian countries
 const SEA_IDS = new Set([96, 104, 116, 360, 418, 458, 608, 626, 702, 704, 764]);
 
-const allCountries = feature(worldData as any, (worldData as any).objects.countries) as any;
+// The JSON import infers loose tuple types, so go through unknown to the TopoJSON shape.
+const world = worldData as unknown as Topology<{ countries: GeometryCollection }>;
+const allCountries = feature(world, world.objects.countries);
 const seaCollection: GeoJSON.FeatureCollection = {
   type: 'FeatureCollection',
-  features: allCountries.features.filter((f: any) => SEA_IDS.has(+f.id)),
+  features: allCountries.features.filter((f) => SEA_IDS.has(Number(f.id))),
 };
 
 const projection = geoMercator().fitExtent(

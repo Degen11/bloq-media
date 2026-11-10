@@ -33,21 +33,37 @@ export const socials: Social[] = [
   { label: 'Medium', href: MEDIUM_URL, icon: 'medium' },
 ];
 
+/**
+ * Every homepage section anchor id. Section components set their `id` from
+ * here and every `#anchor` link is built from it with `sectionHref()`, so a
+ * rename can't leave a link or the scroll-spy pointing at nothing.
+ */
+export const SECTION_IDS = {
+  about: 'about',
+  why: 'why',
+  services: 'services',
+  articles: 'articles',
+  clients: 'clients',
+  contact: 'contact',
+} as const;
+
+export type SectionId = (typeof SECTION_IDS)[keyof typeof SECTION_IDS];
+
 export interface SiteSection {
-  id: string;
+  id: SectionId;
   label: string;
 }
 
 /** Homepage sections linked from the navbar and footer, top to bottom. */
 export const sections: SiteSection[] = [
-  { id: 'about', label: 'About' },
-  { id: 'why', label: 'Why BLOQ' },
-  { id: 'services', label: 'Services' },
-  { id: 'articles', label: 'Articles' },
-  { id: 'clients', label: 'Clients' },
+  { id: SECTION_IDS.about, label: 'About' },
+  { id: SECTION_IDS.why, label: 'Why BLOQ' },
+  { id: SECTION_IDS.services, label: 'Services' },
+  { id: SECTION_IDS.articles, label: 'Articles' },
+  { id: SECTION_IDS.clients, label: 'Clients' },
 ];
 
-export const CONTACT_SECTION_ID = 'contact';
+export const CONTACT_SECTION_ID = SECTION_IDS.contact;
 
 /**
  * Link to a homepage section. Section anchors only exist on `/`, so other

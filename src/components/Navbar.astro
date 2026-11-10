@@ -135,6 +135,7 @@ const contactHref = sectionHref(CONTACT_SECTION_ID, pathname);
 
 <script>
   import { CONTACT_SECTION_ID, sections } from '@lib/site';
+  import { getActiveSection, isHeaderScrolled, shouldCloseMenuOnScroll } from '@lib/scrollSpy';
 
   // ── Mobile menu slide animation ──────────────────────────────────────────
   const toggle = document.getElementById('menu-toggle');
@@ -202,29 +203,16 @@ const contactHref = sectionHref(CONTACT_SECTION_ID, pathname);
   const spySectionIds = [...sections.map((s) => s.id), CONTACT_SECTION_ID];
   const spyLinks = document.querySelectorAll<HTMLAnchorElement>('[data-section]');
 
-  // Picks the lowest section whose top has passed the navbar. Compares page
-  // positions rather than relying on list order, since the nav order doesn't
-  // match the page order (Clients sits right under the hero).
-  function getActiveSection(): string {
-    const navHeight = header?.offsetHeight ?? 80;
-    // Extra buffer so the link activates just before the section top hits the navbar
-    const line = window.scrollY + navHeight + 32;
-    let active = '';
-    let activeTop = -Infinity;
-    for (const id of spySectionIds) {
+  function currentSection(): string {
+    const tops = spySectionIds.flatMap((id) => {
       const el = document.getElementById(id);
-      if (!el) continue;
-      const top = el.getBoundingClientRect().top + window.scrollY;
-      if (top <= line && top > activeTop) {
-        active = id;
-        activeTop = top;
-      }
-    }
-    return active;
+      return el ? [{ id, top: el.getBoundingClientRect().top + window.scrollY }] : [];
+    });
+    return getActiveSection(tops, window.scrollY, header?.offsetHeight ?? 80);
   }
 
   function updateScrollSpy() {
-    const active = getActiveSection();
+    const active = currentSection();
     spyLinks.forEach((link) => {
       link.classList.toggle('nav-active', link.dataset.section === active);
     });
@@ -233,14 +221,9 @@ const contactHref = sectionHref(CONTACT_SECTION_ID, pathname);
   window.addEventListener(
     'scroll',
     () => {
-      if (window.scrollY > 10) {
-        header?.classList.add('header-scrolled');
-      } else {
-        header?.classList.remove('header-scrolled');
-      }
+      header?.classList.toggle('header-scrolled', isHeaderScrolled(window.scrollY));
       updateScrollSpy();
-      // Small threshold so mobile address-bar jitter doesn't close the menu
-      if (menuOpen && Math.abs(window.scrollY - openedAtY) > 40) closeMenu();
+      if (menuOpen && shouldCloseMenuOnScroll(openedAtY, window.scrollY)) closeMenu();
     },
     { passive: true },
   );

@@ -12,6 +12,18 @@ function readJSON(rel: string) {
   return JSON.parse(readFileSync(resolve(root, rel), 'utf8'));
 }
 
+// Split a CSP header into { directive: [sources] } so assertions target one
+// directive instead of matching anywhere in the policy string.
+function parseCsp(header: string): Record<string, string[]> {
+  return Object.fromEntries(
+    header
+      .split(';')
+      .map((d) => d.trim().split(/\s+/))
+      .filter(([name]) => name)
+      .map(([name, ...sources]) => [name, sources]),
+  );
+}
+
 function readText(rel: string) {
   return readFileSync(resolve(root, rel), 'utf8');
 }
@@ -95,10 +107,11 @@ describe('vercel.json', () => {
     expect(headerMap['Content-Security-Policy']).toContain("form-action 'self'");
   });
 
-  it("CSP script-src includes 'unsafe-inline' (required: Astro 6 inlines small scripts)", () => {
-    // Astro 6 inlines scripts below the size threshold as <script> tags.
+  it("CSP script-src includes 'unsafe-inline' (required: Astro inlines small scripts)", () => {
+    // Astro inlines scripts below the size threshold as <script> tags.
     // Without unsafe-inline these are silently blocked by the browser.
-    expect(headerMap['Content-Security-Policy']).toContain("'unsafe-inline'");
+    const csp = parseCsp(headerMap['Content-Security-Policy']);
+    expect(csp['script-src']).toContain("'unsafe-inline'");
   });
 
   it('CSP only allows self-hosted fonts', () => {
@@ -111,7 +124,7 @@ describe('vercel.json', () => {
   });
 
   it('headers apply to all routes', () => {
-    expect(cfg.headers?.[0]?.source).toMatch(/\//);
+    expect(cfg.headers?.[0]?.source).toBe('/(.*)');
   });
 });
 

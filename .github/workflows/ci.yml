@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install dependencies
@@ -31,11 +31,13 @@ jobs:
       - name: Type-check
         run: npm run check
 
-      - name: Run tests
-        run: npm test
-
+      # Build first so tests/build.test.ts can check the real Vercel output.
+      # With CI set, that suite fails instead of skipping if the output is missing.
       - name: Build
         run: npm run build
+
+      - name: Run tests
+        run: npm test
 
   dependabot-auto-merge:
     name: Dependabot auto-merge

@@ -15,7 +15,16 @@ type Props = HTMLAttributes<'a'> &
     size?: Size;
   };
 
-const { variant = 'primary', size = 'md', href, class: className, ...attrs } = Astro.props;
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  // Pulled out so a passed type replaces the default instead of rendering a
+  // second type attribute (browsers keep the first, which broke type="submit").
+  type = 'button',
+  class: className,
+  ...attrs
+} = Astro.props;
 
 const variants: Record<Variant, string> = {
   primary: 'bg-bloq-navy text-white hover:bg-bloq-dark',
@@ -43,7 +52,7 @@ const classes = [
     <slot />
   </a>
 ) : (
-  <button type="button" class:list={classes} {...attrs}>
+  <button type={type as 'button' | 'submit' | 'reset'} class:list={classes} {...attrs}>
     <slot />
   </button>
 )}
