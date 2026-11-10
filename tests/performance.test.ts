@@ -5,7 +5,7 @@
  */
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 
 const root = resolve(__dirname, '..');
 const read = (rel: string) => readFileSync(resolve(root, rel), 'utf8');
@@ -26,26 +26,22 @@ describe('Clients component image loading', () => {
 });
 
 // ---------------------------------------------------------------------------
-// OG image font caching
+// OG image
 // ---------------------------------------------------------------------------
-describe('OG image font caching (og-image.png.ts)', () => {
+describe('OG image (og-image.png.ts)', () => {
   const src = read('src/pages/og-image.png.ts');
 
-  it('declares a module-level font cache variable', () => {
-    // fontCache persists across requests on a warm serverless instance
-    expect(src).toContain('fontCache');
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
-  it('guards font fetch behind cache check', () => {
-    expect(src).toContain('if (!fontCache)');
-  });
-
-  it('assigns fetched fonts to the cache', () => {
-    expect(src).toContain('fontCache = {');
-  });
-
-  it('returns early from cache on subsequent calls', () => {
-    expect(src).toContain('return fontCache');
+  it('fails the build when a downloaded font does not match its pinned hash', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(new Uint8Array([1, 2, 3]), { status: 200 })),
+    );
+    const { GET } = await import('../src/pages/og-image.png');
+    await expect(GET({} as Parameters<typeof GET>[0])).rejects.toThrow(/integrity check/);
   });
 
   it('is prerendered at build time (runtime route 500ed on Vercel)', () => {

@@ -10,33 +10,37 @@ import { describe, it, expect } from 'vitest';
 const root = resolve(__dirname, '..');
 const read = (rel: string) => readFileSync(resolve(root, rel), 'utf8');
 
+// The opening tag of the element with the given id, so each assertion checks
+// that element's own attributes instead of matching anywhere in the file.
+const openingTag = (src: string, id: string): string => {
+  const match = src.match(new RegExp(`<[a-z]+\\b[^>]*\\bid="${id}"[^>]*>`, 's'));
+  expect(match, `element #${id}`).not.toBeNull();
+  return match![0];
+};
+
 // ---------------------------------------------------------------------------
 // Contact form
 // ---------------------------------------------------------------------------
 describe('ContactForm accessibility', () => {
   const src = read('src/components/ContactForm.astro');
 
-  it('name input has aria-required', () => {
-    expect(src).toContain('aria-required="true"');
+  it.each(['name', 'email', 'message'])('%s field has aria-required', (id) => {
+    expect(openingTag(src, id)).toContain('aria-required="true"');
   });
 
-  it('name input has aria-describedby pointing to error element', () => {
-    expect(src).toContain('aria-describedby="name-error"');
-  });
+  it.each(['name', 'email', 'message'])(
+    '%s field has aria-describedby pointing to its error element',
+    (id) => {
+      expect(openingTag(src, id)).toContain(`aria-describedby="${id}-error"`);
+    },
+  );
 
-  it('email input has aria-describedby pointing to error element', () => {
-    expect(src).toContain('aria-describedby="email-error"');
-  });
-
-  it('message textarea has aria-describedby pointing to error element', () => {
-    expect(src).toContain('aria-describedby="message-error"');
-  });
-
-  it('error divs have role=alert for screen reader announcement', () => {
-    const alertCount = (src.match(/role="alert"/g) ?? []).length;
-    // name-error, email-error, message-error, form-error
-    expect(alertCount).toBeGreaterThanOrEqual(3);
-  });
+  it.each(['name-error', 'email-error', 'message-error'])(
+    '#%s has role=alert for screen reader announcement',
+    (id) => {
+      expect(openingTag(src, id)).toContain('role="alert"');
+    },
+  );
 
   it('success state has role=status', () => {
     expect(src).toContain('role="status"');
@@ -50,18 +54,21 @@ describe('ContactForm accessibility', () => {
     expect(src).toContain("removeAttribute('aria-invalid')");
   });
 
-  it('decorative SVG arrows are aria-hidden', () => {
-    expect(src).toContain('aria-hidden="true"');
+  it('decorative icons are aria-hidden', () => {
+    // Every icon renders through <Icon>, which always sets aria-hidden.
+    expect(src).toContain('<Icon name="arrow-right"');
+    expect(src).not.toMatch(/<svg\b/);
+    expect(read('src/components/Icon.astro')).toMatch(/<svg\b[^>]*aria-hidden="true"/s);
   });
 
-  it('honeypot field is present', () => {
-    expect(src).toContain('name="website"');
-    expect(src).toContain('tabindex="-1"');
+  it('honeypot field is present and skipped by keyboard users', () => {
+    const input = openingTag(src, 'website');
+    expect(input).toContain('name="website"');
+    expect(input).toContain('tabindex="-1"');
   });
 
-  it('honeypot is hidden from assistive technology', () => {
-    expect(src).toContain('aria-hidden="true"');
-    expect(src).toContain('class="honeypot"');
+  it('honeypot wrapper is hidden from assistive technology', () => {
+    expect(src).toMatch(/<div class="honeypot" aria-hidden="true">/);
   });
 
   it('fires analytics tracking on successful submission', () => {
