@@ -1,5 +1,6 @@
 ---
 import Button from '@components/Button.astro';
+import { CONTACT_SECTION_ID, sectionHref } from '@lib/site';
 ---
 
 <!-- Sticky "Get in touch" bar for phones. Hidden until the hero is scrolled
@@ -11,15 +12,17 @@ import Button from '@components/Button.astro';
   class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-sm border-t border-gray-100 px-6 pt-3 translate-y-full motion-safe:transition-transform motion-safe:duration-300"
   style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom));"
 >
-  <Button href="#contact" class="w-full">
+  <Button href={sectionHref(CONTACT_SECTION_ID, Astro.url.pathname)} class="w-full">
     Get in touch
   </Button>
 </div>
 
 <script>
+  import { CONTACT_SECTION_ID } from '@lib/site';
+
   const bar = document.getElementById('mobile-cta');
   const hero = document.querySelector<HTMLElement>('[data-hero]');
-  const contact = document.getElementById('contact');
+  const contact = document.getElementById(CONTACT_SECTION_ID);
 
   function updateMobileCta() {
     if (!bar || !hero || !contact) return;

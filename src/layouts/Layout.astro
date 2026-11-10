@@ -2,7 +2,14 @@
 import Analytics from '@vercel/analytics/astro';
 import { Font } from 'astro:assets';
 import logoImg from '@assets/logo.png';
-import { BRAND, CONTACT_EMAIL, SITE_NAME, TWITTER_HANDLE, socials } from '@lib/site';
+import {
+  BRAND,
+  CONTACT_EMAIL,
+  CONTACT_SECTION_ID,
+  SITE_NAME,
+  TWITTER_HANDLE,
+  socials,
+} from '@lib/site';
 import '@styles/global.css';
 
 interface Props {
@@ -42,7 +49,7 @@ const orgSchema = {
     '@type': 'ContactPoint',
     contactType: 'customer support',
     email: CONTACT_EMAIL,
-    url: `${siteUrl}#contact`,
+    url: `${siteUrl}#${CONTACT_SECTION_ID}`,
     availableLanguage: 'English',
   },
   areaServed: 'Southeast Asia',

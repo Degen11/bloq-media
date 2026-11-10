@@ -10,6 +10,7 @@
 import { readFileSync, readdirSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import { describe, it, expect } from 'vitest';
+import { CONTACT_SECTION_ID, sections } from '../src/lib/site';
 
 const root = resolve(__dirname, '..');
 const vcConfig = resolve(root, '.vercel/output/functions/_render.func/.vc-config.json');
@@ -55,5 +56,23 @@ describe.skipIf(!hasBuild)('client bundle', () => {
     const files = existsSync(clientDir) ? readdirSync(clientDir) : [];
     const hasContactScript = files.some((f: string) => f.includes('ContactForm'));
     expect(hasContactScript).toBe(true);
+  });
+});
+
+describe.skipIf(!hasBuild)('homepage section anchors', () => {
+  const html = hasBuild ? readFileSync(resolve(root, 'dist/client/index.html'), 'utf8') : '';
+  const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+
+  it.each([...sections.map((s) => s.id), CONTACT_SECTION_ID])(
+    'section id "%s" from site.ts exists on /',
+    (id) => {
+      expect(ids.has(id)).toBe(true);
+    },
+  );
+
+  it('every in-page #anchor link points at an element on /', () => {
+    const targets = [...html.matchAll(/href="#([^"]+)"/g)].map((m) => m[1]);
+    expect(targets.length).toBeGreaterThan(0);
+    for (const target of targets) expect(ids, `#${target}`).toContain(target);
   });
 });

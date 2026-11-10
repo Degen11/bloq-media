@@ -3,6 +3,7 @@ import Icon from '@components/Icon.astro';
 import Section from '@components/Section.astro';
 import SectionHeading from '@components/SectionHeading.astro';
 import type { IconName } from '@lib/icons';
+import { SECTION_IDS, sectionHref } from '@lib/site';
 
 // Each pillar gets its own tile treatment in the grid:
 //   wide   white, spans two columns, icon beside the text
@@ -44,7 +45,7 @@ const tileClass = {
 };
 ---
 
-<Section id="about" class="bg-white">
+<Section id={SECTION_IDS.about} class="bg-white">
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
     <div
       data-animate
@@ -63,7 +64,7 @@ const tileClass = {
         through it, with journalism that informs, stories that inspire, and content that engages.
       </SectionHeading>
       <a
-        href="#services"
+        href={sectionHref(SECTION_IDS.services, Astro.url.pathname)}
         class="relative self-start inline-flex items-center gap-2 after:absolute after:-inset-2 border-b-2 border-bloq-blue pb-1 font-semibold text-bloq-dark hover:text-bloq-navy"
       >
         See what we do

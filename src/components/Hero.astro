@@ -3,6 +3,9 @@ import Button from '@components/Button.astro';
 import Icon from '@components/Icon.astro';
 import { latestArticle } from '@lib/articles';
 import { MAP_WIDTH, MAP_HEIGHT, cities } from '@lib/heroMap';
+import { CONTACT_SECTION_ID, SECTION_IDS, sectionHref } from '@lib/site';
+
+const { pathname } = Astro.url;
 
 const facts = [
   { value: String(cities.length), label: 'regional hubs' },
@@ -42,11 +45,15 @@ const facts = [
       </p>
 
       <div class="flex flex-col sm:flex-row gap-3 mb-10">
-        <Button href="#contact" size="lg" class="shadow-[0_10px_24px_-10px_rgb(26_60_143/0.6)]">
+        <Button
+          href={sectionHref(CONTACT_SECTION_ID, pathname)}
+          size="lg"
+          class="shadow-[0_10px_24px_-10px_rgb(26_60_143/0.6)]"
+        >
           Start a project
           <Icon name="arrow-right" class="w-[18px] h-[18px]" />
         </Button>
-        <Button href="#articles" variant="secondary" size="lg">
+        <Button href={sectionHref(SECTION_IDS.articles, pathname)} variant="secondary" size="lg">
           Read the newsroom
         </Button>
       </div>

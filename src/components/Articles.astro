@@ -4,10 +4,10 @@ import Icon from '@components/Icon.astro';
 import Section from '@components/Section.astro';
 import SectionHeading from '@components/SectionHeading.astro';
 import { articles } from '@lib/articles';
-import { MEDIUM_URL } from '@lib/site';
+import { MEDIUM_URL, SECTION_IDS } from '@lib/site';
 ---
 
-<Section id="articles" class="bg-bloq-tint">
+<Section id={SECTION_IDS.articles} class="bg-bloq-tint">
   <div data-animate class="flex flex-wrap items-end justify-between gap-5 mb-9">
     <SectionHeading eyebrow="Latest work" title="From the newsroom" />
     <Button href={MEDIUM_URL} variant="secondary" target="_blank" rel="noopener noreferrer">

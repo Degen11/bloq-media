@@ -8,6 +8,7 @@ import Navbar from '@components/Navbar.astro';
 import Footer from '@components/Footer.astro';
 import Button from '@components/Button.astro';
 import SectionHeading from '@components/SectionHeading.astro';
+import { CONTACT_SECTION_ID, sectionHref } from '@lib/site';
 ---
 
 <Layout
@@ -25,7 +26,11 @@ import SectionHeading from '@components/SectionHeading.astro';
         <Button href="/" size="lg">
           Back to homepage
         </Button>
-        <Button href="/#contact" variant="secondary" size="lg">
+        <Button
+          href={sectionHref(CONTACT_SECTION_ID, Astro.url.pathname)}
+          variant="secondary"
+          size="lg"
+        >
           Contact us
         </Button>
       </div>

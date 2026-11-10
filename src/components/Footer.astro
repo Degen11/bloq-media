@@ -1,7 +1,15 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '@assets/logo.png';
-import { CONTACT_SECTION_ID, SITE_NAME, sectionHref, sections, socials } from '@lib/site';
+import {
+  CONTACT_SECTION_ID,
+  SECTION_IDS,
+  SITE_NAME,
+  type SectionId,
+  sectionHref,
+  sections,
+  socials,
+} from '@lib/site';
 
 // Build-time year; the script below refreshes it in the browser since the
 // pages are prerendered and would otherwise show the year of the last deploy.
@@ -9,15 +17,15 @@ const year = new Date().getFullYear();
 
 const { pathname } = Astro.url;
 const allSections = [...sections, { id: CONTACT_SECTION_ID, label: 'Contact' }];
-const pick = (ids: string[]) =>
+const pick = (ids: SectionId[]) =>
   ids.map((id) => {
     const section = allSections.find((s) => s.id === id)!;
     return { label: section.label, href: sectionHref(id, pathname) };
   });
 
 const columns = [
-  { title: 'Company', links: pick(['about', 'why', 'clients']) },
-  { title: 'Work', links: pick(['services', 'articles', CONTACT_SECTION_ID]) },
+  { title: 'Company', links: pick([SECTION_IDS.about, SECTION_IDS.why, SECTION_IDS.clients]) },
+  { title: 'Work', links: pick([SECTION_IDS.services, SECTION_IDS.articles, CONTACT_SECTION_ID]) },
   {
     title: 'Follow',
     links: socials.map((s) => ({ label: s.label, href: s.href, external: true })),

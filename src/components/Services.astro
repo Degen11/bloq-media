@@ -4,6 +4,7 @@ import Icon from '@components/Icon.astro';
 import Section from '@components/Section.astro';
 import SectionHeading from '@components/SectionHeading.astro';
 import type { IconName } from '@lib/icons';
+import { CONTACT_SECTION_ID, SECTION_IDS, sectionHref } from '@lib/site';
 
 interface Service {
   title: string;
@@ -31,9 +32,11 @@ const services: Service[] = [
     icon: 'newspaper',
   },
 ];
+
+const contactHref = sectionHref(CONTACT_SECTION_ID, Astro.url.pathname);
 ---
 
-<Section id="services" class="bg-white">
+<Section id={SECTION_IDS.services} class="bg-white">
   <div class="grid lg:grid-cols-[0.8fr_1.2fr] gap-10 lg:gap-14 items-start">
     <div data-animate class="flex flex-col gap-6">
       <SectionHeading eyebrow="What we offer" title="Three ways we get your story told.">
@@ -44,7 +47,7 @@ const services: Service[] = [
         <p class="text-[15px] leading-relaxed text-[#3a4763]">
           Tell us what you're launching and we'll suggest a mix.
         </p>
-        <Button href="#contact" size="sm" class="self-start">
+        <Button href={contactHref} size="sm" class="self-start">
           Talk to us
           <Icon name="arrow-right" class="w-4 h-4" />
         </Button>
@@ -55,7 +58,7 @@ const services: Service[] = [
       {services.map((service, i) => (
         <li data-animate style={i > 0 ? `transition-delay: ${i * 100}ms` : undefined}>
           <a
-            href="#contact"
+            href={contactHref}
             class="group flex flex-wrap sm:flex-nowrap gap-4 sm:gap-[22px] items-start px-2 sm:px-4 py-7 border-b border-bloq-line rounded hover:bg-bloq-tint/50 transition-colors"
           >
             <span

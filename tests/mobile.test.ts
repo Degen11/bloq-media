@@ -166,7 +166,7 @@ describe('Sticky mobile CTA', () => {
 
   it('only shows on small screens and links to the contact section', () => {
     expect(src).toContain('md:hidden fixed bottom-0');
-    expect(src).toContain('href="#contact"');
+    expect(src).toContain('href={sectionHref(CONTACT_SECTION_ID');
   });
 
   it('starts hidden and inert until the hero is scrolled past', () => {

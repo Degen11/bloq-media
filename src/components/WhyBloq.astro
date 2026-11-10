@@ -3,6 +3,7 @@ import Icon from '@components/Icon.astro';
 import Section from '@components/Section.astro';
 import SectionHeading from '@components/SectionHeading.astro';
 import type { IconName } from '@lib/icons';
+import { SECTION_IDS } from '@lib/site';
 
 interface Reason {
   title: string;
@@ -34,7 +35,7 @@ const reasons: Reason[] = [
 const markets = ['Thailand', 'Singapore', 'Vietnam', 'The Philippines', 'Malaysia', 'Indonesia'];
 ---
 
-<Section id="why" class="bg-bloq-dark bg-dots-light">
+<Section id={SECTION_IDS.why} class="bg-bloq-dark bg-dots-light">
   <div class="flex flex-wrap items-end justify-between gap-6 mb-10">
     <SectionHeading
       data-animate
